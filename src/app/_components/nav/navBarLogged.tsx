@@ -2,31 +2,12 @@
 
 import { useState } from "react";
 import NavElement from "./navElement";
+import { routes } from "howl/app/utils/routes";
 
 const NavBarLogged = () => {
 
     const [selected, setSelected] = useState(0);
-    const routes = [
-        {
-            id: 0,
-            label: "Home",
-            href: "/",
-            isSelected: true
-        },
-        {
-            id: 1,
-            label: "Login",
-            href: "/login",
-            isSelected: false
-        },
-        {
-            id: 2,
-            label: "Test",
-            href: "/",
-            isSelected: false
-        }
-
-    ]
+    
 
     return (
         <div className="w-full flex justify-between items-center bg-bg">
@@ -41,7 +22,7 @@ const NavBarLogged = () => {
             </div>
 
             <div className="h-8 w-8 rounded-full bg-secondary-light">
-                Profile
+                {/* Profile Picture */}
             </div>
         </div>
     )

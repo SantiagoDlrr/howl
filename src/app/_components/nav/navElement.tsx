@@ -11,7 +11,6 @@ interface NavElementProps {
 }
 
 const NavElement = ({ label, isSelected, href, setSelected, id }: NavElementProps) => {
-    // Initially bg-secondary (gray), on hover animate to purple from left to right
     const hoverAnimation = isSelected
         ? "bg-primary"
         : "bg-secondary hover:bg-gradient-to-r from-secondary to-primary-light hover:bg-[length:200%_100%] hover:animate-gradient-slide";
