@@ -11,16 +11,11 @@ interface NavElementProps {
 }
 
 const NavElement = ({ label, isSelected, href, setSelected, id }: NavElementProps) => {
-    const hoverAnimation = isSelected
-        ? "bg-primary"
-        : "bg-secondary hover:bg-gradient-to-r from-secondary to-primary-light hover:bg-[length:200%_100%] hover:animate-gradient-slide";
 
     return (
         <Link href={href} onClick={() => setSelected(id)} className="group flex flex-col justify-center items-center gap-1 min-w-32 hover:cursor-pointer">
-            <div className="text-white text-sm">{label}</div>
-            <div
-                className={`h-3 w-full rounded-full ${hoverAnimation}`}
-            ></div>
+            <div className=" text-sm">{label}</div>
+            <div className={`h-2 w-full rounded-full ${isSelected ? "bg-primary" : "bg-gray group-hover:bg-primary-light"}`}></div>
         </Link>
     );
 };

@@ -11,16 +11,20 @@ export default {
       },
       colors: {
         "primary" : {
-          DEFAULT: "#8100E4",
+          DEFAULT: "#A836FF",
           light: "#C67CFF",
+          extralight: "#D9A8FF",
         },
-        "secondary" : {
-          DEFAULT: "#848484",
-          dark: "#2B2B2B",
-          light: "#D2D2D2",
+        "gray" : {
+          DEFAULT: "#BBBDC0",
+        },
+        "text": {
+          DEFAULT: "#4C4C4C",
+          light: "#7C7C7C",
         },
         "bg" : {
-          DEFAULT: "#0D0D0D",
+          DEFAULT: "#F9F9F9",
+          dark: "F3F5F9"
         },
       },
       animation: {
