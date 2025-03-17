@@ -3,6 +3,8 @@ import Link from "next/link";
 import { LatestPost } from "howl/app/_components/post";
 import { auth } from "howl/server/auth";
 import { api, HydrateClient } from "howl/trpc/server";
+import Button from "./_components/button";
+import LandingSection from "./_components/landing/landingSection";
 
 export default async function Home() {
   const hello = await api.post.hello({ text: "from tRPC" });
@@ -14,7 +16,13 @@ export default async function Home() {
 
   return (
     <HydrateClient>
-      <main className="flex min-h-screen flex-col items-center justify-center  ">
+      <LandingSection />
+      <div className="bg-bg-dark min-h-screen p-20">
+        <h1 className="text-3xl font-bold">
+          Mejorando el <span className="text-primary">servicio al cliente</span>
+        </h1>
+      </div>
+      {/* <main className="flex min-h-screen flex-col items-center justify-center  ">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
           <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
             Create <span className="text-primary-light">T3</span> App
@@ -63,7 +71,7 @@ export default async function Home() {
 
           {session?.user && <LatestPost />}
         </div>
-      </main>
+      </main> */}
     </HydrateClient>
   );
 }

@@ -1,4 +1,5 @@
 import "howl/styles/globals.css";
+import { SessionProvider } from "next-auth/react";
 
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
@@ -18,10 +19,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable} font-main w-full font-thin`}>
       <body className="bg-bg text-text">
-        <NavBar />
-        <main className="px-20">
-          <TRPCReactProvider>{children}</TRPCReactProvider>
-        </main>
+        <SessionProvider>
+          <NavBar />
+          <main className="">
+            <TRPCReactProvider>{children}</TRPCReactProvider>
+          </main>
+        </SessionProvider>
       </body>
     </html>
   );
