@@ -15,7 +15,7 @@ const NavBar = () => {
     return (
         <nav className="fixed w-full flex justify-between items-center pl-6 pr-8 pt-3 pb-1 bg-bg">
             {logged ? (
-                <div className="w-full flex justify-between items-center bg-bg">
+                <div className="w-full flex justify-between items-center ">
                     <LogoElement />
                     <div className="flex flex-row gap-6">
                         {routes.map((route, index) => (
