@@ -24,7 +24,8 @@ export default {
         },
         "bg" : {
           DEFAULT: "#FFFFFF",
-          dark: "#F3F5F9"
+          dark: "#F3F5F9",
+          extradark: "#E2E4E8"
         },
       },
       animation: {

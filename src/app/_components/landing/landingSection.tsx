@@ -15,7 +15,7 @@ const LandingSection = () => {
 
                 <div className="flex flex-row gap-6 pt-7">
                     <Button label="Login" href="/login" />
-                    <Button label="Registro" secondary href="/api/auth/signin" />
+                    <Button label="Registro" secondary href="/register" />
                 </div>
             </div>
             <Wave />

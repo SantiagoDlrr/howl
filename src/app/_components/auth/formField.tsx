@@ -1,15 +1,16 @@
 interface FormFieldProps {
     label: string;
     type?: string;
+    xl?: boolean;
 }
 
-const FormField = ({ label, type }: FormFieldProps) => {
+const FormField = ({ label, type, xl }: FormFieldProps) => {
     return (
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 w-full">
             <div>
                 {label}
             </div>
-            <input type="text" className="bg-bg-dark rounded-md px-2 min-w-80" />
+            <input type="text" className={`bg-bg-dark rounded-md px-2 w-full`} />
         </div>
     )
 }
