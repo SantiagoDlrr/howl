@@ -3,6 +3,8 @@ import Link from "next/link";
 import { LatestPost } from "howl/app/_components/post";
 import { auth } from "howl/server/auth";
 import { api, HydrateClient } from "howl/trpc/server";
+import Button from "./_components/button";
+import LandingSection from "./_components/landing/landingSection";
 
 export default async function Home() {
   const hello = await api.post.hello({ text: "from tRPC" });
@@ -14,22 +16,13 @@ export default async function Home() {
 
   return (
     <HydrateClient>
-      <main className="flex min-h-screen flex-col items-center justify-center  ">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-            Create <span className="text-primary-light">T3</span> App
-          </h1>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/usage/first-steps"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">First Steps →</h3>
-              <div className="text-lg text-text-light">
-                Just the basics - Everything you need to know to set up your
-                database and authentication.
-              </div>
+      <LandingSection />
+      <div className="bg-bg-dark min-h-screen p-20">
+        <h1 className="text-3xl font-bold">
+          Mejorando el <span className="text-primary">servicio al cliente</span>
+        </h1>
+      </div>
+      {/*
             </Link>
             <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
@@ -63,7 +56,7 @@ export default async function Home() {
 
           {session?.user && <LatestPost />}
         </div>
-      </main>
+      </main> */}
     </HydrateClient>
   );
 }

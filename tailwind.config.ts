@@ -23,8 +23,9 @@ export default {
           light: "#7C7C7C",
         },
         "bg" : {
-          DEFAULT: "#F9F9F9",
-          dark: "F3F5F9"
+          DEFAULT: "#FFFFFF",
+          dark: "#F3F5F9",
+          extradark: "#E2E4E8"
         },
       },
       animation: {
