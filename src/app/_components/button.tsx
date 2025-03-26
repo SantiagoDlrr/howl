@@ -8,9 +8,12 @@ interface ButtonProps {
     secondary?: boolean
     href?: string
     xl?: boolean
+    type?: "button" | "submit" | "reset"
 }
 
-const Button = ({ label, onClick, secondary, href, xl }: ButtonProps) => {
+const Button = ({ label, onClick, secondary, href, xl, type }: ButtonProps) => {
+    const btnType = type || "button";
+
     return (
         <>
             {href ? (
@@ -18,7 +21,7 @@ const Button = ({ label, onClick, secondary, href, xl }: ButtonProps) => {
                     {label}
                 </Link>
             ) : (
-                <button onClick={onClick} className={`${secondary ? "border-2 border-primary text-primary" : "bg-primary text-white"} ${xl ? "rounded-md w-full" : "rounded-full"}  px-4 py-1 min-w-28`}>
+                <button type={btnType} onClick={onClick} className={`${secondary ? "border-2 border-primary text-primary" : "bg-primary text-white"} ${xl ? "rounded-md w-full" : "rounded-full"}  px-4 py-1 min-w-28`}>
                     {label}
                 </button >
             )

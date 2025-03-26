@@ -4,6 +4,8 @@ import DiscordProvider from "next-auth/providers/discord";
 import MicrosoftEntraID from "next-auth/providers/microsoft-entra-id"
 import { env } from "howl/env";
 import { db } from "howl/server/db";
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from 'bcryptjs';
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -40,6 +42,36 @@ export const authConfig = {
       clientSecret: env.AUTH_MICROSOFT_ENTRA_ID_SECRET,
       issuer: env.AUTH_MICROSOFT_ENTRA_ID_ISSUER,
     }),
+
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email", placeholder: "mail@example.com" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Missing email or password");
+        }
+
+        const user = await db.user.findUnique({
+          where: { email: credentials.email as string },
+        });
+
+        if (!user || !user.hashedPassword) {
+          throw new Error("Invalid credentials");
+        }
+
+        const isValid = await bcrypt.compare(credentials.password as string, user.hashedPassword as string);
+        if (!isValid) {
+          throw new Error("Invalid credentials");
+        }
+
+        return user;
+      },
+    }),
+
+
     /**
      * ...add more providers here.
      *
