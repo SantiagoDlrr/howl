@@ -13,7 +13,7 @@ const NavBar = () => {
     const logged = status === "authenticated";
 
     return (
-        <nav className="fixed w-full flex justify-between items-center pl-6 pr-8 pt-3 pb-1 bg-bg">
+        <nav className="fixed w-full flex justify-between items-center pl-6 pr-8 pt-3 pb-1 bg-bg position-i">
             {logged ? (
                 <div className="w-full flex justify-between items-center ">
                     <LogoElement />

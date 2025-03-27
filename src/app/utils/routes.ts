@@ -16,6 +16,11 @@ export const routes = [
         label: "Test2",
         href: "/",
         isSelected: false
-    }
-
+    },
+    {
+        id: 3,
+        label: "Test3",
+        href: "/main",
+        isSelected: false
+    },
 ];
