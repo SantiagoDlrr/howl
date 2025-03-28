@@ -7,12 +7,14 @@ interface FormFieldProps {
 }
 
 const FormField = ({ label, type, xl, value, onChange }: FormFieldProps) => {
+    const inpyutType = type || "text";
+
     return (
         <div className="flex flex-col gap-1 w-full">
             <div>
                 {label}
             </div>
-            <input type="text" value={value} onChange={onChange} className={`bg-bg-dark rounded-md px-2 w-full`} />
+            <input type={inpyutType} value={value} onChange={onChange} className={`bg-bg-dark rounded-md px-2 w-full`} />
         </div>
     )
 }

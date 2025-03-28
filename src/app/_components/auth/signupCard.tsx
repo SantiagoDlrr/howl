@@ -6,12 +6,14 @@ import LoginWith from "./loginWith";
 import ToggleButton from "./toggleButton";
 import { api } from "howl/trpc/react";
 import Button from "../button";
+import { emailSchema, passwordSchema } from "howl/app/utils/schemas";
 
 const SignUpCard = () => {
     const [selected, setSelected] = useState(1);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
     const registerMutation = api.register.register.useMutation({
         onSuccess: () => {
@@ -26,6 +28,38 @@ const SignUpCard = () => {
         e.preventDefault();
         registerMutation.mutate({ name, email, password });
     };
+
+    const validEmail = () => {
+        if (email === "") {
+            setError("No email provided")
+            return false
+        }
+        const result = emailSchema.safeParse(email);
+
+        if (result.success) {
+            return true;
+        } else {
+            const errorMessage = result.error.errors
+                .map((error) => error.message)
+                .join(". ");
+
+            setError(errorMessage)
+        }
+    }
+
+    const validPassword = () => {
+        const result = passwordSchema.safeParse(password);
+
+        if (result.success) {
+            return true
+        } else {
+            const errorMessage = result.error.errors
+                .map((error) => error.message)
+                .join(". ");
+
+            setError(errorMessage)
+        }
+    }
 
     return (
         <div className="bg-white w-1/3 p-8 rounded-lg flex flex-col px-20">

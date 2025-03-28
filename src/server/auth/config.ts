@@ -34,7 +34,9 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authConfig = {
-
+  session: {
+    strategy: "jwt",  // Ensure sessions work for credentials
+  },
   providers: [
     // DiscordProvider,
     MicrosoftEntraID({
@@ -50,24 +52,31 @@ export const authConfig = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        
+       
         if (!credentials?.email || !credentials?.password) {
-          throw new Error("Missing email or password");
+          throw new Error("Email o contraseña vacíos");
         }
 
         const user = await db.user.findUnique({
           where: { email: credentials.email as string },
         });
 
+        if (!user) {
+          throw new Error("Usuario no encontrado");
+        }
+
         if (!user || !user.hashedPassword) {
-          throw new Error("Invalid credentials");
+          throw new Error("Contraseña incorrecta");
         }
 
         const isValid = await bcrypt.compare(credentials.password as string, user.hashedPassword as string);
         if (!isValid) {
-          throw new Error("Invalid credentials");
+          throw new Error("Credenciales inválidas");
         }
 
         return user;
+      
       },
     }),
 
@@ -84,12 +93,24 @@ export const authConfig = {
   ],
   adapter: PrismaAdapter(db),
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id as string;  // Ensure `id` is a string
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (typeof token.id === "string") {
+        session.user.id = token.id;
+      }
+      return session;
+    },
+    // session: ({ session, user }) => ({
+    //   ...session,
+    //   user: {
+    //     ...session.user,
+    //     id: user.id,
+    //   },
+    // }),
   },
 } satisfies NextAuthConfig;
