@@ -10,10 +10,6 @@ const LoginWith = ({ login }: { login?: boolean }) => {
 
     return (
         <>
-            <div className="flex flex-row justify-center pb-10 w-full">
-                <Button label="Login" xl />
-            </div>
-
             <div className="w-full flex flex-row items-center justify-center gap-2 pt-2 pb-3">
                 <div className="w-full border-b "></div>
                 <div className="text-nowrap text-center text-gray text-sm">
