@@ -1,3 +1,9 @@
+"use client";
+
+import { useState } from "react";
+import { IoMdEye } from "react-icons/io";
+
+
 interface FormFieldProps {
     label: string;
     type?: string;
@@ -7,14 +13,32 @@ interface FormFieldProps {
 }
 
 const FormField = ({ label, type, xl, value, onChange }: FormFieldProps) => {
-    const inpyutType = type || "text";
+    const [view, setView] = useState(false);
+    const originalType = type || "text";
+    const [inputType, setInputType] = useState(type || "text");
+
+    const toggleView = () => {
+        setView(!view);
+        if (view) {
+            setInputType("text");
+        } else {
+            setInputType("password");
+        }
+    }
 
     return (
         <div className="flex flex-col gap-1 w-full">
             <div>
                 {label}
             </div>
-            <input type={inpyutType} value={value} onChange={onChange} className={`bg-bg-dark rounded-md px-2 w-full`} />
+            <div className="relative flex flex-row justify-center items-center">
+                <input type={inputType} value={value} onChange={onChange} className={`bg-bg-dark rounded-md px-2 w-full`} />
+                {originalType === "password" && (
+                    <button type="button" className="absolute right-0 mr-2 hover:text-gray-400" onClick={toggleView}>
+                        <IoMdEye />
+                    </button>
+                )}
+            </div>
         </div>
     )
 }

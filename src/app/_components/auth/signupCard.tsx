@@ -7,6 +7,7 @@ import ToggleButton from "./toggleButton";
 import { api } from "howl/trpc/react";
 import Button from "../button";
 import { emailSchema, passwordSchema } from "howl/app/utils/schemas";
+import ErrorMessage from "./errorMessage";
 
 const SignUpCard = () => {
     const [selected, setSelected] = useState(1);
@@ -20,18 +21,29 @@ const SignUpCard = () => {
             alert("Registration successful! You can now log in.");
         },
         onError: (error) => {
+            setError(error.message);
             alert(error.message);
         },
     });
 
+    const resetValues = () => {
+        setName("");
+        setEmail("");
+        setPassword("");
+        setError("");
+    }
+
     const handleRegister = (e: React.FormEvent) => {
         e.preventDefault();
-        registerMutation.mutate({ name, email, password });
+        if (validName() && validEmail() && validPassword()) {
+            registerMutation.mutate({ name, email, password });
+            resetValues();
+        }
     };
 
     const validEmail = () => {
         if (email === "") {
-            setError("No email provided")
+            setError("Email vacío")
             return false
         }
         const result = emailSchema.safeParse(email);
@@ -53,12 +65,25 @@ const SignUpCard = () => {
         if (result.success) {
             return true
         } else {
-            const errorMessage = result.error.errors
-                .map((error) => error.message)
-                .join(". ");
-
-            setError(errorMessage)
+            const errorMessage = result.error.errors[0]?.message || "An unknown error occurred";
+            setError(errorMessage);
         }
+    }
+
+    const validName = () => {
+        if (name === "") {
+            setError("Nombre vacío")
+            return false
+        }
+        if (name.length < 3) {
+            setError("Nombre muy corto")
+            return false
+        }
+        if (name.length > 50) {
+            setError("Nombre muy largo")
+            return false
+        }
+        return true
     }
 
     return (
@@ -72,13 +97,14 @@ const SignUpCard = () => {
                 <ToggleButton id={2} selected={selected === 2} setSelected={setSelected} />
             </div>
             <form onSubmit={handleRegister} className="flex flex-col items-center w-full">
+                {error && <ErrorMessage message={error} />}
                 <div className="flex flex-col gap-2 w-full pb-10">
                     <FormField label="Name" xl type="text" value={name} onChange={(e) => setName(e.target.value)} />
                     <FormField label="Email" xl type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
                     <FormField label="Password" xl type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
                 <div className="flex flex-row justify-center pb-10 w-full">
-                    <Button label="Login" xl type="submit" />
+                    <Button label="Registrar" xl type="submit" />
                 </div>
                 <LoginWith />
             </form>

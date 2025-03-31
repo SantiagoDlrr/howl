@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import Button from "../button";
 import { emailSchema, passwordSchema } from "howl/app/utils/schemas";
 import toast from "react-hot-toast";
+import ErrorMessage from "./errorMessage";
 
 const LoginCard = () => {
     const [email, setEmail] = useState("");
@@ -24,6 +25,16 @@ const LoginCard = () => {
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        if (!email) {
+            setError("Email vacío");
+            return;
+        }
+
+        if (!password) {
+            setError("Contraseña vacía");
+            return;
+        }
+
         const res = await signIn("credentials", {
             email,
             password,
@@ -38,7 +49,6 @@ const LoginCard = () => {
             console.log("success", res);
             resetValues()
             toast.success("Login successful");
-            // router.push("/dashboard");
         }
     };
 
@@ -49,7 +59,7 @@ const LoginCard = () => {
                 Login
             </h1>
             <form onSubmit={handleLogin} className="flex flex-col items-center w-full">
-                {error && <p className="w-full mb-6  rounded-sm border-red-500 bg-red-200  px-2 py-1 text-red-500">{error}</p>}
+                {error && <ErrorMessage message={error} />}
                 <div className="flex flex-col gap-4 w-full">
                     <FormField type="email" label="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
                     <FormField label="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
