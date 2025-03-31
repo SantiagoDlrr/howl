@@ -1,7 +1,6 @@
 "use client"
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
-// Define the structure of a single log entry
 interface CallLogEntry {
   callDate: string;
   client: string;
@@ -11,117 +10,14 @@ interface CallLogEntry {
   time: string;
 }
 
-// Sample data to populate the table
-const sampleCallLogs: CallLogEntry[] = [
-  {
-    callDate: 'Feb 18 2025',
-    client: 'Roberto',
-    clientCompany: 'Microsoft',
-    category: 'Sales',
-    rating: 'Positive',
-    time: '2:41'
-  },
-  {
-    callDate: 'Feb 17 2025',
-    client: 'Maria',
-    clientCompany: 'Google',
-    category: 'Support',
-    rating: 'Negative',
-    time: '3:15'
-  },
-  {
-    callDate: 'Feb 16 2025',
-    client: 'John',
-    clientCompany: 'Apple',
-    category: 'Sales',
-    rating: 'Positive',
-    time: '1:45'
-  },
-  {
-    callDate: 'Feb 15 2025',
-    client: 'Alice',
-    clientCompany: 'Amazon',
-    category: 'Support',
-    rating: 'Positive',
-    time: '4:20'
-  },
-  {
-    callDate: 'Feb 14 2025',
-    client: 'Carlos',
-    clientCompany: 'Tesla',
-    category: 'Technical',
-    rating: 'Negative',
-    time: '2:30'
-  },
-  {
-    callDate: 'Feb 13 2025',
-    client: 'Sophia',
-    clientCompany: 'Meta',
-    category: 'Sales',
-    rating: 'Positive',
-    time: '3:10'
-  },
-  {
-    callDate: 'Feb 12 2025',
-    client: 'James',
-    clientCompany: 'Netflix',
-    category: 'Support',
-    rating: 'Negative',
-    time: '2:50'
-  },
-  {
-    callDate: 'Feb 11 2025',
-    client: 'Emma',
-    clientCompany: 'Spotify',
-    category: 'Technical',
-    rating: 'Positive',
-    time: '1:35'
-  },
-  {
-    callDate: 'Feb 10 2025',
-    client: 'Liam',
-    clientCompany: 'Adobe',
-    category: 'Sales',
-    rating: 'Positive',
-    time: '2:25'
-  },
-  {
-    callDate: 'Feb 09 2025',
-    client: 'Olivia',
-    clientCompany: 'Intel',
-    category: 'Support',
-    rating: 'Negative',
-    time: '3:05'
-  },
-  {
-    callDate: 'Feb 08 2025',
-    client: 'Noah',
-    clientCompany: 'IBM',
-    category: 'Technical',
-    rating: 'Positive',
-    time: '4:00'
-  },
-  {
-    callDate: 'Feb 07 2025',
-    client: 'Ava',
-    clientCompany: 'Oracle',
-    category: 'Sales',
-    rating: 'Negative',
-    time: '2:15'
-  },
-  {
-    callDate: 'Feb 06 2025',
-    client: 'Ethan',
-    clientCompany: 'Cisco',
-    category: 'Support',
-    rating: 'Positive',
-    time: '3:40'
-  }
-];
-
 const CallLogsTable: React.FC = () => {
+  const [callLogs, setCallLogs] = useState<CallLogEntry[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  
   // State for filters and search
   const [sortBy, setSortBy] = useState<'newest' | 'oldest'>('newest');
+  const [timeSort, setTimeSort] = useState<'none' | 'longer' | 'shorter'>('none');
   const [selectedCompany, setSelectedCompany] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedRating, setSelectedRating] = useState<string>('');
@@ -129,33 +25,65 @@ const CallLogsTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const logsPerPage = 10;
 
+  // Fetch data from API
+  useEffect(() => {
+    const fetchCallLogs = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/call-logs'); // Nota: "call-logs" no "call-logs"
+        if (!response.ok) {
+          throw new Error('Failed to fetch call logs');
+        }
+        const data = await response.json();
+        setCallLogs(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Unknown error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchCallLogs();
+  }, []);
+
   // Dynamically generate unique filter options
   const filterOptions = useMemo(() => {
     return {
-      companies: [...new Set(sampleCallLogs.map(log => log.clientCompany))],
-      categories: [...new Set(sampleCallLogs.map(log => log.category))],
-      ratings: [...new Set(sampleCallLogs.map(log => log.rating))]
+      companies: [...new Set(callLogs.map(log => log.clientCompany))],
+      categories: [...new Set(callLogs.map(log => log.category))],
+      ratings: [...new Set(callLogs.map(log => log.rating))]
     };
-  }, []);
+  }, [callLogs]);
 
   // Filtered and sorted logs
   const filteredLogs = useMemo(() => {
-    return sampleCallLogs
+    return callLogs
       .filter(log => 
         (!selectedCompany || log.clientCompany === selectedCompany) &&
         (!selectedCategory || log.category === selectedCategory) &&
         (!selectedRating || log.rating === selectedRating) &&
         (searchTerm === '' || 
           Object.values(log).some(value => 
+            typeof value === 'string' && 
             value.toLowerCase().includes(searchTerm.toLowerCase())
           ))
       )
       .sort((a, b) => {
+        // Orden por fecha (mantén tu lógica existente)
         const dateA = new Date(a.callDate).getTime();
         const dateB = new Date(b.callDate).getTime();
-        return sortBy === 'newest' ? dateB - dateA : dateA - dateB;
+        let sortResult = sortBy === 'newest' ? dateB - dateA : dateA - dateB;
+  
+        // Orden por tiempo (nueva lógica)
+        if (timeSort !== 'none') {
+          const timeA = parseInt(a.time);
+          const timeB = parseInt(b.time);
+          sortResult = timeSort === 'longer' ? timeB - timeA : timeA - timeB;
+        }
+  
+        return sortResult;
       });
-  }, [selectedCompany, selectedCategory, selectedRating, searchTerm, sortBy]);
+  }, [callLogs, selectedCompany, selectedCategory, selectedRating, searchTerm, sortBy, timeSort]);
 
   // Get current logs for pagination
   const indexOfLastLog = currentPage * logsPerPage;
@@ -163,6 +91,14 @@ const CallLogsTable: React.FC = () => {
   const currentLogs = filteredLogs.slice(indexOfFirstLog, indexOfLastLog);
   const totalPages = Math.ceil(filteredLogs.length / logsPerPage);
 
+  if (loading) {
+    return <div className="w-full p-20 text-center">Loading call logs...</div>;
+  }
+
+  if (error) {
+    return <div className="w-full p-20 text-center text-red-500">Error: {error}</div>;
+  }
+  
   // Change page
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -174,6 +110,7 @@ const CallLogsTable: React.FC = () => {
     setSearchTerm('');
     setSortBy('newest');
     setCurrentPage(1);
+    setTimeSort('none');
   };
 
   return (
@@ -236,6 +173,20 @@ const CallLogsTable: React.FC = () => {
           {filterOptions.ratings.map(rating => (
             <option key={rating} value={rating}>{rating}</option>
           ))}
+        </select>
+
+        {/* Time Sort Dropdown */}
+        <select 
+          value={timeSort}
+          onChange={(e) => {
+            setTimeSort(e.target.value as 'none' | 'longer' | 'shorter');
+            setCurrentPage(1);
+          }}
+          className="border rounded px-2 py-1"
+        >
+          <option value="none">Time: Default</option>
+          <option value="longer">Longer First</option>
+          <option value="shorter">Shorter First</option>
         </select>
 
         {/* Search Input */}
