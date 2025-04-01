@@ -6,6 +6,7 @@ import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "howl/trpc/react";
 import NavBar from "./_components/nav/navBar";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -19,6 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable} font-main w-full font-thin`}>
       <body className="bg-bg text-text">
+        <Toaster />
         <SessionProvider>
           <NavBar />
           <main className="">
