@@ -7,6 +7,101 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model address {
+  id         Int      @id @default(autoincrement())
+  street     String?  @db.VarChar(255)
+  city       String?  @db.VarChar(100)
+  state      String?  @db.VarChar(100)
+  country    String?  @db.VarChar(100)
+  company_id Int?     @unique
+  company    company? @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model administration {
+  administrator_id                                       Int
+  administrated_id                                       Int
+  consultant_administration_administrated_idToconsultant consultant @relation("administration_administrated_idToconsultant", fields: [administrated_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  consultant_administration_administrator_idToconsultant consultant @relation("administration_administrator_idToconsultant", fields: [administrator_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([administrator_id, administrated_id])
+}
+
+model call_emotions {
+  call_id    Int
+  emotion_id Int
+  calls      calls    @relation(fields: [call_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  emotions   emotions @relation(fields: [emotion_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([call_id, emotion_id])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model calls {
+  id            Int             @id(map: "call_pkey") @default(autoincrement())
+  context       String?
+  satisfaction  Int?
+  duration      Int
+  summary       String?
+  date          DateTime        @db.Date
+  transcript    String?
+  keywords      String[]
+  type          String?         @db.VarChar(50)
+  consultant_id Int?
+  client_id     Int?
+  call_emotions call_emotions[]
+  client        client?         @relation(fields: [client_id], references: [id], onUpdate: NoAction, map: "call_client_id_fkey")
+  consultant    consultant?     @relation(fields: [consultant_id], references: [id], onUpdate: NoAction, map: "call_consultant_id_fkey")
+}
+
+model client {
+  id         Int      @id @default(autoincrement())
+  firstname  String   @db.VarChar(100)
+  lastname   String   @db.VarChar(100)
+  email      String   @unique @db.VarChar(255)
+  company_id Int?
+  calls      calls[]
+  company    company? @relation(fields: [company_id], references: [id], onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model company {
+  id           Int      @id @default(autoincrement())
+  name         String   @db.VarChar(100)
+  client_since DateTime @db.Date
+  satisfaction Int?
+  address      address?
+  client       client[]
+}
+
+model consultant {
+  id                                                         Int              @id @default(autoincrement())
+  firstname                                                  String           @db.VarChar(100)
+  lastname                                                   String           @db.VarChar(100)
+  email                                                      String           @unique @db.VarChar(255)
+  password                                                   String           @db.VarChar(255)
+  rating                                                     Float?
+  administration_administration_administrated_idToconsultant administration[] @relation("administration_administrated_idToconsultant")
+  administration_administration_administrator_idToconsultant administration[] @relation("administration_administrator_idToconsultant")
+  calls                                                      calls[]
+  supervision_supervision_supervised_idToconsultant          supervision[]    @relation("supervision_supervised_idToconsultant")
+  supervision_supervision_supervisor_idToconsultant          supervision[]    @relation("supervision_supervisor_idToconsultant")
+}
+
+model emotions {
+  id            Int             @id @default(autoincrement())
+  name          String          @unique @db.VarChar(100)
+  call_emotions call_emotions[]
+}
+
+model supervision {
+  supervisor_id                                    Int
+  supervised_id                                    Int
+  consultant_supervision_supervised_idToconsultant consultant @relation("supervision_supervised_idToconsultant", fields: [supervised_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  consultant_supervision_supervisor_idToconsultant consultant @relation("supervision_supervisor_idToconsultant", fields: [supervisor_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([supervisor_id, supervised_id])
+}
+
 model Post {
   id          Int      @id @default(autoincrement())
   name        String

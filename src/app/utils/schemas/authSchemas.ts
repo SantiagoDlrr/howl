@@ -7,3 +7,4 @@ export const passwordSchema = z.string()
     .regex(/[!@#$%^&*]/, "La contraseña debe tener al menos un caracter especial");
 
 export const emailSchema = z.string().email("Correo inválido")
+

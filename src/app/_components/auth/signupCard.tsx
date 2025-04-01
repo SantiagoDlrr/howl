@@ -3,14 +3,14 @@
 import { useState } from "react";
 import FormField from "./formField";
 import LoginWith from "./loginWith";
-import ToggleButton from "./toggleButton";
+// import ToggleButton from "./toggleButton";
 import { api } from "howl/trpc/react";
 import Button from "../button";
-import { emailSchema, passwordSchema } from "howl/app/utils/schemas";
+import { emailSchema, passwordSchema } from "howl/app/utils/schemas/authSchemas";
 import ErrorMessage from "./errorMessage";
 
 const SignUpCard = () => {
-    const [selected, setSelected] = useState(1);
+    // const [selected, setSelected] = useState(1);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -92,10 +92,10 @@ const SignUpCard = () => {
                 Registro
             </h1>
 
-            <div className="bg-bg-dark w-full flex flex-row items-center rounded-md p-1 mb-4">
+            {/* <div className="bg-bg-dark w-full flex flex-row items-center rounded-md p-1 mb-4">
                 <ToggleButton id={1} selected={selected === 1} setSelected={setSelected} />
                 <ToggleButton id={2} selected={selected === 2} setSelected={setSelected} />
-            </div>
+            </div> */}
             <form onSubmit={handleRegister} className="flex flex-col items-center w-full">
                 {error && <ErrorMessage message={error} />}
                 <div className="flex flex-col gap-2 w-full pb-10">

@@ -6,7 +6,7 @@ import LoginWith from "./loginWith";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Button from "../button";
-import { emailSchema, passwordSchema } from "howl/app/utils/schemas";
+import { emailSchema, passwordSchema } from "howl/app/utils/schemas/authSchemas";
 import toast from "react-hot-toast";
 import ErrorMessage from "./errorMessage";
 
