@@ -1,9 +1,16 @@
-export interface Report {
+export interface TranscriptEntry {
+    speaker: string;
+    text: string;
+  }
+  
+  export interface Report {
     feedback: string;
     keyTopics: string[];
     emotions: string[];
     sentiment: string;
     output: string;
+    riskWords: string;
+    summary: string;
   }
   
   export interface FileData {
@@ -14,4 +21,5 @@ export interface Report {
     duration: string;
     rating: number;
     report: Report;
+    transcript?: TranscriptEntry[]; 
   }

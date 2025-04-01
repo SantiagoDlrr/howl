@@ -7,8 +7,8 @@ interface Props {
 
 export const EmptyState: React.FC<Props> = ({ onUpload }) => {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center p-6">
-      <div className="text-center max-w-md">
+    <div className="flex flex-col items-center justify-center h-full w-full p-6">
+      <div className="text-center max-w-md w-full">
         <h2 className="text-2xl font-semibold text-purple-600 mb-4">¡Bienvenido a HowlX!</h2>
 
         <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 flex flex-col items-center justify-center mb-6">

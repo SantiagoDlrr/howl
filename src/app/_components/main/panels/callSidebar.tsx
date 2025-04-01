@@ -47,7 +47,7 @@ export const CallSideBar: React.FC<Props> = ({ files, selectedFileIndex, onSelec
 
       {files.length > 0 && (
         <div className="p-4 mt-auto">
-          <button className="w-full py-2 px-4 bg-purple-500 text-white rounded-md hover:bg-purple-600 flex items-center justify-center">
+          <button className="w-full py-2 px-4 bg-primary text-white rounded-md hover:bg-purple-600 flex items-center justify-center">
             <List className="w-4 h-4 mr-2" />
             Guardar llamadas en log
           </button>
