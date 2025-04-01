@@ -2,6 +2,7 @@ import { postRouter } from "howl/server/api/routers/post";
 import { registerRouter } from "howl/server/api/routers/register";
 import { createCallerFactory, createTRPCRouter } from "howl/server/api/trpc";
 import { register } from "module";
+import { apiRouter } from "./routers/api";
 
 /**
  * This is the primary router for your server.
@@ -11,6 +12,7 @@ import { register } from "module";
 export const appRouter = createTRPCRouter({
   post: postRouter,
   register: registerRouter,
+  apiRouter: apiRouter,
 });
 
 // export type definition of API

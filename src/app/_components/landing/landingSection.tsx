@@ -1,7 +1,35 @@
+"use client";
+
 import Button from "../button";
 import Wave from "./wave";
+import { api } from "howl/trpc/react";
 
 const LandingSection = () => {
+
+    const { data, isLoading, error } = api.apiRouter.helloWorld.useQuery();
+    const getEmbedding = api.apiRouter.embedding.useMutation({
+        onSuccess: (data) => {
+            console.log('Embedding created:', data);
+        },
+        onError: (error) => {
+            console.error('Error creating embedding:', error);
+        },
+    })
+
+    const handleClick = () => {
+        getEmbedding.mutate({ text: "Hola, ¿cómo estás?" });
+    }
+    // const addData = api.calls.createCall.useMutation({
+    //     onSuccess: (data) => {
+    //         console.log('Call created:', data);
+    //     },
+    //     onError: (error) => {
+    //         setError(error.message);
+    //         console.error('Error creating call:', error);
+    //     },
+    // })
+    // console.log("RESULT", data.Message, isLoading, error);
+    // const result = data?.Message || "Loading...";
 
     return (
         <div className="flex flex-row justify-between w-full px-20">
@@ -18,6 +46,12 @@ const LandingSection = () => {
                     <Button label="Registro" secondary href="/register" />
                 </div>
             </div>
+            <div className="pt-20">
+                {data?.Message} aaa
+            </div>
+            <button onClick={handleClick}>
+                Call
+            </button>
             <Wave />
         </div>
     )
