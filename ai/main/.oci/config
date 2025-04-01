@@ -1,0 +1,6 @@
+[DEFAULT]
+user=ocid1.user.oc1..aaaaaaaapebq5kktoejbgwk7rx2tdyhgrhgdrttygecn5ktqyfidcemvnf7q
+fingerprint=65:e3:82:d2:3f:1f:07:02:39:3d:52:0d:30:d4:b0:b5
+tenancy=ocid1.tenancy.oc1..aaaaaaaab7n4742quxlxeevalvwtahmviol6opgj7wa7ykqxk4qf3vilxatq
+region=mx-queretaro-1
+key_file=/root/.oci/a00835462@tec.mx_2025-03-12T22_39_39.019Z.pem

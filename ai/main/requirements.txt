@@ -1,0 +1,12 @@
+fastapi==0.95.0
+uvicorn
+sqlalchemy
+psycopg2
+pydantic
+requests
+openai-whisper
+python-multipart
+aisuite
+docstring_parser
+oci
+sse-starlette
