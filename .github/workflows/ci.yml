@@ -14,21 +14,12 @@ jobs:
   ci:
     name: Continuous Integration
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:latest
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: test_db
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+    env:
+      AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      AUTH_MICROSOFT_ENTRA_ID_ID: ${{ secrets.AUTH_MICROSOFT_ENTRA_ID_ID }}
+      AUTH_MICROSOFT_ENTRA_ID_SECRET: ${{ secrets.AUTH_MICROSOFT_ENTRA_ID_SECRET }}
+      AUTH_MICROSOFT_ENTRA_ID_ISSUER: ${{ secrets.AUTH_MICROSOFT_ENTRA_ID_ISSUER }}
 
     steps:
     - name: Checkout
