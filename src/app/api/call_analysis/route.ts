@@ -56,36 +56,12 @@ export async function GET_CALL_DETAILS(request: Request, { params }: { params: {
   }
 }
 
-export async function insertCallWithEmotions(
-    context: string,
-    satisfaction: number,
-    duration: number,
-    summary: string,
-    date: string,  // Ensure you format this correctly (YYYY-MM-DD)
-    transcript: string,
-    main_ideas: string[],  // Assuming array of strings
-    type: string,
-    consultant_id: number,
-    client_id: number,
-    feedback: string,
-    sentiment_analysis: string,
-    risk_words: string,
-    output: string,
-    emotion_names: string[]  // Array of emotion names to insert into call_emotions
-  ) {
+export async function POST(request: Request) {
     try {
-      // Insert into the calls table and get the new call_id
-      const insertCallQuery = `
-        INSERT INTO calls (
-          "context", "satisfaction", "duration", "summary", "date", 
-          "transcript", "main_ideas", "type", "consultant_id", "client_id", 
-          "feedback", "sentiment_analysis", "risk_words", "output"
-        ) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
-        RETURNING id;
-      `;
-      
-      const result = await query(insertCallQuery, [
+      // Step 1: Parse the request body
+      const data = await request.json();
+  
+      const {
         context,
         satisfaction,
         duration,
@@ -99,37 +75,41 @@ export async function insertCallWithEmotions(
         feedback,
         sentiment_analysis,
         risk_words,
-        output
+        output,
+        emotion_names // Array of emotion names (e.g., ["Happy", "Sad"])
+      } = data;
+  
+      // Step 2: Call the stored procedure to insert the data
+      const result = await query(`
+        SELECT insert_call_with_emotions(
+          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
+        ) AS call_id;
+      `, [
+        context,
+        satisfaction,
+        duration,
+        summary,
+        date,
+        transcript,
+        main_ideas,
+        type,
+        consultant_id,
+        client_id,
+        feedback,
+        sentiment_analysis,
+        risk_words,
+        output,
+        emotion_names
       ]);
-      
-      const call_id = result.rows[0].id;
   
-      // Insert into call_emotions table (many-to-many relationship)
-      for (const emotion_name of emotion_names) {
-        // Query to get emotion_id by emotion_name
-        const emotionQuery = `
-          SELECT id FROM emotions WHERE name = $1;
-        `;
-        
-        const emotionResult = await query(emotionQuery, [emotion_name]);
-        if (emotionResult.rows.length === 0) {
-          throw new Error(`Emotion "${emotion_name}" not found`);
-        }
+      // Step 3: Get the inserted call ID
+      const callId = result[0].call_id;
   
-        const emotion_id = emotionResult.rows[0].id;
-  
-        // Insert into call_emotions
-        const insertEmotionQuery = `
-          INSERT INTO call_emotions (call_id, emotion_id) 
-          VALUES ($1, $2);
-        `;
-        await query(insertEmotionQuery, [call_id, emotion_id]);
-      }
-  
-      return call_id;  // Return the ID of the new call record
+      // Step 4: Return the response with the inserted call ID
+      return NextResponse.json({ callId });
   
     } catch (error) {
-      console.error('Error inserting call and emotions:', error);
-      throw error;
+      console.error('Error inserting call with emotions:', error);
+      return NextResponse.json({ error: 'Error creating call' }, { status: 500 });
     }
   }
