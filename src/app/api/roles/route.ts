@@ -24,6 +24,7 @@ export async function GET(request: Request) {
         );
 
         // Determine role
+        //hola
         let role = "consultant"; // Default role
         if (isAdmin.length > 0) role = "administrator";
         else if (isSupervisor.length > 0) role = "supervisor";
