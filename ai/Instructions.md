@@ -6,3 +6,4 @@ Instal requiermnets
 Install oci config and key files
 
 install .env file
+
