@@ -10,7 +10,7 @@ import { UploadModal } from "howl/app/_components/main/upload";
 import { FileData } from "howl/app/types";
 import { generateDummyFiles } from "howl/app/_components/main/dummyData/dummyFiles";
 
-const USE_DUMMY_DATA = false;
+const USE_DUMMY_DATA = true;
 
 export default function MainPage() {
   const [showModal, setShowModal] = useState(false);
@@ -18,30 +18,30 @@ export default function MainPage() {
   const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(
     USE_DUMMY_DATA ? 0 : null
   );
-  const [leftPanelWidth, setLeftPanelWidth] = useState(300);
+  const [leftPanelWidth, setLeftPanelWidth] = useState(253);
   const [rightPanelWidth, setRightPanelWidth] = useState(300);
 
   const handleUpload = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
 
-  const completeUpload = () => {
+  const completeUpload = (file: File) => {
     const newFile: FileData = {
       id: files.length + 1,
-      name: 'Nueva Llamada sin Categoría',
+      name: file.name,
       date: new Date().toLocaleDateString(),
       type: 'Sin categoría',
       duration: '0 min',
       rating: 0,
       report: {
-        feedback: 'Sin contenido.',
+        feedback: 'Procesando...',
         keyTopics: [],
         emotions: [],
-        sentiment: 'Sin análisis',
+        sentiment: 'Pendiente',
         output: '',
         riskWords: '',
         summary: '',
       },
-      transcript: []
+      transcript: [],
     };
 
     setFiles((prev) => {
@@ -51,6 +51,22 @@ export default function MainPage() {
     });
 
     closeModal();
+
+    // Si quieres subir el archivo real al backend, aquí iría:
+    /*
+    const formData = new FormData();
+    formData.append("audio", file);
+
+    fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    })
+      .then(res => res.json())
+      .then(data => {
+        // Puedes actualizar el reporte o transcripción aquí
+      })
+      .catch(err => console.error("Error al subir archivo", err));
+    */
   };
 
   const getDisplayedReport = () => {
@@ -81,12 +97,12 @@ export default function MainPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-73px)] flex justify-center items-stretch pt-20 bg-gray-50 overflow-hidden">
+    <div className="h-[calc(100vh-73px)] flex justify-center items-stretch pt-16 bg-gray-50 overflow-hidden">
       {/* Historial de llamadas */}
       <ResizablePanel
         initialWidth={leftPanelWidth}
-        minWidth={200}
-        maxWidth={400}
+        minWidth={253}
+        maxWidth={300}
         side="left"
         onResize={setLeftPanelWidth}
       >

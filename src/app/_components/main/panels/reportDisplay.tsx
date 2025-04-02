@@ -48,7 +48,7 @@ export const ReportDisplay: React.FC<Props> = ({ report, transcript, title, onTi
   };
 
   return (
-    <div className="flex-1 p-6 bg-gray-50">
+    <div className="flex-1 p-6 bg-gray-50 border border-t">
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex justify-between items-start mb-4">
           <div>
