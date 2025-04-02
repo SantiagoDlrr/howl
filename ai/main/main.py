@@ -299,8 +299,7 @@ async def upload_audio(file: UploadFile = File(...)):
     You’d better. Goodbye.
     """
 
-    # (If you want actual Whisper transcription, you could do it here. 
-    #  We'll skip since the user wants a hardcoded version.)
+ 
 
     # 3) OCI Sentiment Analysis (optional)
     oci_emotion_text = "N/A"
@@ -389,7 +388,7 @@ async def upload_audio(file: UploadFile = File(...)):
     numeric_id = abs(hash(transcript_id)) % (10**6)  # or any scheme you prefer
 
     final_response = {
-        "id": numeric_id,
+        "id": transcript_id,
         "name": file.filename,
         "date": "01/04/2025",  # or dynamically: str(date.today()), etc.
         "type": "Sin categoría",

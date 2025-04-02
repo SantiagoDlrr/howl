@@ -280,7 +280,14 @@ export default function MainPage() {
         side="right"
         onResize={setRightPanelWidth}
       >
-        <AiAssistant />
+      <AiAssistant
+        selectedFileId={
+          selectedFileIndex !== null 
+            ? files[selectedFileIndex]?.id ?? null 
+            : null
+        }
+      />
+
       </ResizablePanel>
 
       {/* Modal de carga */}
