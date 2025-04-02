@@ -7,20 +7,20 @@ export const routes = [
     },
     {
         id: 1,
-        label: "Test1",
-        href: "/login",
+        label: "Dashboard",
+        href: "/dashboard",
         isSelected: false
     },
     {
         id: 2,
-        label: "Test2",
-        href: "/",
+        label: "Llamadas",
+        href: "/main",
         isSelected: false
     },
     {
         id: 3,
-        label: "Test3",
-        href: "/main",
+        label: "Logs",
+        href: "/logs",
         isSelected: false
     },
 ];

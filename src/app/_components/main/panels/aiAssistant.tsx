@@ -4,7 +4,7 @@ import { ChevronUp, User } from 'lucide-react';
 export const aiAssistant: React.FC = () => {
   return (
     <div className="bg-white flex flex-col h-full">
-      <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+      <div className="p-4 border-b border-t border-gray-200 flex justify-between items-center">
         <h2 className="text-lg font-medium text-gray-800">Asistente Howl AI</h2>
         <div className="h-3 w-3 rounded-full bg-green-400" title="Disponible"></div>
       </div>
