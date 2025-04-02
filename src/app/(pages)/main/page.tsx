@@ -94,7 +94,7 @@ export default function MainPage() {
     if (selectedFileIndex === null) return [];
     return files[selectedFileIndex]?.messages ?? [];
   };
-  
+
 
   const updateMessagesForFile = (
     fileIndex: number,
@@ -102,15 +102,15 @@ export default function MainPage() {
   ) => {
     setFiles((prev) => {
       const updated = [...prev];
-  
+
       // Solución defensiva
       if (typeof updated[fileIndex]?.id !== "number") return prev;
-  
+
       const file: FileData = {
         ...updated[fileIndex]!,
         messages: newMessages,
       };
-  
+
       updated[fileIndex] = file;
       return updated;
     });
@@ -118,7 +118,7 @@ export default function MainPage() {
 
 
   return (
-    <div className="h-[calc(100vh-73px)] flex justify-center items-stretch pt-16 bg-gray-50 overflow-hidden">
+    <div className="h-screen flex justify-center items-stretch pt-16 bg-gray-50 overflow-hidden">
       {/* Historial de llamadas */}
       <ResizablePanel
         initialWidth={leftPanelWidth}
