@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ResizablePanel } from "howl/app/_components/main/panels/resizablePanel";
 import { CallSideBar } from "howl/app/_components/main/panels/callSidebar";
-import { aiAssistant as AiAssistant } from "howl/app/_components/main/panels/aiAssistant";
+import { AiAssistant } from "howl/app/_components/main/panels/aiAssistant";
 import { EmptyState } from "howl/app/_components/main/emptyState";
 import { ReportDisplay } from "howl/app/_components/main/panels/reportDisplay";
 import { UploadModal } from "howl/app/_components/main/upload";
