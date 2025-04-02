@@ -149,7 +149,6 @@ export default function MainPage() {
           <EmptyState onUpload={handleUploadModalOpen} />
         )}
       </main>
-
       {/* Asistente de IA */}
       <ResizablePanel
         initialWidth={rightPanelWidth}
@@ -158,7 +157,6 @@ export default function MainPage() {
         side="right"
         onResize={setRightPanelWidth}
       >
-
         <AiAssistant
           selectedFileId={
             selectedFileIndex !== null ? files[selectedFileIndex]?.id ?? null : null
@@ -167,11 +165,10 @@ export default function MainPage() {
           initialMessages={getMessagesForSelectedFile()}
           onUpdateMessages={(messages) => updateMessagesForFile(selectedFileIndex!, messages)}
         />
-
       </ResizablePanel>
 
       {/* Modal de carga */}
-      {showModal && <UploadModal onClose={closeModal} onUpload={handleFileUpload} />}
+      {showModal && <UploadModal onClose={closeModal} onUpload={completeUpload} />}
     </div>
   );
 }
