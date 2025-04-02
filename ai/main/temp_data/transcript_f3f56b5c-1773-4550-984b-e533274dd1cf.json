@@ -1,7 +1,0 @@
-{
-  "id": "f3f56b5c-1773-4550-984b-e533274dd1cf",
-  "transcript_text": " Hello, this is a test.",
-  "summary_text": "No summary (error calling LLM).",
-  "emotion_text": "No document-level sentiment found",
-  "aspects": []
-}

@@ -1,6 +1,6 @@
+#temp storage.py
 import os
 import json
-import uuid
 
 # Folder to store all temporary transcript files
 TEMP_FOLDER = "temp_data"
@@ -8,21 +8,23 @@ TEMP_FOLDER = "temp_data"
 # Ensure the folder exists on startup
 os.makedirs(TEMP_FOLDER, exist_ok=True)
 
-def save_transcript(transcript_text, summary_text, emotion_text, aspects_list=None):
+def save_transcript(
+    transcript_id: str,
+    transcript_text: str,
+    report_data: dict,
+    oci_emotion: str,
+    oci_aspects: list
+):
     """
-    Saves the given transcript data to a JSON file and returns its unique ID.
-    We use a random UUID, but you could choose any unique scheme.
+    Saves the given transcript data to a JSON file using the provided transcript_id.
+    Returns the same transcript_id for convenience.
     """
-    transcript_id = str(uuid.uuid4())  # unique identifier
-    if aspects_list is None:
-        aspects_list = []
-
     data = {
         "id": transcript_id,
         "transcript_text": transcript_text,
-        "summary_text": summary_text,
-        "emotion_text": emotion_text,
-        "aspects": aspects_list
+        "report": report_data,      # Full LLM-generated report
+        "oci_emotion": oci_emotion, # Overall sentiment label from OCI
+        "oci_aspects": oci_aspects  # Aspect-level sentiment from OCI
     }
 
     file_path = os.path.join(TEMP_FOLDER, f"transcript_{transcript_id}.json")
@@ -31,9 +33,10 @@ def save_transcript(transcript_text, summary_text, emotion_text, aspects_list=No
 
     return transcript_id
 
-def load_transcript(transcript_id):
+def load_transcript(transcript_id: str):
     """
-    Retrieves a transcript from a JSON file by ID. Returns None if not found.
+    Retrieves the transcript JSON by its transcript_id.
+    Returns None if no matching file is found.
     """
     file_path = os.path.join(TEMP_FOLDER, f"transcript_{transcript_id}.json")
     if not os.path.exists(file_path):

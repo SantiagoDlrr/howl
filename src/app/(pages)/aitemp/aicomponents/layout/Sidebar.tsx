@@ -5,8 +5,9 @@ import { Call } from '../../types/types';
 interface SidebarProps {
   hasItems: boolean;
   calls: Call[];
-  selectedCallId: number | null;
-  onCallSelect: (callId: number) => void;
+  selectedCallId: number | string | null; // <--- UPDATED TYPE
+  onCallSelect: (id: number | string) => void; // Ensure this matches too
+
   onAddNewCall: () => void;
 }
 
