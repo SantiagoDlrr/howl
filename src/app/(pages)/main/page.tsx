@@ -1,18 +1,23 @@
 'use client';
 
 import { useState } from "react";
-import {ResizablePanel} from "howl/app/_components/main/panels/resizablePanel";
+import { ResizablePanel } from "howl/app/_components/main/panels/resizablePanel";
 import { CallSideBar } from "howl/app/_components/main/panels/callSidebar";
 import { aiAssistant as AiAssistant } from "howl/app/_components/main/panels/aiAssistant";
 import { EmptyState } from "howl/app/_components/main/emptyState";
-import {ReportDisplay} from "howl/app/_components/main/panels/reportDisplay";
+import { ReportDisplay } from "howl/app/_components/main/panels/reportDisplay";
 import { UploadModal } from "howl/app/_components/main/upload";
 import { FileData } from "howl/app/types";
+import { generateDummyFiles } from "howl/app/_components/main/dummyData/dummyFiles";
+
+const USE_DUMMY_DATA = false;
 
 export default function MainPage() {
   const [showModal, setShowModal] = useState(false);
-  const [files, setFiles] = useState<FileData[]>([]);
-  const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(null);
+  const [files, setFiles] = useState<FileData[]>(USE_DUMMY_DATA ? generateDummyFiles() : []);
+  const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(
+    USE_DUMMY_DATA ? 0 : null
+  );
   const [leftPanelWidth, setLeftPanelWidth] = useState(300);
   const [rightPanelWidth, setRightPanelWidth] = useState(300);
 
@@ -21,46 +26,30 @@ export default function MainPage() {
 
   const completeUpload = () => {
     const newFile: FileData = {
-        id: Date.now(),
-        name: 'Reporte de Llamada',
-        date: new Date().toLocaleDateString(),
-        type: 'Soporte Técnico',
-        duration: '7 min',
-        rating: 80,
-        report: {
-          feedback:
-            'El agente fue cordial, pero en lugar de validar el cargo inmediatamente, generó una solicitud de revisión que tomó 48 horas.',
-          keyTopics: [
-            'Facturación incorrecta y cargos inesperados.',
-            'Revisión de cargos y transparencia en la facturación.',
-          ],
-          emotions: [
-            '1. Cliente inicia con frustración leve.',
-            '2. Se mantiene cooperativo durante la llamada.',
-            '3. Finaliza con tranquilidad tras recibir una solución.',
-          ],
-          sentiment:
-            'Neutral - Positivo: La interacción comenzó con tensión pero finalizó con una percepción positiva gracias a la claridad del agente.',
-          output:
-            'El problema sigue sin resolverse completamente, pero se inició una revisión formal. Se espera respuesta en 48 horas.',
-          riskWords:
-            'El problema aún no ha sido completamente resuelto, ya que el cargo sigue reflejado en la cuenta del cliente y está pendiente la validación de su procedencia. Sin embargo, se ha iniciado una solicitud formal de revisión, lo que representa un paso hacia la solución definitiva. Se espera que en un plazo de 48 horas se brinde una respuesta final, ya sea confirmando la validez del cobro o procesando el ajuste correspondiente. En caso de que la revisión confirme que el cargo fue indebido, se procederá con un reembolso o ajuste en la facturación del cliente.',
-          summary:
-            'El cliente contactó el servicio de soporte debido a un cargo inesperado en su factura, expresando preocupación por un posible error en la activación de un servicio adicional. El agente revisó la cuenta y confirmó que el cobro correspondía a un servicio activado el mes anterior, aunque el cliente afirmó no haber solicitado dicha activación. Para resolver la situación, el agente generó una solicitud de revisión que tomará hasta 48 horas en procesarse, brindando al cliente instrucciones claras sobre el seguimiento de su caso. Aunque el problema no se resolvió de inmediato, el cliente recibió la información necesaria y finalizó la llamada con una actitud más tranquila y confiada en el proceso. Sin embargo, queda pendiente la resolución final y el ajuste en la facturación en caso de que se determine un error.',
-        },
-        transcript: [ // ← directo aquí, no dentro de report
-            { speaker: 'Alex', text: 'Good morning! This is Alex calling from Quick Tech Solutions. How are you doing today?' },
-            { speaker: 'Jamie', text: 'Hi Alex, I’m doing well, thank you. What can I do for you?' },
-            { speaker: 'Alex', text: 'That’s wonderful to hear, Jamie!...' },
-            { speaker: 'Jamie', text: 'That sounds really interesting. Can you tell me more about the features?' },
-            { speaker: 'Alex', text: 'Absolutely! For instance, our smart thermostat...' },
-          ]
-      };
+      id: files.length + 1,
+      name: 'Nueva Llamada sin Categoría',
+      date: new Date().toLocaleDateString(),
+      type: 'Sin categoría',
+      duration: '0 min',
+      rating: 0,
+      report: {
+        feedback: 'Sin contenido.',
+        keyTopics: [],
+        emotions: [],
+        sentiment: 'Sin análisis',
+        output: '',
+        riskWords: '',
+        summary: '',
+      },
+      transcript: []
+    };
 
-      // TODO: Reemplazar transcript hardcodeado con el resultado real del backend cuando se procese el audio
+    setFiles((prev) => {
+      const updated = [...prev, newFile];
+      setSelectedFileIndex(updated.length - 1);
+      return updated;
+    });
 
-    setFiles((prev) => [...prev, newFile]);
-    setSelectedFileIndex(files.length);
     closeModal();
   };
 
@@ -72,6 +61,23 @@ export default function MainPage() {
   const getDisplayedTranscript = () => {
     if (selectedFileIndex === null || !files.length) return [];
     return files[selectedFileIndex]?.transcript || [];
+  };
+
+  const updateFileName = (index: number, newName: string) => {
+    setFiles(prevFiles => {
+      const fileToUpdate = prevFiles[index];
+      if (!fileToUpdate || typeof fileToUpdate.id !== 'number') return prevFiles;
+
+      const updatedFile: FileData = {
+        ...fileToUpdate,
+        name: newName,
+      };
+
+      const updatedFiles = [...prevFiles];
+      updatedFiles[index] = updatedFile;
+
+      return updatedFiles;
+    });
   };
 
   return (
@@ -96,8 +102,11 @@ export default function MainPage() {
       <main className="flex-1 overflow-y-auto">
         {selectedFileIndex !== null && files.length > 0 ? (
           <ReportDisplay
-          report={getDisplayedReport()!}
-          transcript={getDisplayedTranscript()}
+            report={getDisplayedReport()!}
+            transcript={getDisplayedTranscript()}
+            title={files[selectedFileIndex]?.name ?? ''}
+            onTitleChange={(newTitle) => updateFileName(selectedFileIndex, newTitle)}
+            type={files[selectedFileIndex]?.type ?? ''}
           />
         ) : (
           <EmptyState onUpload={handleUpload} />
@@ -112,7 +121,7 @@ export default function MainPage() {
         side="right"
         onResize={setRightPanelWidth}
       >
-      <AiAssistant />
+        <AiAssistant />
       </ResizablePanel>
 
       {/* Modal de carga */}

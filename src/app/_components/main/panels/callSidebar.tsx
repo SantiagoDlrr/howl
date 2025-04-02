@@ -37,8 +37,9 @@ export const CallSideBar: React.FC<Props> = ({ files, selectedFileIndex, onSelec
                   selectedFileIndex === index ? 'bg-purple-100' : ''
                 }`}
               >
-                <div className="text-sm font-medium">{file.name} - {file.type}</div>
-                <div className="text-xs text-gray-500">Cliente - Categoría - {file.date}</div>
+                <div className="text-sm font-medium">{file.name}</div>
+                <div className="text-xs text-gray-500">Cliente - {file.type}</div>
+    
               </div>
             ))}
           </>
