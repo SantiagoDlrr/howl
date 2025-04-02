@@ -8,7 +8,8 @@ import { api } from "howl/trpc/react";
 import Button from "../button";
 import { emailSchema, passwordSchema } from "howl/app/utils/schemas";
 import ErrorMessage from "./errorMessage";
-import router from "next/router";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const SignUpCard = () => {
     const [selected, setSelected] = useState(1);
@@ -16,15 +17,16 @@ const SignUpCard = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-
+    const router = useRouter();
+    
     const registerMutation = api.register.register.useMutation({
         onSuccess: () => {
-            // alert("Registration successful! You can now log in.");
+            toast.success("Registro exitoso");
             router.push("/main");
         },
         onError: (error) => {
             setError(error.message);
-            alert(error.message);
+            toast.error("Error al registrar");
         },
     });
 
@@ -94,10 +96,10 @@ const SignUpCard = () => {
                 Registro
             </h1>
 
-            <div className="bg-bg-dark w-full flex flex-row items-center rounded-md p-1 mb-4">
+            {/* <div className="bg-bg-dark w-full flex flex-row items-center rounded-md p-1 mb-4">
                 <ToggleButton id={1} selected={selected === 1} setSelected={setSelected} />
                 <ToggleButton id={2} selected={selected === 2} setSelected={setSelected} />
-            </div>
+            </div> */}
             <form onSubmit={handleRegister} className="flex flex-col items-center w-full">
                 {error && <ErrorMessage message={error} />}
                 <div className="flex flex-col gap-2 w-full pb-10">

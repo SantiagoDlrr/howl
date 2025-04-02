@@ -8,6 +8,9 @@ import { EmptyState } from "howl/app/_components/main/emptyState";
 import { ReportDisplay } from "howl/app/_components/main/panels/reportDisplay";
 import { UploadModal } from "howl/app/_components/main/upload";
 import { FileData } from "howl/app/types";
+import { auth } from "@/server/auth";
+import RestrictedAccess from "@/app/_components/auth/restrictedAccess";
+import { useSession } from "next-auth/react";
 // import { generateDummyFiles } from "howl/app/_components/main/dummyData/dummyFiles"; // We can remove or keep
 
 export default function MainPage() {
@@ -22,6 +25,13 @@ export default function MainPage() {
 
   const handleUploadModalOpen = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
+  const { data: session, status } = useSession();
+    const logged = status === "authenticated";
+  if (!session?.user) {
+    return (
+      <RestrictedAccess />
+    )
+  }
 
   /**
    * Actually performs the POST to the backend.

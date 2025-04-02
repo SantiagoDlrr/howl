@@ -19,11 +19,11 @@ const LoginWith = ({ login }: { login?: boolean }) => {
             </div>
 
             <div className="flex flex-row justify-center gap-3 w-full">
-                <button onClick={handleSignIn} className="w-full flex flex-row items-center justify-center gap-2 p-1 border border- rounded-md ">
+                <button type="button" onClick={handleSignIn} className="w-full flex flex-row items-center justify-center gap-2 p-1 border border- rounded-md ">
                     <Image src="/images/msoft.png" alt="Microsoft Logo" width={20} height={20} />
                     <div className="text-text-light text-sm">Microsoft</div>
                 </button>
-                <button onClick={handleSignIn} className="w-full flex flex-row items-center justify-center gap-2 p-1 border border- rounded-md ">
+                <button type="button" onClick={handleSignIn} className="w-full flex flex-row items-center justify-center gap-2 p-1 border border- rounded-md ">
                     <Image src="/images/google.webp" alt="Microsoft Logo" width={20} height={20} />
                     <div className="text-text-light text-sm">Google</div>
                 </button>
