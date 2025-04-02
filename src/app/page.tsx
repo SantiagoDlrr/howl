@@ -4,8 +4,8 @@ import { api, HydrateClient } from "howl/trpc/server"
 import LandingSection from "./_components/landing/landingSection"
 
 export default async function Home() {
-  const hello = await api.post.hello({ text: "from tRPC" })
-  const session = await auth()
+  // const hello = await api.post.hello({ text: "from tRPC" });
+  const session = await auth();
 
   if (session?.user) {
     void api.post.getLatest.prefetch()

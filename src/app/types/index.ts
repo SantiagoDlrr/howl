@@ -17,9 +17,13 @@ export interface TranscriptEntry {
     id: number;
     name: string;
     date: string;
-    type: string;
+    type: string; 
     duration: string;
     rating: number;
     report: Report;
     transcript?: TranscriptEntry[]; 
+    messages?: {
+      role: "user" | "assistant";
+      text: string;
+    }[];
   }

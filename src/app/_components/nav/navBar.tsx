@@ -7,6 +7,8 @@ import LogoElement from "./logoElement";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import NavDropdown from "./navDropDown";
+import Link from "next/link";
+
 
 const NavBar = () => {
     const [selected, setSelected] = useState(0);
@@ -17,7 +19,9 @@ const NavBar = () => {
         <nav className="fixed w-full flex justify-between items-center pl-6 pr-8 py-2 bg-bg">
             {logged ? (
                 <div className="w-full flex justify-between items-center ">
-                    <LogoElement />
+                    <Link href="/" >
+                        <LogoElement />
+                    </Link>
                     <div className="flex flex-row gap-6">
                         {routes.map((route, index) => (
                             <NavElement id={route.id} key={index} href={route.href} label={route.label} isSelected={route.id === selected} setSelected={setSelected} />
@@ -26,7 +30,9 @@ const NavBar = () => {
                     <NavDropdown session={session} />
                 </div>
             ) : (
-                <LogoElement />
+                <Link href="/" >
+                    <LogoElement />
+                </Link>
             )}
         </nav>
     )
