@@ -96,9 +96,9 @@ export const ReportDisplay: React.FC<Props> = ({ report, transcript, title, onTi
             <span className="bg-blue-100 text-blue-800 font-medium text-xs px-3 py-1 rounded-full">
               {reportType}
             </span>
-            <span className="bg-green-100 text-green-800 font-medium text-xs px-3 py-1 rounded-full">
+            <span className="bg-red-100 text-red-800 font-medium text-xs px-3 py-1 rounded-full">
              {/*Copia lo de arriba del type */}
-              Positive
+              Negative
             </span>
           </div>
         </div>
