@@ -96,6 +96,33 @@ export default function MainPage() {
     });
   };
 
+  const getMessagesForSelectedFile = () => {
+    if (selectedFileIndex === null) return [];
+    return files[selectedFileIndex]?.messages ?? [];
+  };
+  
+
+  const updateMessagesForFile = (
+    fileIndex: number,
+    newMessages: { role: "user" | "assistant"; text: string }[]
+  ) => {
+    setFiles((prev) => {
+      const updated = [...prev];
+  
+      // Solución defensiva
+      if (typeof updated[fileIndex]?.id !== "number") return prev;
+  
+      const file: FileData = {
+        ...updated[fileIndex]!,
+        messages: newMessages,
+      };
+  
+      updated[fileIndex] = file;
+      return updated;
+    });
+  };
+
+
   return (
     <div className="h-[calc(100vh-73px)] flex justify-center items-stretch pt-16 bg-gray-50 overflow-hidden">
       {/* Historial de llamadas */}
@@ -137,7 +164,14 @@ export default function MainPage() {
         side="right"
         onResize={setRightPanelWidth}
       >
-        <AiAssistant />
+        <AiAssistant
+          selectedFileId={
+            selectedFileIndex !== null ? files[selectedFileIndex]?.id ?? null : null
+          }
+          files={files}
+          initialMessages={getMessagesForSelectedFile()}
+          onUpdateMessages={(messages) => updateMessagesForFile(selectedFileIndex!, messages)}
+        />
       </ResizablePanel>
 
       {/* Modal de carga */}
