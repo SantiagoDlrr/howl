@@ -11,9 +11,9 @@ export const env = createEnv({
       process.env.NODE_ENV === "production"
         ? z.string()
         : z.string().optional(),
-    AZURE_AD_CLIENT_ID: z.string(),
-    AZURE_AD_CLIENT_SECRET: z.string(),
-    AZURE_AD_TENANT_ID: z.string(),
+    // AZURE_AD_CLIENT_ID: z.string(),
+    // AZURE_AD_CLIENT_SECRET: z.string(),
+    // AZURE_AD_TENANT_ID: z.string(),
     AUTH_MICROSOFT_ENTRA_ID_ID: z.string(),
     AUTH_MICROSOFT_ENTRA_ID_SECRET: z.string(),
     AUTH_MICROSOFT_ENTRA_ID_ISSUER: z.string(),
@@ -38,9 +38,9 @@ export const env = createEnv({
    */
   runtimeEnv: {
     AUTH_SECRET: process.env.AUTH_SECRET,
-    AZURE_AD_CLIENT_ID: process.env.AZURE_AD_CLIENT_ID,
-    AZURE_AD_CLIENT_SECRET: process.env.AZURE_AD_CLIENT_SECRET,
-    AZURE_AD_TENANT_ID: process.env.AZURE_AD_TENANT_ID,
+    // AZURE_AD_CLIENT_ID: process.env.AZURE_AD_CLIENT_ID,
+    // AZURE_AD_CLIENT_SECRET: process.env.AZURE_AD_CLIENT_SECRET,
+    // AZURE_AD_TENANT_ID: process.env.AZURE_AD_TENANT_ID,
     AUTH_MICROSOFT_ENTRA_ID_ID: process.env.AUTH_MICROSOFT_ENTRA_ID_ID,
     AUTH_MICROSOFT_ENTRA_ID_SECRET: process.env.AUTH_MICROSOFT_ENTRA_ID_SECRET,
     AUTH_MICROSOFT_ENTRA_ID_ISSUER: process.env.AUTH_MICROSOFT_ENTRA_ID_ISSUER,
