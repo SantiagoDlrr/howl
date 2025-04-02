@@ -52,6 +52,7 @@ model User {
   emailVerified DateTime?
   image         String?
   microsoftId   String?
+  hashedPassword String?
   accounts      Account[]
   posts         Post[]
   sessions      Session[]
