@@ -49,6 +49,7 @@ const LoginCard = () => {
             console.log("success", res);
             resetValues()
             toast.success("Login successful");
+            router.push("/main");
         }
     };
 

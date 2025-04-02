@@ -7,7 +7,7 @@ import Button from "./_components/button";
 import LandingSection from "./_components/landing/landingSection";
 
 export default async function Home() {
-  const hello = await api.post.hello({ text: "from tRPC" });
+  // const hello = await api.post.hello({ text: "from tRPC" });
   const session = await auth();
 
   if (session?.user) {
