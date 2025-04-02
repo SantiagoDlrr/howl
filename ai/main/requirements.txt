@@ -10,3 +10,4 @@ aisuite
 docstring_parser
 oci
 sse-starlette
+google-generativeaipip
