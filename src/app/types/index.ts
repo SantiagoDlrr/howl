@@ -22,4 +22,8 @@ export interface TranscriptEntry {
     rating: number;
     report: Report;
     transcript?: TranscriptEntry[]; 
+    messages?: {
+      role: "user" | "assistant";
+      text: string;
+    }[];
   }

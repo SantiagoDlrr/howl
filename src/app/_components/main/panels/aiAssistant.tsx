@@ -2,44 +2,90 @@ import React, { useRef, useState, useEffect } from "react";
 import { ChevronUp, User } from "lucide-react";
 import { askDeepseek } from "@/app/utils/deepseek";
 import { ChatMessage } from "../chatMessage";
-import { FileData } from "@/app/types";
-import { TranscriptEntry } from "@/app/types";
-import { Report } from "@/app/types";
+import type { FileData } from "@/app/types";
 
 interface Message {
   role: "user" | "assistant";
   text: string;
 }
+
 interface Props {
   selectedFileId: number | null;
   files: FileData[];
+  initialMessages: Message[];
+  onUpdateMessages: (messages: Message[]) => void;
 }
 
-export const AiAssistant: React.FC<Props> = ({ selectedFileId, files }) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+export const AiAssistant: React.FC<Props> = ({ selectedFileId, files, initialMessages, onUpdateMessages }) => {
+  const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const selectedFile = files.find((f) => f.id === selectedFileId);
+  const report = selectedFile?.report ?? null;
+  const transcript = selectedFile?.transcript ?? [];
+
+  // Auto-resize textarea based on content
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "38px"; // Reset height
+      textareaRef.current.style.height = `${Math.min(100, textareaRef.current.scrollHeight)}px`;
+    }
+  }, [input]);
+
+  function generateContext(report: FileData["report"] | null, transcript: FileData["transcript"] = []): string {
+    return `
+Eres un asistente de inteligencia artificial que apoya a empleados de servicio al cliente a analizar sus propias llamadas con clientes.
+
+Tu objetivo es ayudar al agente a identificar patrones, emociones, áreas de mejora y oportunidades, basándote en el siguiente análisis automatizado. Responde siempre de forma **breve, clara y enfocada**, evitando respuestas largas o repetitivas.
+
+📋 **Resumen del Análisis de Llamada:**
+- 🗣️ Feedback general: ${report?.feedback ?? "No disponible"}
+- 🧹 Temas clave tratados: ${(report?.keyTopics ?? []).join(", ") || "Ninguno"}
+- 😊 Emociones predominantes: ${(report?.emotions ?? []).join(", ") || "No identificadas"}
+- ❤️ Sentimiento global de la llamada: ${report?.sentiment ?? "No disponible"}
+- ⚠️ Palabras de riesgo detectadas: ${report?.riskWords || "Ninguna"}
+- 🧠 Interpretación automática (output): ${report?.output || "No disponible"}
+- 🗘️ Resumen general de la llamada: ${report?.summary || "No disponible"}
+
+🗃 **Fragmentos relevantes de la transcripción:**
+${transcript.map((t) => `- ${t.speaker ?? "Desconocido"}: ${t.text}`).join("\n").slice(0, 2000)}
+
+Responde únicamente con base en esta información. Si el usuario te pregunta algo fuera de este contexto, indícale amablemente que solo puedes apoyar con el análisis de la llamada. Sé conciso y profesional.
+    `.trim();
+  }
 
   const handleSubmit = async () => {
     if (!input.trim()) return;
-  
+
     const newMessages: Message[] = [...messages, { role: "user", text: input }];
     setMessages(newMessages);
+    onUpdateMessages(newMessages);
     setInput("");
     setLoading(true);
-  
+
     try {
       const contextText = generateContext(report, transcript);
-      const reply = await askDeepseek(input, newMessages, contextText);      setMessages((prev) => [...prev, { role: "assistant", text: reply }]);
+      const reply = await askDeepseek(input, newMessages, contextText);
+
+      if (!reply || reply.trim() === "") throw new Error("Respuesta vacía");
+
+      const updatedMessages: Message[] = [...newMessages, { role: "assistant", text: reply }];
+      setMessages(updatedMessages);
+      onUpdateMessages(updatedMessages);
     } catch (err) {
-      setMessages((prev) => [
-        ...prev,
+      console.error("🧨 Error al procesar respuesta:", err);
+      const fallback: Message[] = [
+        ...newMessages,
         {
           role: "assistant",
           text: "Ocurrió un error al consultar la IA 😓",
         },
-      ]);
+      ];
+      setMessages(fallback);
+      onUpdateMessages(fallback);
     } finally {
       setLoading(false);
     }
@@ -49,36 +95,9 @@ export const AiAssistant: React.FC<Props> = ({ selectedFileId, files }) => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-
-  const selectedFile = files.find((f) => f.id === selectedFileId);
-  const report = selectedFile?.report ?? null;
-  const transcript = selectedFile?.transcript ?? [];
-
-  function generateContext(report: Report | null, transcript: TranscriptEntry[]): string {
-    return `
-  Eres un asistente de inteligencia artificial que apoya a empleados de servicio al cliente a analizar sus propias llamadas con clientes.
-  
-  Tu objetivo es ayudar al agente a identificar patrones, emociones, áreas de mejora y oportunidades, basándote en el siguiente análisis automatizado. Responde siempre de forma **breve, clara y enfocada**, evitando respuestas largas o repetitivas.
-  
-  📋 **Resumen del Análisis de Llamada:**
-  - 🗣️ Feedback general: ${report?.feedback ?? "No disponible"}
-  - 🧩 Temas clave tratados: ${(report?.keyTopics ?? []).join(", ") || "Ninguno"}
-  - 😊 Emociones predominantes: ${(report?.emotions ?? []).join(", ") || "No identificadas"}
-  - ❤️ Sentimiento global de la llamada: ${report?.sentiment ?? "No disponible"}
-  - ⚠️ Palabras de riesgo detectadas: ${report?.riskWords || "Ninguna"}
-  - 🧠 Interpretación automática (output): ${report?.output || "No disponible"}
-  - 📝 Resumen general de la llamada: ${report?.summary || "No disponible"}
-  
-  🗃 **Fragmentos relevantes de la transcripción:**
-  ${transcript
-    .map((t) => `- ${t.speaker ?? "Desconocido"}: ${t.text}`)
-    .join("\n")
-    .slice(0, 2000)}
-  
-  Responde únicamente con base en esta información. Si el usuario te pregunta algo fuera de este contexto, indícale amablemente que solo puedes apoyar con el análisis de la llamada. Sé conciso y profesional.
-  `.trim();
-  }
-  
+  useEffect(() => {
+    setMessages(initialMessages);
+  }, [initialMessages]);
 
   return (
     <div className="bg-white flex flex-col h-full overflow-hidden">
@@ -111,18 +130,24 @@ export const AiAssistant: React.FC<Props> = ({ selectedFileId, files }) => {
       </div>
 
       <div className="p-4 border-t border-gray-200">
-        <div className="relative">
-          <input
-            type="text"
+        <div className="relative flex items-end">
+          <textarea
+            ref={textareaRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmit();
+              }
+            }}
             placeholder="Pregúntame algo..."
-            className="w-full p-3 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="w-full p-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm resize-none min-h-[38px] max-h-[100px] overflow-y-auto"
+            rows={1}
           />
           <button
             onClick={handleSubmit}
-            className="absolute inset-y-0 right-0 flex items-center px-3 text-purple-500"
+            className="absolute right-2 bottom-2 flex items-center justify-center text-purple-500"
           >
             <ChevronUp className="w-5 h-5" />
           </button>

@@ -1,15 +1,15 @@
-// /pages/api/ask.ts
+// api/ask.ts
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!, // o OPENROUTER_API_KEY si lo cambiaste
+  apiKey: process.env.OPENAI_API_KEY!,
   baseURL: "https://openrouter.ai/api/v1",
   defaultHeaders: {
     "HTTP-Referer": "https://tusitio.com",
     "X-Title": "Howl AI",
   },
-});
+}); 
 
 export async function POST(req: NextRequest) {
   try {
