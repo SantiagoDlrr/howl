@@ -1,4 +1,3 @@
-#temp storage.py
 import os
 import json
 
