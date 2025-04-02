@@ -44,3 +44,11 @@ yarn-error.log*
 
 # idea files
 .idea
+
+
+# cypress
+/cypress/videos
+/cypress/screenshots
+
+a00835462@tec.mx_2025-03-12T22_39_39.019Z.pem
+**/__pycache__/

@@ -3,33 +3,19 @@ import { Upload, X } from 'lucide-react';
 
 interface Props {
   onClose: () => void;
-  onUpload: (file: File) => void;
+  onUpload: (file: File) => void; // The parent will handle the actual POST request
 }
 
 export const UploadModal: React.FC<Props> = ({ onClose, onUpload }) => {
   const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      simulateUpload(file);
-    }
-  };
+    if (!file) return;
 
-  const simulateUpload = (file: File) => {
     setUploading(true);
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += 5;
-      setUploadProgress(progress);
-      if (progress >= 100) {
-        clearInterval(interval);
-        setTimeout(() => {
-          onUpload(file); // Aquí se envía el archivo real
-        }, 500);
-      }
-    }, 100);
+    // Pass the file to parent. The parent will POST it to the backend.
+    onUpload(file);
   };
 
   return (
@@ -54,7 +40,10 @@ export const UploadModal: React.FC<Props> = ({ onClose, onUpload }) => {
                 className="hidden"
                 id="fileInput"
               />
-              <label htmlFor="fileInput" className="py-2 px-4 bg-purple-500 text-white rounded-md hover:bg-purple-600 cursor-pointer">
+              <label
+                htmlFor="fileInput"
+                className="py-2 px-4 bg-purple-500 text-white rounded-md hover:bg-purple-600 cursor-pointer"
+              >
                 Seleccionar Archivo
               </label>
             </div>
@@ -63,12 +52,17 @@ export const UploadModal: React.FC<Props> = ({ onClose, onUpload }) => {
           <div>
             <p className="text-gray-700 mb-2">Cargando archivo...</p>
             <div className="w-full bg-gray-200 rounded-full h-2.5">
+              {/* 
+                Real progress is trickier without XHR. If you want a real progress bar, 
+                you can implement it with onUploadProgress or a dedicated solution. 
+                Here, we’ll just show a simple “indeterminate” bar.
+              */}
               <div
                 className="bg-purple-500 h-2.5 rounded-full transition-all duration-300"
-                style={{ width: `${uploadProgress}%` }}
+                style={{ width: `100%` }}
               ></div>
             </div>
-            <p className="text-right text-sm text-gray-500 mt-1">{uploadProgress}%</p>
+            <p className="text-right text-sm text-gray-500 mt-1">Procesando...</p>
           </div>
         )}
       </div>
