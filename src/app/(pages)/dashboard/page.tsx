@@ -1,4 +1,4 @@
-import LookerDashboard from "@/app/_components/dashboard/LookerDashboard";
+import LookerDashboard from "@/app/_components/dashboard/lookerDashboard";
 
 export default function DashboardPage() {
   return (
