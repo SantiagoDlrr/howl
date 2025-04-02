@@ -1,66 +1,122 @@
-import SignUpCard from "howl/app/_components/auth/signupCard";
-import Button from "../../_components/button"
-import Image from "next/image"
+'use client';
 
-export default function mainPage (){
+import { useState } from "react";
+import {ResizablePanel} from "howl/app/_components/main/panels/resizablePanel";
+import { CallSideBar } from "howl/app/_components/main/panels/callSidebar";
+import { aiAssistant as AiAssistant } from "howl/app/_components/main/panels/aiAssistant";
+import { EmptyState } from "howl/app/_components/main/emptyState";
+import {ReportDisplay} from "howl/app/_components/main/panels/reportDisplay";
+import { UploadModal } from "howl/app/_components/main/upload";
+import { FileData } from "howl/app/types";
 
-    return(
-        <div className="h-[calc(100vh-73px)] w-[1512px] flex justify-center items-stretch pt-20">
+export default function MainPage() {
+  const [showModal, setShowModal] = useState(false);
+  const [files, setFiles] = useState<FileData[]>([]);
+  const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(null);
+  const [leftPanelWidth, setLeftPanelWidth] = useState(300);
+  const [rightPanelWidth, setRightPanelWidth] = useState(300);
 
-            <div className= "flex flex-col flex-[2.1]">
-               
-               <div className="border-black border-opacity-50 border-t border-b border-r-0 border-2 p-3">
-                Historial de Llamadas
-               </div>
+  const handleUpload = () => setShowModal(true);
+  const closeModal = () => setShowModal(false);
 
+  const completeUpload = () => {
+    const newFile: FileData = {
+        id: Date.now(),
+        name: 'Reporte de Llamada',
+        date: new Date().toLocaleDateString(),
+        type: 'Soporte Técnico',
+        duration: '7 min',
+        rating: 80,
+        report: {
+          feedback:
+            'El agente fue cordial, pero en lugar de validar el cargo inmediatamente, generó una solicitud de revisión que tomó 48 horas.',
+          keyTopics: [
+            'Facturación incorrecta y cargos inesperados.',
+            'Revisión de cargos y transparencia en la facturación.',
+          ],
+          emotions: [
+            '1. Cliente inicia con frustración leve.',
+            '2. Se mantiene cooperativo durante la llamada.',
+            '3. Finaliza con tranquilidad tras recibir una solución.',
+          ],
+          sentiment:
+            'Neutral - Positivo: La interacción comenzó con tensión pero finalizó con una percepción positiva gracias a la claridad del agente.',
+          output:
+            'El problema sigue sin resolverse completamente, pero se inició una revisión formal. Se espera respuesta en 48 horas.',
+          riskWords:
+            'El problema aún no ha sido completamente resuelto, ya que el cargo sigue reflejado en la cuenta del cliente y está pendiente la validación de su procedencia. Sin embargo, se ha iniciado una solicitud formal de revisión, lo que representa un paso hacia la solución definitiva. Se espera que en un plazo de 48 horas se brinde una respuesta final, ya sea confirmando la validez del cobro o procesando el ajuste correspondiente. En caso de que la revisión confirme que el cargo fue indebido, se procederá con un reembolso o ajuste en la facturación del cliente.',
+          summary:
+            'El cliente contactó el servicio de soporte debido a un cargo inesperado en su factura, expresando preocupación por un posible error en la activación de un servicio adicional. El agente revisó la cuenta y confirmó que el cobro correspondía a un servicio activado el mes anterior, aunque el cliente afirmó no haber solicitado dicha activación. Para resolver la situación, el agente generó una solicitud de revisión que tomará hasta 48 horas en procesarse, brindando al cliente instrucciones claras sobre el seguimiento de su caso. Aunque el problema no se resolvió de inmediato, el cliente recibió la información necesaria y finalizó la llamada con una actitud más tranquila y confiada en el proceso. Sin embargo, queda pendiente la resolución final y el ajuste en la facturación en caso de que se determine un error.',
+        },
+        transcript: [ // ← directo aquí, no dentro de report
+            { speaker: 'Alex', text: 'Good morning! This is Alex calling from Quick Tech Solutions. How are you doing today?' },
+            { speaker: 'Jamie', text: 'Hi Alex, I’m doing well, thank you. What can I do for you?' },
+            { speaker: 'Alex', text: 'That’s wonderful to hear, Jamie!...' },
+            { speaker: 'Jamie', text: 'That sounds really interesting. Can you tell me more about the features?' },
+            { speaker: 'Alex', text: 'Absolutely! For instance, our smart thermostat...' },
+          ]
+      };
 
-               <div className="flex flex-col justify-between flex-1 p-6 ">
+      // TODO: Reemplazar transcript hardcodeado con el resultado real del backend cuando se procese el audio
 
-                <div>
-                    <Button label="+ Agregar Nueva Llamada" xl secondary />
+    setFiles((prev) => [...prev, newFile]);
+    setSelectedFileIndex(files.length);
+    closeModal();
+  };
 
+  const getDisplayedReport = () => {
+    if (selectedFileIndex === null || !files.length) return null;
+    return files[selectedFileIndex]?.report;
+  };
 
-                    <div className="mt-6 mb-3 font-bold">
-                        Hoy
-                    </div>
+  const getDisplayedTranscript = () => {
+    if (selectedFileIndex === null || !files.length) return [];
+    return files[selectedFileIndex]?.transcript || [];
+  };
 
-                    <div className="bg-purple-400 bg-opacity-30 rounded p-2">
-                        Neoris - venta - ene 16
-                    </div>
+  return (
+    <div className="h-[calc(100vh-73px)] flex justify-center items-stretch pt-20 bg-gray-50 overflow-hidden">
+      {/* Historial de llamadas */}
+      <ResizablePanel
+        initialWidth={leftPanelWidth}
+        minWidth={200}
+        maxWidth={400}
+        side="left"
+        onResize={setLeftPanelWidth}
+      >
+        <CallSideBar
+          files={files}
+          selectedFileIndex={selectedFileIndex}
+          onSelectFile={setSelectedFileIndex}
+          onAddNewFile={handleUpload}
+        />
+      </ResizablePanel>
 
-                    <div className="p-2 mt-2">
-                        Cliente - Categoria - Fecha 
-                    </div>
+      {/* Área principal */}
+      <main className="flex-1 overflow-y-auto">
+        {selectedFileIndex !== null && files.length > 0 ? (
+          <ReportDisplay
+          report={getDisplayedReport()!}
+          transcript={getDisplayedTranscript()}
+          />
+        ) : (
+          <EmptyState onUpload={handleUpload} />
+        )}
+      </main>
 
-                </div>
+      {/* Asistente de IA */}
+      <ResizablePanel
+        initialWidth={rightPanelWidth}
+        minWidth={200}
+        maxWidth={400}
+        side="right"
+        onResize={setRightPanelWidth}
+      >
+      <AiAssistant />
+      </ResizablePanel>
 
-                <Button label="Guardar llamadas en el Log" xl></Button>
-
-               </div>
-
-            </div>
-
-             
-            <div className="flex flex-col flex-[5.8] h-full border-black border-opacity-50 border-t border-b-0 border-r border-l border-2">
-
-                <div className="border-black border-opacity-50 border-t-0 border-b border-r-0 border-l-0 border-2 p-3">
-                Análisis de Llamada
-               </div>
-
-               <div className="flex justify-center items-center flex-1">
-                    <div className="flex flex-col items-center border-black border-opacity-50 border-dashed border-2 py-20 px-24">
-                        <Image src="/images/uploadc.png" alt="Microsoft Logo" width={75} height={50} />
-                        <h1 className="text-4xl font-bold text-primary">
-                            Analiza y Transcribe tu archivo
-                        </h1>
-                        <p className="text-2xl py-3">Arrastra o haz click para cargar</p>
-                    </div>
-               </div>
-        
-            </div>
-            
-            <div className="border-black border-2 border-opacity-30 flex flex-[2.1]">Ai Asistant</div>
-
-        </div>
-    );
+      {/* Modal de carga */}
+      {showModal && <UploadModal onClose={closeModal} onUpload={completeUpload} />}
+    </div>
+  );
 }
