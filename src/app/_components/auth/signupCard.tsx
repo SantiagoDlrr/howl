@@ -8,6 +8,7 @@ import { api } from "howl/trpc/react";
 import Button from "../button";
 import { emailSchema, passwordSchema } from "howl/app/utils/schemas";
 import ErrorMessage from "./errorMessage";
+import router from "next/router";
 
 const SignUpCard = () => {
     const [selected, setSelected] = useState(1);
@@ -18,7 +19,8 @@ const SignUpCard = () => {
 
     const registerMutation = api.register.register.useMutation({
         onSuccess: () => {
-            alert("Registration successful! You can now log in.");
+            // alert("Registration successful! You can now log in.");
+            router.push("/main");
         },
         onError: (error) => {
             setError(error.message);
