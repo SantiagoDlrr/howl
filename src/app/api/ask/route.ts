@@ -2,21 +2,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
-// Asegúrate que esta variable esté definida en .env.local SIN el prefijo NEXT_PUBLIC
 const openai = new OpenAI({
-  apiKey: process.env.OPENROUTER_API_KEY!,
+  apiKey: process.env.OPENAI_API_KEY!, // o OPENROUTER_API_KEY si lo cambiaste
   baseURL: "https://openrouter.ai/api/v1",
   defaultHeaders: {
-    "HTTP-Referer": "https://tusitio.com", // reemplaza con tu dominio
-    "X-Title": "Howl AI", // título para rankings en OpenRouter
+    "HTTP-Referer": "https://tusitio.com",
+    "X-Title": "Howl AI",
   },
 });
 
 export async function POST(req: NextRequest) {
   try {
-    // Leer y validar el cuerpo
     const body = await req.json();
-    const messages = body.messages;
+    const { messages } = body;
 
     if (!messages || !Array.isArray(messages)) {
       return NextResponse.json(
@@ -25,10 +23,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log("🔍 Mensajes recibidos:", JSON.stringify(messages, null, 2));
-    console.log("🔑 API Key activa:", !!process.env.OPENROUTER_API_KEY);
+    console.log("🧾 Mensajes enviados a Deepseek:", JSON.stringify(messages, null, 2));
 
-    // Llamar a la API de OpenRouter con modelo Deepseek
     const completion = await openai.chat.completions.create({
       model: "deepseek/deepseek-r1:free",
       messages,
@@ -37,6 +33,7 @@ export async function POST(req: NextRequest) {
     const content = completion.choices?.[0]?.message?.content;
 
     if (!content) {
+      console.warn("⚠️ No se recibió content de Deepseek", completion);
       throw new Error("No se recibió contenido de respuesta.");
     }
 

@@ -2,13 +2,20 @@ import React, { useRef, useState, useEffect } from "react";
 import { ChevronUp, User } from "lucide-react";
 import { askDeepseek } from "@/app/utils/deepseek";
 import { ChatMessage } from "../chatMessage";
+import { FileData } from "@/app/types";
+import { TranscriptEntry } from "@/app/types";
+import { Report } from "@/app/types";
 
 interface Message {
   role: "user" | "assistant";
   text: string;
 }
+interface Props {
+  selectedFileId: number | null;
+  files: FileData[];
+}
 
-export const AiAssistant: React.FC = () => {
+export const AiAssistant: React.FC<Props> = ({ selectedFileId, files }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -23,8 +30,8 @@ export const AiAssistant: React.FC = () => {
     setLoading(true);
   
     try {
-      const reply = await askDeepseek(input, newMessages);
-      setMessages((prev) => [...prev, { role: "assistant", text: reply }]);
+      const contextText = generateContext(report, transcript);
+      const reply = await askDeepseek(input, newMessages, contextText);      setMessages((prev) => [...prev, { role: "assistant", text: reply }]);
     } catch (err) {
       setMessages((prev) => [
         ...prev,
@@ -41,6 +48,37 @@ export const AiAssistant: React.FC = () => {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
+
+
+  const selectedFile = files.find((f) => f.id === selectedFileId);
+  const report = selectedFile?.report ?? null;
+  const transcript = selectedFile?.transcript ?? [];
+
+  function generateContext(report: Report | null, transcript: TranscriptEntry[]): string {
+    return `
+  Eres un asistente de inteligencia artificial que apoya a empleados de servicio al cliente a analizar sus propias llamadas con clientes.
+  
+  Tu objetivo es ayudar al agente a identificar patrones, emociones, áreas de mejora y oportunidades, basándote en el siguiente análisis automatizado. Responde siempre de forma **breve, clara y enfocada**, evitando respuestas largas o repetitivas.
+  
+  📋 **Resumen del Análisis de Llamada:**
+  - 🗣️ Feedback general: ${report?.feedback ?? "No disponible"}
+  - 🧩 Temas clave tratados: ${(report?.keyTopics ?? []).join(", ") || "Ninguno"}
+  - 😊 Emociones predominantes: ${(report?.emotions ?? []).join(", ") || "No identificadas"}
+  - ❤️ Sentimiento global de la llamada: ${report?.sentiment ?? "No disponible"}
+  - ⚠️ Palabras de riesgo detectadas: ${report?.riskWords || "Ninguna"}
+  - 🧠 Interpretación automática (output): ${report?.output || "No disponible"}
+  - 📝 Resumen general de la llamada: ${report?.summary || "No disponible"}
+  
+  🗃 **Fragmentos relevantes de la transcripción:**
+  ${transcript
+    .map((t) => `- ${t.speaker ?? "Desconocido"}: ${t.text}`)
+    .join("\n")
+    .slice(0, 2000)}
+  
+  Responde únicamente con base en esta información. Si el usuario te pregunta algo fuera de este contexto, indícale amablemente que solo puedes apoyar con el análisis de la llamada. Sé conciso y profesional.
+  `.trim();
+  }
+  
 
   return (
     <div className="bg-white flex flex-col h-full overflow-hidden">
