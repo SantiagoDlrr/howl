@@ -63,7 +63,7 @@ const LoginCard = () => {
                 {error && <ErrorMessage message={error} />}
                 <div className="flex flex-col gap-4 w-full">
                     <FormField type="email" label="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                    <FormField label="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <FormField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
                 <div className="flex flex-col pt-10">
 
