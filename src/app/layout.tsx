@@ -19,7 +19,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${GeistSans.variable} font-main w-full font-thin`}>
-      <body className="bg-bg text-text">
+      <body suppressHydrationWarning className="bg-bg text-text">
         <Toaster />
         <SessionProvider>
           <NavBar />

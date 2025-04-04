@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+'use client'
+
+import React, { useState, useEffect} from 'react';
 import {
   FileText,
   MessageSquare,
@@ -12,27 +14,41 @@ import {
 } from 'lucide-react';
 import { Report, TranscriptEntry } from 'howl/app/types';
 import { ReportSection } from '../reportSection';
+import TranscriptSection from '../transcriptSection';
 
 interface Props {
   report: Report;
   transcript: TranscriptEntry[];
+  title: string;
+  onTitleChange: (newTitle: string) => void;
+  type: string;
 }
-
-export const ReportDisplay: React.FC<Props> = ({ report, transcript }) => {
+export const ReportDisplay: React.FC<Props> = ({ report, transcript, title, onTitleChange, type }) => {
   const [activeTab, setActiveTab] = useState<'report' | 'transcript'>('report');
   const [isEditingTitle, setIsEditingTitle] = useState(false);
-  const [reportTitle, setReportTitle] = useState('Facturación Incorrecta');
+  const [reportTitle, setReportTitle] = useState(title);
+
+  useEffect(() => {
+    setReportTitle(title);
+  }, [title]);
+
+  const [reportType, setReportType] = useState(type);
+
+  useEffect(() => {
+    setReportType(type);
+  }, [type]);
+
+  const handleTitleSave = () => {
+    setIsEditingTitle(false);
+    onTitleChange(reportTitle);
+  };
 
   const handleTitleEdit = () => {
     setIsEditingTitle(true);
   };
 
-  const handleTitleSave = () => {
-    setIsEditingTitle(false);
-  };
-
   return (
-    <div className="flex-1 p-6 bg-gray-50">
+    <div className="flex-1 p-6 bg-gray-50 border border-t">
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex justify-between items-start mb-4">
           <div>
@@ -78,9 +94,10 @@ export const ReportDisplay: React.FC<Props> = ({ report, transcript }) => {
 
           <div className="flex space-x-2">
             <span className="bg-blue-100 text-blue-800 font-medium text-xs px-3 py-1 rounded-full">
-              Soporte Técnico
+              {reportType}
             </span>
             <span className="bg-green-100 text-green-800 font-medium text-xs px-3 py-1 rounded-full">
+             {/*Copia lo de arriba del type */}
               Positive
             </span>
           </div>
@@ -150,18 +167,7 @@ export const ReportDisplay: React.FC<Props> = ({ report, transcript }) => {
             />
           </div>
         ) : (
-          <div className="p-4 text-sm text-gray-800 font-mono whitespace-pre-wrap space-y-4">
-            {transcript.length ? (
-              transcript.map((entry, index) => (
-                <div key={index}>
-                  <div className="font-semibold">{entry.speaker}:</div>
-                  <div className="ml-4">{entry.text}</div>
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-500 text-center">No transcript available.</p>
-            )}
-          </div>
+          <TranscriptSection transcript={transcript} />
         )}
       </div>
     </div>

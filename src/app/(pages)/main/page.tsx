@@ -1,69 +1,79 @@
 'use client';
 
 import { useState } from "react";
-import {ResizablePanel} from "howl/app/_components/main/panels/resizablePanel";
+import { ResizablePanel } from "howl/app/_components/main/panels/resizablePanel";
 import { CallSideBar } from "howl/app/_components/main/panels/callSidebar";
-import { aiAssistant as AiAssistant } from "howl/app/_components/main/panels/aiAssistant";
+import { AiAssistant } from "howl/app/_components/main/panels/aiAssistant";
 import { EmptyState } from "howl/app/_components/main/emptyState";
-import {ReportDisplay} from "howl/app/_components/main/panels/reportDisplay";
+import { ReportDisplay } from "howl/app/_components/main/panels/reportDisplay";
 import { UploadModal } from "howl/app/_components/main/upload";
 import { FileData } from "howl/app/types";
+import { auth } from "@/server/auth";
+import RestrictedAccess from "@/app/_components/auth/restrictedAccess";
+import { useSession } from "next-auth/react";
+// import { generateDummyFiles } from "howl/app/_components/main/dummyData/dummyFiles"; // We can remove or keep
 
 export default function MainPage() {
   const [showModal, setShowModal] = useState(false);
+
+  // Start empty or with dummy data:
   const [files, setFiles] = useState<FileData[]>([]);
   const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(null);
-  const [leftPanelWidth, setLeftPanelWidth] = useState(300);
+
+  const [leftPanelWidth, setLeftPanelWidth] = useState(253);
   const [rightPanelWidth, setRightPanelWidth] = useState(300);
 
-  const handleUpload = () => setShowModal(true);
+  const handleUploadModalOpen = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
+  const { data: session, status } = useSession();
+    const logged = status === "authenticated";
+  if (!session?.user) {
+    return (
+      <RestrictedAccess />
+    )
+  }
 
-  const completeUpload = () => {
-    const newFile: FileData = {
-        id: Date.now(),
-        name: 'Reporte de Llamada',
-        date: new Date().toLocaleDateString(),
-        type: 'Soporte Técnico',
-        duration: '7 min',
-        rating: 80,
-        report: {
-          feedback:
-            'El agente fue cordial, pero en lugar de validar el cargo inmediatamente, generó una solicitud de revisión que tomó 48 horas.',
-          keyTopics: [
-            'Facturación incorrecta y cargos inesperados.',
-            'Revisión de cargos y transparencia en la facturación.',
-          ],
-          emotions: [
-            '1. Cliente inicia con frustración leve.',
-            '2. Se mantiene cooperativo durante la llamada.',
-            '3. Finaliza con tranquilidad tras recibir una solución.',
-          ],
-          sentiment:
-            'Neutral - Positivo: La interacción comenzó con tensión pero finalizó con una percepción positiva gracias a la claridad del agente.',
-          output:
-            'El problema sigue sin resolverse completamente, pero se inició una revisión formal. Se espera respuesta en 48 horas.',
-          riskWords:
-            'El problema aún no ha sido completamente resuelto, ya que el cargo sigue reflejado en la cuenta del cliente y está pendiente la validación de su procedencia. Sin embargo, se ha iniciado una solicitud formal de revisión, lo que representa un paso hacia la solución definitiva. Se espera que en un plazo de 48 horas se brinde una respuesta final, ya sea confirmando la validez del cobro o procesando el ajuste correspondiente. En caso de que la revisión confirme que el cargo fue indebido, se procederá con un reembolso o ajuste en la facturación del cliente.',
-          summary:
-            'El cliente contactó el servicio de soporte debido a un cargo inesperado en su factura, expresando preocupación por un posible error en la activación de un servicio adicional. El agente revisó la cuenta y confirmó que el cobro correspondía a un servicio activado el mes anterior, aunque el cliente afirmó no haber solicitado dicha activación. Para resolver la situación, el agente generó una solicitud de revisión que tomará hasta 48 horas en procesarse, brindando al cliente instrucciones claras sobre el seguimiento de su caso. Aunque el problema no se resolvió de inmediato, el cliente recibió la información necesaria y finalizó la llamada con una actitud más tranquila y confiada en el proceso. Sin embargo, queda pendiente la resolución final y el ajuste en la facturación en caso de que se determine un error.',
-        },
-        transcript: [ // ← directo aquí, no dentro de report
-            { speaker: 'Alex', text: 'Good morning! This is Alex calling from Quick Tech Solutions. How are you doing today?' },
-            { speaker: 'Jamie', text: 'Hi Alex, I’m doing well, thank you. What can I do for you?' },
-            { speaker: 'Alex', text: 'That’s wonderful to hear, Jamie!...' },
-            { speaker: 'Jamie', text: 'That sounds really interesting. Can you tell me more about the features?' },
-            { speaker: 'Alex', text: 'Absolutely! For instance, our smart thermostat...' },
-          ]
-      };
+  /**
+   * Actually performs the POST to the backend.
+   */
+  const completeUpload = async (file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
 
-      // TODO: Reemplazar transcript hardcodeado con el resultado real del backend cuando se procese el audio
+      // Adjust the URL as needed: if backend is on another port or domain
+      const response = await fetch("http://localhost:8000/upload", {
+        method: "POST",
+        body: formData
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to upload file: ${response.status} ${response.statusText}`);
+      }
 
-    setFiles((prev) => [...prev, newFile]);
-    setSelectedFileIndex(files.length);
-    closeModal();
+      // The backend already sends JSON shaped like our FileData interface
+      const data: FileData = await response.json();
+
+      // Insert the newly returned FileData at the end of the array
+      setFiles((prev) => {
+        const updated = [...prev, data];
+        // Automatically select the newly added file
+        setSelectedFileIndex(updated.length - 1);
+        return updated;
+      });
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      alert("Error uploading file. Check console for details.");
+    } finally {
+      closeModal(); // Hide the modal even if there's an error
+    }
   };
 
+  // If you want a separate callback that you pass to <UploadModal onUpload={...}/>, do so:
+  const handleFileUpload = (file: File) => {
+    completeUpload(file);
+  };
+
+  // Retrieve the currently displayed report or transcript
   const getDisplayedReport = () => {
     if (selectedFileIndex === null || !files.length) return null;
     return files[selectedFileIndex]?.report;
@@ -74,13 +84,56 @@ export default function MainPage() {
     return files[selectedFileIndex]?.transcript || [];
   };
 
+  const updateFileName = (index: number, newName: string) => {
+    setFiles((prevFiles) => {
+      const fileToUpdate = prevFiles[index];
+      if (!fileToUpdate) return prevFiles;
+
+      const updatedFile: FileData = {
+        ...fileToUpdate,
+        name: newName,
+      };
+
+      const updatedFiles = [...prevFiles];
+      updatedFiles[index] = updatedFile;
+      return updatedFiles;
+    });
+  };
+
+  const getMessagesForSelectedFile = () => {
+    if (selectedFileIndex === null) return [];
+    return files[selectedFileIndex]?.messages ?? [];
+  };
+
+
+  const updateMessagesForFile = (
+    fileIndex: number,
+    newMessages: { role: "user" | "assistant"; text: string }[]
+  ) => {
+    setFiles((prev) => {
+      const updated = [...prev];
+
+      // Solución defensiva
+      if (typeof updated[fileIndex]?.id !== "number") return prev;
+
+      const file: FileData = {
+        ...updated[fileIndex]!,
+        messages: newMessages,
+      };
+
+      updated[fileIndex] = file;
+      return updated;
+    });
+  };
+
+
   return (
-    <div className="h-[calc(100vh-73px)] flex justify-center items-stretch pt-20 bg-gray-50 overflow-hidden">
+    <div className="h-screen flex justify-center items-stretch pt-16 bg-gray-50 overflow-hidden">
       {/* Historial de llamadas */}
       <ResizablePanel
         initialWidth={leftPanelWidth}
-        minWidth={200}
-        maxWidth={400}
+        minWidth={253}
+        maxWidth={300}
         side="left"
         onResize={setLeftPanelWidth}
       >
@@ -88,7 +141,7 @@ export default function MainPage() {
           files={files}
           selectedFileIndex={selectedFileIndex}
           onSelectFile={setSelectedFileIndex}
-          onAddNewFile={handleUpload}
+          onAddNewFile={handleUploadModalOpen}
         />
       </ResizablePanel>
 
@@ -96,14 +149,16 @@ export default function MainPage() {
       <main className="flex-1 overflow-y-auto">
         {selectedFileIndex !== null && files.length > 0 ? (
           <ReportDisplay
-          report={getDisplayedReport()!}
-          transcript={getDisplayedTranscript()}
+            report={getDisplayedReport()!}
+            transcript={getDisplayedTranscript()}
+            title={files[selectedFileIndex]?.name ?? ""}
+            onTitleChange={(newTitle) => updateFileName(selectedFileIndex, newTitle)}
+            type={files[selectedFileIndex]?.type ?? ""}
           />
         ) : (
-          <EmptyState onUpload={handleUpload} />
+          <EmptyState onUpload={handleUploadModalOpen} />
         )}
       </main>
-
       {/* Asistente de IA */}
       <ResizablePanel
         initialWidth={rightPanelWidth}
@@ -112,7 +167,14 @@ export default function MainPage() {
         side="right"
         onResize={setRightPanelWidth}
       >
-      <AiAssistant />
+        <AiAssistant
+          selectedFileId={
+            selectedFileIndex !== null ? files[selectedFileIndex]?.id ?? null : null
+          }
+          files={files}
+          initialMessages={getMessagesForSelectedFile()}
+          onUpdateMessages={(messages) => updateMessagesForFile(selectedFileIndex!, messages)}
+        />
       </ResizablePanel>
 
       {/* Modal de carga */}

@@ -22,7 +22,7 @@ const NavDropdown = ({ session }: { session: Session }) => {
     }, []);
 
     return (
-        <div ref={dropdownRef} className="relative inline-block">
+        <div ref={dropdownRef} className="relative inline-block z-50">
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="px-2 py-1 rounded-md hover:bg-bg-dark"
