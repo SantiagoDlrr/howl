@@ -53,7 +53,7 @@ jobs:
       AUTH_MICROSOFT_ENTRA_ID_SECRET: ${{ secrets.AUTH_MICROSOFT_ENTRA_ID_SECRET }}
       AUTH_MICROSOFT_ENTRA_ID_ISSUER: ${{ secrets.AUTH_MICROSOFT_ENTRA_ID_ISSUER }}
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -64,11 +64,8 @@ jobs:
         node-version: '18'
         cache: 'npm'
 
-    - name: Install dependencies
+    - name: Install dependencies 
       run: npm install
-
-    - name: Start Next.js app
-      run: npm run start & npx wait-on http://localhost:3000
-
+      
     - name: Run Cypress tests
-      run: npx cypress run
+      run: npx start-server-and-test start http://localhost:3000 'cypress run'
