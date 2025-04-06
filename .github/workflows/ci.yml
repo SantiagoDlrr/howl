@@ -11,8 +11,8 @@ on:
       - dev
 
 jobs:
-  ci:
-    name: Continuous Integration
+  build:
+    name: Build and Lint
     runs-on: ubuntu-latest
     env:
       AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
@@ -20,6 +20,7 @@ jobs:
       AUTH_MICROSOFT_ENTRA_ID_ID: ${{ secrets.AUTH_MICROSOFT_ENTRA_ID_ID }}
       AUTH_MICROSOFT_ENTRA_ID_SECRET: ${{ secrets.AUTH_MICROSOFT_ENTRA_ID_SECRET }}
       AUTH_MICROSOFT_ENTRA_ID_ISSUER: ${{ secrets.AUTH_MICROSOFT_ENTRA_ID_ISSUER }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
     steps:
     - name: Checkout
@@ -39,6 +40,32 @@ jobs:
 
     - name: Run build
       run: npm run build
+
+    
+
+  tests:
+    name: Run tests
+    runs-on: ubuntu-latest
+    env:
+      AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      AUTH_MICROSOFT_ENTRA_ID_ID: ${{ secrets.AUTH_MICROSOFT_ENTRA_ID_ID }}
+      AUTH_MICROSOFT_ENTRA_ID_SECRET: ${{ secrets.AUTH_MICROSOFT_ENTRA_ID_SECRET }}
+      AUTH_MICROSOFT_ENTRA_ID_ISSUER: ${{ secrets.AUTH_MICROSOFT_ENTRA_ID_ISSUER }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up nodejs
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm install
 
     - name: Start Next.js app
       run: npm run start & npx wait-on http://localhost:3000
