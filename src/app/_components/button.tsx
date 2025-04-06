@@ -12,7 +12,7 @@ interface ButtonProps {
 }
 
 const Button = ({ label, onClick, secondary, href, xl, type }: ButtonProps) => {
-    const btnType = type || "button";
+    const btnType = type ?? "button";
 
     return (
         <>

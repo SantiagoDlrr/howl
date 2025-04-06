@@ -5,7 +5,6 @@ import NavElement from "./navElement";
 import { routes } from "howl/app/utils/routes";
 import LogoElement from "./logoElement";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import NavDropdown from "./navDropDown";
 import Link from "next/link";
 

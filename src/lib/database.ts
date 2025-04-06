@@ -1,5 +1,6 @@
 // src/lib/database.ts
 import { Pool } from 'pg';
+import type { QueryResultRow } from 'pg';
 
 const pool = new Pool({
   host: process.env.DB_HOST,
@@ -12,10 +13,13 @@ const pool = new Pool({
   },
 });
 
-export async function query(sql: string, params?: any[]) {
+export async function query<T extends QueryResultRow = QueryResultRow>(
+  sql: string,
+  params?: (string | number | boolean | null)[]
+): Promise<T[]> {
   const client = await pool.connect();
   try {
-    const result = await client.query(sql, params);
+    const result = await client.query<T>(sql, params);
     return result.rows;
   } finally {
     client.release();

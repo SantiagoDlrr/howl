@@ -1,4 +1,4 @@
-import { FileData } from "howl/app/types";
+import type { FileData } from "@/app/types/main";
 
 export const generateDummyFiles = (): FileData[] => [
   {

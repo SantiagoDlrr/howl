@@ -3,7 +3,6 @@
 import { useState } from "react";
 import FormField from "./formField";
 import LoginWith from "./loginWith";
-import ToggleButton from "./toggleButton";
 import { api } from "howl/trpc/react";
 import Button from "../button";
 import { emailSchema, passwordSchema } from "howl/app/utils/schemas";
@@ -12,7 +11,6 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 const SignUpCard = () => {
-    const [selected, setSelected] = useState(1);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -69,7 +67,7 @@ const SignUpCard = () => {
         if (result.success) {
             return true
         } else {
-            const errorMessage = result.error.errors[0]?.message || "An unknown error occurred";
+            const errorMessage = result.error.errors[0]?.message ?? "An unknown error occurred";
             setError(errorMessage);
         }
     }

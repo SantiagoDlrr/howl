@@ -69,10 +69,10 @@ export const ReportSection: React.FC<Props> = ({ title, icon, content, listItems
 
       {isStringContent && (
         <p className="text-gray-700 text-sm leading-relaxed">
-          {content!.startsWith('Neutral - Positivo:') ? (
+          {content.startsWith('Neutral - Positivo:') ? (
             <>
               <span className="font-medium">Neutral - Positivo:</span>{' '}
-              {content!.replace('Neutral - Positivo:', '').trim()}
+              {content.replace('Neutral - Positivo:', '').trim()}
             </>
           ) : (
             content

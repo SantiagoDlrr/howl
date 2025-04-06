@@ -12,10 +12,10 @@ interface FormFieldProps {
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const FormField = ({ label, type, xl, value, onChange }: FormFieldProps) => {
+const FormField = ({ label, type, value, onChange }: FormFieldProps) => {
     const [view, setView] = useState(false);
-    const originalType = type || "text";
-    const [inputType, setInputType] = useState(type || "text");
+    const originalType = type ?? "text";
+    const [inputType, setInputType] = useState(type ?? "text");
 
     const toggleView = () => {
         setView(!view);

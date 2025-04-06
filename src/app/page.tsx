@@ -1,4 +1,3 @@
-import Image from "next/image"
 import { auth } from "howl/server/auth"
 import { api, HydrateClient } from "howl/trpc/server"
 import LandingSection from "./_components/landing/landingSection"

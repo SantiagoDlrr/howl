@@ -1,6 +1,6 @@
 import React from 'react';
 import { List } from 'lucide-react';
-import { FileData } from 'howl/app/types';
+import type { FileData } from '@/app/types/main';
 
 interface Props {
   files: FileData[];
@@ -15,7 +15,7 @@ export const CallSideBar: React.FC<Props> = ({ files, selectedFileIndex, onSelec
       <div className="py-3 px-4 border-b border-t border-gray-200">
         <h2 className="text-md font-medium text-gray-800">Historial de llamadas</h2>
       </div>
-      
+
       <div className="px-4 py-3">
         <button
           onClick={onAddNewFile}
@@ -24,7 +24,7 @@ export const CallSideBar: React.FC<Props> = ({ files, selectedFileIndex, onSelec
           <span className="mr-1 text-sm">+</span> Agregar nueva llamada
         </button>
       </div>
-      
+
       <div className="overflow-y-auto flex-1">
         {files.length > 0 && (
           <>
@@ -33,9 +33,8 @@ export const CallSideBar: React.FC<Props> = ({ files, selectedFileIndex, onSelec
               <div
                 key={file.id}
                 onClick={() => onSelectFile(index)}
-                className={`py-3 px-4 border-b border-gray-100 cursor-pointer hover:bg-purple-50 ${
-                  selectedFileIndex === index ? 'bg-purple-100' : ''
-                }`}
+                className={`py-3 px-4 border-b border-gray-100 cursor-pointer hover:bg-purple-50 ${selectedFileIndex === index ? 'bg-purple-100' : ''
+                  }`}
               >
                 <div className="text-sm font-medium">{file.name}</div>
                 <div className="text-xs text-gray-500">Cliente - {file.type}</div>
@@ -44,7 +43,7 @@ export const CallSideBar: React.FC<Props> = ({ files, selectedFileIndex, onSelec
           </>
         )}
       </div>
-      
+
       {files.length > 0 && (
         <div className="px-4 py-3 mt-auto">
           <button className="mx-auto py-2 px-4 bg-primary text-white rounded-md hover:bg-purple-600 flex items-center justify-center text-sm max-w-xs w-full">
