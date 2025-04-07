@@ -65,13 +65,10 @@ export const authConfig = {
           throw new Error("Usuario no encontrado");
         }
 
-        if (!user || user?.hashedPassword) {
+        if (!user || !user.hashedPassword) {
           throw new Error("Contraseña incorrecta");
         }
 
-        if (!user.hashedPassword) {
-          throw new Error("Contraseña no válida");
-        }
         const isValid = await bcrypt.compare(credentials.password as string, user.hashedPassword);
         if (!isValid) {
           throw new Error("Credenciales inválidas");
