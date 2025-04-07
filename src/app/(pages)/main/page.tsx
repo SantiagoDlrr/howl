@@ -7,8 +7,7 @@ import { AiAssistant } from "howl/app/_components/main/panels/aiAssistant";
 import { EmptyState } from "howl/app/_components/main/emptyState";
 import { ReportDisplay } from "howl/app/_components/main/panels/reportDisplay";
 import { UploadModal } from "howl/app/_components/main/upload";
-import { FileData } from "howl/app/types";
-import { auth } from "@/server/auth";
+import type { FileData } from "@/app/types/main";
 import RestrictedAccess from "@/app/_components/auth/restrictedAccess";
 import { useSession } from "next-auth/react";
 // import { generateDummyFiles } from "howl/app/_components/main/dummyData/dummyFiles"; // We can remove or keep
@@ -25,8 +24,7 @@ export default function MainPage() {
 
   const handleUploadModalOpen = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
-  const { data: session, status } = useSession();
-    const logged = status === "authenticated";
+  const { data: session } = useSession();
   if (!session?.user) {
     return (
       <RestrictedAccess />
@@ -51,7 +49,7 @@ export default function MainPage() {
       }
 
       // The backend already sends JSON shaped like our FileData interface
-      const data: FileData = await response.json();
+      const data = await response.json() as FileData;
 
       // Insert the newly returned FileData at the end of the array
       setFiles((prev) => {
@@ -69,9 +67,9 @@ export default function MainPage() {
   };
 
   // If you want a separate callback that you pass to <UploadModal onUpload={...}/>, do so:
-  const handleFileUpload = (file: File) => {
-    completeUpload(file);
-  };
+  // const handleFileUpload = (file: File) => {
+  //   completeUpload(file);
+  // };
 
   // Retrieve the currently displayed report or transcript
   const getDisplayedReport = () => {
@@ -81,7 +79,7 @@ export default function MainPage() {
 
   const getDisplayedTranscript = () => {
     if (selectedFileIndex === null || !files.length) return [];
-    return files[selectedFileIndex]?.transcript || [];
+    return files[selectedFileIndex]?.transcript ?? [];
   };
 
   const updateFileName = (index: number, newName: string) => {
@@ -117,7 +115,7 @@ export default function MainPage() {
       if (typeof updated[fileIndex]?.id !== "number") return prev;
 
       const file: FileData = {
-        ...updated[fileIndex]!,
+        ...updated[fileIndex],
         messages: newMessages,
       };
 

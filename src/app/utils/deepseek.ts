@@ -1,10 +1,13 @@
 // /utils/deepseek.ts
 
-import OpenAI from "openai";
-import { env } from "@/env"; // O process.env si no usas env.ts
+// import OpenAI from "openai";
+// import { env } from "@/env"; // O process.env si no usas env.ts
 
-type ChatRole = "user" | "assistant" | "system";
-
+// type ChatRole = "user" | "assistant" | "system";
+interface AskResponse {
+  content: string;
+  error?: string;
+}
 
 export const askDeepseek = async (
   prompt: string,
@@ -30,7 +33,8 @@ export const askDeepseek = async (
     body: JSON.stringify({ messages }),
   });
 
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.error || "Error al consultar IA");
+  const data = (await response.json()) as AskResponse;
+ 
+  if (!response.ok) throw new Error(data.error ?? "Error al consultar IA");
   return data.content;
 };

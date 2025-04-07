@@ -3,7 +3,6 @@ import bcrypt from 'bcryptjs';
 
 import {
   createTRPCRouter,
-  protectedProcedure,
   publicProcedure,
 } from "howl/server/api/trpc";
 

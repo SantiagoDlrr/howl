@@ -1,11 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
-import Button from "../button";
 
 const LoginWith = ({ login }: { login?: boolean }) => {
-    const handleSignIn = () => {
-        signIn("microsoft-entra-id");
+    const handleSignIn = async () => {
+        try {
+            await signIn("microsoft-entra-id");
+        } catch (error) {
+            console.error("Error signing in with Microsoft:", error);
+        }
     };
 
     return (

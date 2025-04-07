@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FileText,
   MessageSquare,
@@ -12,7 +12,7 @@ import {
   Edit2,
   Check
 } from 'lucide-react';
-import { Report, TranscriptEntry } from 'howl/app/types';
+import type { Report, TranscriptEntry } from '@/app/types/main';
 import { ReportSection } from '../reportSection';
 import TranscriptSection from '../transcriptSection';
 
@@ -97,7 +97,7 @@ export const ReportDisplay: React.FC<Props> = ({ report, transcript, title, onTi
               {reportType}
             </span>
             <span className="bg-green-100 text-green-800 font-medium text-xs px-3 py-1 rounded-full">
-             {/*Copia lo de arriba del type */}
+              {/*Copia lo de arriba del type */}
               Positive
             </span>
           </div>
@@ -106,21 +106,19 @@ export const ReportDisplay: React.FC<Props> = ({ report, transcript, title, onTi
         <div className="border-b border-gray-200 mb-6">
           <div className="flex space-x-6">
             <button
-              className={`py-3 px-1 text-sm font-medium relative ${
-                activeTab === 'report'
+              className={`py-3 px-1 text-sm font-medium relative ${activeTab === 'report'
                   ? 'text-primary border-b-2 border-primary'
                   : 'text-gray-500 hover:text-gray-700'
-              }`}
+                }`}
               onClick={() => setActiveTab('report')}
             >
               Report
             </button>
             <button
-              className={`py-3 px-1 text-sm font-medium relative ${
-                activeTab === 'transcript'
+              className={`py-3 px-1 text-sm font-medium relative ${activeTab === 'transcript'
                   ? 'text-primary border-b-2 border-primary'
                   : 'text-gray-500 hover:text-gray-700'
-              }`}
+                }`}
               onClick={() => setActiveTab('transcript')}
             >
               Full Transcript

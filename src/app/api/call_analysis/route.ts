@@ -1,6 +1,24 @@
 import { query } from '@/lib/database';
 import { NextResponse } from 'next/server';
 
+interface CallData {
+  context: string;
+  satisfaction: number;
+  duration: number;
+  summary: string;
+  date: string;
+  transcript: string;
+  main_ideas: string | number | boolean | null;
+  type: string;
+  consultant_id: number;
+  client_id: number;
+  feedback: string;
+  sentiment_analysis: string;
+  risk_words: string | number | boolean | null;
+  output: string;
+  emotion_names: string | number | boolean | null; // Array of emotion names (e.g., ["Happy", "Sad"])
+}
+
 // Función para obtener todas las llamadas de un consultor
 export async function GET(request: Request) {
   try {
@@ -33,7 +51,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
       // Step 1: Parse the request body
-      const data = await request.json();
+      const data = await request.json() as CallData;
   
       const {
         context,
@@ -77,7 +95,7 @@ export async function POST(request: Request) {
       ]);
   
       // Step 3: Get the inserted call ID
-      const callId = result[0].call_id;
+      const callId = result?.[0]?.call_id as number | undefined;
   
       // Step 4: Return the response with the inserted call ID
       return NextResponse.json({ callId });

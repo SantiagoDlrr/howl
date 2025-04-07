@@ -1,5 +1,6 @@
 "use client"
 import React, { useState, useMemo, useEffect } from 'react';
+import LogsTable from './logsTable';
 
 interface CallLogEntry {
   callDate: string;
@@ -14,7 +15,7 @@ const CallLogsTable: React.FC = () => {
   const [callLogs, setCallLogs] = useState<CallLogEntry[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // State for filters and search
   const [sortBy, setSortBy] = useState<'newest' | 'oldest'>('newest');
   const [timeSort, setTimeSort] = useState<'none' | 'longer' | 'shorter'>('none');
@@ -34,7 +35,7 @@ const CallLogsTable: React.FC = () => {
         if (!response.ok) {
           throw new Error('Failed to fetch call logs');
         }
-        const data = await response.json();
+        const data = await response.json() as CallLogEntry[];
         setCallLogs(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unknown error occurred');
@@ -42,8 +43,8 @@ const CallLogsTable: React.FC = () => {
         setLoading(false);
       }
     };
-    
-    fetchCallLogs();
+
+    void fetchCallLogs();
   }, []);
 
   // Dynamically generate unique filter options
@@ -58,13 +59,13 @@ const CallLogsTable: React.FC = () => {
   // Filtered and sorted logs
   const filteredLogs = useMemo(() => {
     return callLogs
-      .filter(log => 
+      .filter(log =>
         (!selectedCompany || log.clientCompany === selectedCompany) &&
         (!selectedCategory || log.category === selectedCategory) &&
         (!selectedRating || log.rating === selectedRating) &&
-        (searchTerm === '' || 
-          Object.values(log).some(value => 
-            typeof value === 'string' && 
+        (searchTerm === '' ||
+          Object.values(log).some(value =>
+            typeof value === 'string' &&
             value.toLowerCase().includes(searchTerm.toLowerCase())
           ))
       )
@@ -73,14 +74,14 @@ const CallLogsTable: React.FC = () => {
         const dateA = new Date(a.callDate).getTime();
         const dateB = new Date(b.callDate).getTime();
         let sortResult = sortBy === 'newest' ? dateB - dateA : dateA - dateB;
-  
+
         // Orden por tiempo (nueva lógica)
         if (timeSort !== 'none') {
           const timeA = parseInt(a.time);
           const timeB = parseInt(b.time);
           sortResult = timeSort === 'longer' ? timeB - timeA : timeA - timeB;
         }
-  
+
         return sortResult;
       });
   }, [callLogs, selectedCompany, selectedCategory, selectedRating, searchTerm, sortBy, timeSort]);
@@ -98,7 +99,7 @@ const CallLogsTable: React.FC = () => {
   if (error) {
     return <div className="w-full p-20 text-center text-red-500">Error: {error}</div>;
   }
-  
+
   // Change page
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -114,12 +115,12 @@ const CallLogsTable: React.FC = () => {
   };
 
   return (
-    <div className="space-y-4 w-full p-20"> 
+    <div className="space-y-4 w-full p-20">
       {/* Filters and Search */}
       <div className="flex space-x-2">
         {/* Sort By Dropdown */}
-        <select 
-          value={sortBy} 
+        <select
+          value={sortBy}
           onChange={(e) => {
             setSortBy(e.target.value as 'newest' | 'oldest');
             setCurrentPage(1);
@@ -131,8 +132,8 @@ const CallLogsTable: React.FC = () => {
         </select>
 
         {/* Company Filter */}
-        <select 
-          value={selectedCompany} 
+        <select
+          value={selectedCompany}
           onChange={(e) => {
             setSelectedCompany(e.target.value);
             setCurrentPage(1);
@@ -146,8 +147,8 @@ const CallLogsTable: React.FC = () => {
         </select>
 
         {/* Category Filter */}
-        <select 
-          value={selectedCategory} 
+        <select
+          value={selectedCategory}
           onChange={(e) => {
             setSelectedCategory(e.target.value);
             setCurrentPage(1);
@@ -161,8 +162,8 @@ const CallLogsTable: React.FC = () => {
         </select>
 
         {/* Rating Filter */}
-        <select 
-          value={selectedRating} 
+        <select
+          value={selectedRating}
           onChange={(e) => {
             setSelectedRating(e.target.value);
             setCurrentPage(1);
@@ -176,7 +177,7 @@ const CallLogsTable: React.FC = () => {
         </select>
 
         {/* Time Sort Dropdown */}
-        <select 
+        <select
           value={timeSort}
           onChange={(e) => {
             setTimeSort(e.target.value as 'none' | 'longer' | 'shorter');
@@ -191,9 +192,9 @@ const CallLogsTable: React.FC = () => {
 
         {/* Search Input */}
         <div className="relative flex-grow">
-          <input 
-            type="text" 
-            placeholder="Type to search..." 
+          <input
+            type="text"
+            placeholder="Type to search..."
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
@@ -201,24 +202,24 @@ const CallLogsTable: React.FC = () => {
             }}
             className="border rounded px-2 py-1 w-full"
           />
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            className="h-5 w-5 text-gray-400 absolute right-2 top-2 pointer-events-none" 
-            fill="none" 
-            viewBox="0 0 24 24" 
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5 text-gray-400 absolute right-2 top-2 pointer-events-none"
+            fill="none"
+            viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
             />
           </svg>
         </div>
 
         {/* Reset Filters Button */}
-        <button 
+        <button
           onClick={resetFilters}
           className="bg-[#F9FBFF] hover:bg-gray-300 rounded px-2 py-1 border border-black"
         >
@@ -226,60 +227,13 @@ const CallLogsTable: React.FC = () => {
         </button>
       </div>
 
-      {/* Table */}
-      <div className="w-full overflow-x-auto rounded border border-black">
-        <table className="w-full border-collapse text-sm">
-          <thead>
-            <tr className="bg-gray-100 border-b">
-              <th className="p-3 text-left">Call Date</th>
-              <th className="p-3 text-left">Client</th>
-              <th className="p-3 text-left">Client Company</th>
-              <th className="p-3 text-left">Category</th>
-              <th className="p-3 text-left">Rating</th>
-              <th className="p-3 text-left">Time</th>
-              <th className="p-3 text-left">AI Menu</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentLogs.map((log, index) => (
-              <tr 
-                key={index} 
-                className="border-b hover:bg-gray-50 transition-colors"
-              >
-                <td className="p-3">{log.callDate}</td>
-                <td className="p-3">{log.client}</td>
-                <td className="p-3">{log.clientCompany}</td>
-                <td className="p-3">
-                  <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
-                    {log.category}
-                  </span>
-                </td>
-                <td className="p-3">
-                  <span className={`
-                    font-semibold 
-                    ${log.rating === 'Positive' ? 'text-green-600' : 'text-red-600'}
-                  `}>
-                    {log.rating}
-                  </span>
-                </td>
-                <td className="p-3">{log.time}</td>
-                <td className="p-3">
-                  <button className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
-                    View AI
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {/* No results message */}
-        {filteredLogs.length === 0 && (
-          <div className="text-center py-4 text-gray-500">
-            No logs found matching your filters
-          </div>
-        )}
-      </div>
+      <LogsTable logs={currentLogs} />
+      {/* No results message */}
+      {filteredLogs.length === 0 && (
+        <div className="text-center py-4 text-gray-500">
+          No logs found matching your filters
+        </div>
+      )}
 
       {/* Pagination */}
       {filteredLogs.length > 0 && (
@@ -302,7 +256,7 @@ const CallLogsTable: React.FC = () => {
             >
               ‹
             </button>
-            
+
             {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
               <button
                 key={number}
@@ -312,7 +266,7 @@ const CallLogsTable: React.FC = () => {
                 {number}
               </button>
             ))}
-            
+
             <button
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}

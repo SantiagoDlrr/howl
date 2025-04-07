@@ -1,7 +1,6 @@
 import { postRouter } from "howl/server/api/routers/post";
 import { registerRouter } from "howl/server/api/routers/register";
 import { createCallerFactory, createTRPCRouter } from "howl/server/api/trpc";
-import { register } from "module";
 
 /**
  * This is the primary router for your server.

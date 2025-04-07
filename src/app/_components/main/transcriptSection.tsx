@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { TranscriptEntry } from 'howl/app/types';
+import type { TranscriptEntry } from '@/app/types/main';
 
 
 const TranscriptSection = ({ transcript }: { transcript: TranscriptEntry[] }) => {

@@ -1,5 +1,6 @@
 // api/ask.ts
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
@@ -11,9 +12,14 @@ const openai = new OpenAI({
   },
 }); 
 
+interface Message {
+  role: "user" | "assistant" | "system";
+  content: string;
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    const body = await req.json() as { messages: Message[] };
     const { messages } = body;
 
     if (!messages || !Array.isArray(messages)) {
@@ -38,8 +44,12 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ content });
-  } catch (error: any) {
-    console.error("💥 Error en /api/ask:", error.message || error);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("💥 Error en /api/ask:", error.message);
+    } else {
+      console.error("💥 Error en /api/ask:", error);
+    }
     return NextResponse.json(
       { error: "Deepseek no respondió correctamente." },
       { status: 500 }

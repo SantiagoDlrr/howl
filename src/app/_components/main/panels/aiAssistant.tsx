@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { ChevronUp, User } from "lucide-react";
 import { askDeepseek } from "@/app/utils/deepseek";
 import { ChatMessage } from "../chatMessage";
-import type { FileData } from "@/app/types";
+import type { FileData } from "@/app/types/main";
 
 interface Message {
   role: "user" | "assistant";
@@ -43,12 +43,12 @@ Tu objetivo es ayudar al agente a identificar patrones, emociones, áreas de mej
 
 📋 **Resumen del Análisis de Llamada:**
 - 🗣️ Feedback general: ${report?.feedback ?? "No disponible"}
-- 🧹 Temas clave tratados: ${(report?.keyTopics ?? []).join(", ") || "Ninguno"}
-- 😊 Emociones predominantes: ${(report?.emotions ?? []).join(", ") || "No identificadas"}
+- 🧹 Temas clave tratados: ${(report?.keyTopics ?? []).join(", ") ?? "Ninguno"}
+- 😊 Emociones predominantes: ${(report?.emotions ?? []).join(", ") ?? "No identificadas"}
 - ❤️ Sentimiento global de la llamada: ${report?.sentiment ?? "No disponible"}
-- ⚠️ Palabras de riesgo detectadas: ${report?.riskWords || "Ninguna"}
-- 🧠 Interpretación automática (output): ${report?.output || "No disponible"}
-- 🗘️ Resumen general de la llamada: ${report?.summary || "No disponible"}
+- ⚠️ Palabras de riesgo detectadas: ${report?.riskWords ?? "Ninguna"}
+- 🧠 Interpretación automática (output): ${report?.output ?? "No disponible"}
+- 🗘️ Resumen general de la llamada: ${report?.summary ?? "No disponible"}
 
 🗃 **Fragmentos relevantes de la transcripción:**
 ${transcript.map((t) => `- ${t.speaker ?? "Desconocido"}: ${t.text}`).join("\n").slice(0, 2000)}
@@ -138,7 +138,7 @@ Responde únicamente con base en esta información. Si el usuario te pregunta al
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
-                handleSubmit();
+                void handleSubmit();
               }
             }}
             placeholder="Pregúntame algo..."

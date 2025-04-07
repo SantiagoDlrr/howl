@@ -1,6 +1,5 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
 import MicrosoftEntraID from "next-auth/providers/microsoft-entra-id"
 import { env } from "howl/env";
 import { db } from "howl/server/db";
@@ -66,11 +65,14 @@ export const authConfig = {
           throw new Error("Usuario no encontrado");
         }
 
-        if (!user || !user.hashedPassword) {
+        if (!user || user?.hashedPassword) {
           throw new Error("Contraseña incorrecta");
         }
 
-        const isValid = await bcrypt.compare(credentials.password as string, user.hashedPassword as string);
+        if (!user.hashedPassword) {
+          throw new Error("Contraseña no válida");
+        }
+        const isValid = await bcrypt.compare(credentials.password as string, user.hashedPassword);
         if (!isValid) {
           throw new Error("Credenciales inválidas");
         }
@@ -95,7 +97,7 @@ export const authConfig = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id as string;  // Ensure `id` is a string
+        token.id = user.id!;  // Ensure `id` is a string
       }
       return token;
     },
