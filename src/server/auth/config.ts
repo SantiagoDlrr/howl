@@ -65,7 +65,7 @@ export const authConfig = {
           throw new Error("Usuario no encontrado");
         }
 
-        if (!user || !user.hashedPassword) {
+        if (!user.hashedPassword) {
           throw new Error("Contraseña incorrecta");
         }
 
