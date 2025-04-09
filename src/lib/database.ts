@@ -25,7 +25,7 @@ export async function query<T extends QueryResultRow = QueryResultRow>(
     return result.rows;
   } catch (error) {
     if (error instanceof Error) {
-      console.error('🛑 Database query error:', error.message);
+      console.error('🛑 Databdase query error:', error.message);
     } else {
       console.error('🛑 Database query error:', error);
     }
