@@ -1,4 +1,3 @@
-// src/lib/database.ts
 import pkg from 'pg';
 const { Pool } = pkg;
 import type { QueryResultRow } from 'pg';
@@ -25,7 +24,11 @@ export async function query<T extends QueryResultRow = QueryResultRow>(
     const result = await client.query<T>(sql, params);
     return result.rows;
   } catch (error) {
-    console.error('🛑 Database query error:', error);
+    if (error instanceof Error) {
+      console.error('🛑 Database query error:', error.message);
+    } else {
+      console.error('🛑 Database query error:', error);
+    }
     throw error; 
   } finally {
     client.release();

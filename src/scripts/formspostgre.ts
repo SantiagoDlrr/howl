@@ -3,7 +3,6 @@ import { google } from 'googleapis';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-
 // Resolve __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -39,10 +38,9 @@ async function importDataFromSheets() {
 
     console.log(`📊 Extracted ${rows.length} rows from Google Sheets.`);
 
-    const dataRows = rows.slice(1); 
+    const dataRows = rows.slice(1); // Skip header row
     // Insert each row into PostgreSQL
     for (const [index, row] of dataRows.entries()) {
-
       const [
         timestamp,
         agent_email,
@@ -51,15 +49,6 @@ async function importDataFromSheets() {
         call_satisfaction,
         email,
       ] = row;
-      
-      // console.log(`🔍 Processing row ${index}:`, {
-      //   timestamp,
-      //   agent_email,
-      //   consultant_satisfaction,
-      //   consultant_feedback,
-      //   call_satisfaction,
-      //   email,
-      // });
 
       try {
         await query(
@@ -83,32 +72,21 @@ async function importDataFromSheets() {
         );
         console.log(`✅ Row ${index} inserted successfully.`);
       } catch (error) {
-        console.error(`❌ Failed to insert row ${index}:`);
-        console.error(`   Row Data: ${JSON.stringify(row)}`);
-        console.error(`   SQL Query: INSERT INTO client_feedback ...`);
-        console.error(`   Parameters: ${JSON.stringify([
-          timestamp, 
-          consultant_satisfaction, 
-          consultant_feedback, 
-          call_satisfaction,
-          agent_email,
-          email
-        ])}`);
-        if (error instanceof AggregateError) {
-          for (const e of error.errors) {
-            console.error(`   Inner Error: ${e.message}`);
-          }
-        } else if (error instanceof Error) {
-          console.error(`   Error Message: ${error.message}`);
+        if (error instanceof Error) {
+          console.error(`❌ Failed to insert row ${index}:`, error.message);
         } else {
-          console.error(`   Unknown Error:`, error);
+          console.error(`❌ Failed to insert row ${index}:`, error);
         }
       }
     }
 
     console.log('✅ Data import completed!');
   } catch (error) {
-    console.error('❌ Error in importDataFromSheets:', error instanceof Error ? error.stack : error);
+    if (error instanceof Error) {
+      console.error('❌ Error in importDataFromSheets:', error.stack);
+    } else {
+      console.error('❌ Error in importDataFromSheets:', error);
+    }
   }
 }
 
