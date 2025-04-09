@@ -24,6 +24,7 @@ export async function query<T extends QueryResultRow = QueryResultRow>(
     const result = await client.query<T>(sql, params);
     return result.rows;
   } catch (error) {
+    // Safely assert the error type to 'Error'
     if (error instanceof Error) {
       console.error('🛑 Database query error:', error.message);
     } else {

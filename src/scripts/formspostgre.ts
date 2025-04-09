@@ -74,6 +74,7 @@ async function importDataFromSheets(): Promise<void> {
         );
         console.log(`✅ Row ${index} inserted successfully.`);
       } catch (error) {
+        // Safely assert the error type to 'Error'
         if (error instanceof Error) {
           console.error(`❌ Failed to insert row ${index}:`, error.message);
         } else {
@@ -84,6 +85,7 @@ async function importDataFromSheets(): Promise<void> {
 
     console.log('✅ Data import completed!');
   } catch (error) {
+    // Safely assert the error type to 'Error'
     if (error instanceof Error) {
       console.error('❌ Error in importDataFromSheets:', error.stack);
     } else {
@@ -97,6 +99,7 @@ async function importDataFromSheets(): Promise<void> {
   try {
     await importDataFromSheets(); // Await the promise to handle it properly
   } catch (error) {
+    // Safely assert the error type to 'Error'
     if (error instanceof Error) {
       console.error('❌ Unhandled error:', error.stack);
     } else {
