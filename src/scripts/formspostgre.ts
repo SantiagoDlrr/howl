@@ -1,5 +1,5 @@
 import { query } from '../lib/database.ts'; // Add the .ts extension
-import { google } from 'googleapis';
+import { google, sheets_v4 } from 'googleapis'; // Explicitly import types for Google Sheets API
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -12,17 +12,18 @@ const KEY_PATH = path.join(__dirname, '/ninth-territory-456217-q1-a4e39a5e80ad.j
 const SPREADSHEET_ID = '1t-OEMm-oeQWwCaqHOyZ4-hcntQbi89JSChLLGpqB_dQ';
 const RANGE = 'Sheet1!A1:F100';
 
-async function importDataFromSheets() {
+async function importDataFromSheets(): Promise<void> {
   try {
     // Authenticate with Google Sheets
     const auth = new google.auth.JWT({
       keyFile: KEY_PATH,
       scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
     });
+
     await auth.authorize();
     console.log('✅ Google Sheets authenticated.');
 
-    const sheets = google.sheets({ version: 'v4', auth });
+    const sheets: sheets_v4.Sheets = google.sheets({ version: 'v4', auth });
 
     // Fetch data from Google Sheets
     const response = await sheets.spreadsheets.values.get({
@@ -48,7 +49,7 @@ async function importDataFromSheets() {
         consultant_feedback,
         call_satisfaction,
         email,
-      ] = row;
+      ] = row as [string, string, string, string, string, string]; // Explicitly type the row
 
       try {
         await query(
@@ -91,6 +92,14 @@ async function importDataFromSheets() {
 }
 
 // Run the script
-(async () => {
-  await importDataFromSheets();
+(async (): Promise<void> => {
+  try {
+    await importDataFromSheets();
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error('❌ Unhandled error:', error.stack);
+    } else {
+      console.error('❌ Unhandled error:', error);
+    }
+  }
 })();
