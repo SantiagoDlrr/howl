@@ -52,3 +52,6 @@ yarn-error.log*
 
 a00835462@tec.mx_2025-03-12T22_39_39.019Z.pem
 **/__pycache__/
+
+# Ignore Google credentials
+src/scripts/*.json
