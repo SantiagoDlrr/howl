@@ -1,5 +1,6 @@
 import { query } from '../lib/database.ts'; // Add the .ts extension
-import { google, sheets_v4 } from 'googleapis'; // Explicitly import types for Google Sheets API
+import { google } from 'googleapis';
+import type { sheets_v4 } from 'googleapis'; // Use `import type` for type-only imports
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -102,4 +103,7 @@ async function importDataFromSheets(): Promise<void> {
       console.error('❌ Unhandled error:', error);
     }
   }
-})();
+})().catch((error) => {
+  // Explicitly handle any unhandled promise rejections
+  console.error('❌ Script execution failed:', error instanceof Error ? error.stack : error);
+});
