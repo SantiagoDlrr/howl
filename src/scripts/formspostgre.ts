@@ -34,7 +34,7 @@ async function importDataFromSheets(): Promise<void> {
 
     const rows = response.data.values;
     if (!rows || rows.length === 0) {
-      console.log(' No data found in the specified range.');
+      console.log('No data found in the specified range.');
       return;
     }
 
@@ -77,7 +77,7 @@ async function importDataFromSheets(): Promise<void> {
         if (error instanceof Error) {
           console.error(`❌ Failed to insert row ${index}:`, error.message);
         } else {
-          console.error(`❌ Failed to insert row ${index}:`, error);
+          console.error(`❌ Failed to insert row ${index}: Unexpected error`, error);
         }
       }
     }
@@ -87,7 +87,7 @@ async function importDataFromSheets(): Promise<void> {
     if (error instanceof Error) {
       console.error('❌ Error in importDataFromSheets:', error.stack);
     } else {
-      console.error('❌ Error in importDataFromSheets:', error);
+      console.error('❌ Error in importDataFromSheets: Unexpected error', error);
     }
   }
 }
@@ -105,5 +105,9 @@ async function importDataFromSheets(): Promise<void> {
   }
 })().catch((error) => {
   // Explicitly handle any unhandled promise rejections
-  console.error('❌ Script execution failed:', error instanceof Error ? error.stack : error);
+  if (error instanceof Error) {
+    console.error('❌ Script execution failed:', error.stack);
+  } else {
+    console.error('❌ Script execution failed: Unexpected error', error);
+  }
 });
