@@ -23,17 +23,14 @@ export async function query<T extends QueryResultRow = QueryResultRow>(
   try {
     const result = await client.query<T>(sql, params);
     return result.rows;
-<<<<<<< HEAD
-=======
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error('🛑 Database query error:', error.message);
+  } catch (error) {rror) {
+    if (error instanceof Error) {(error instanceof Error) {
+      console.error('🛑 Database query error:', error.message);('🛑 Database query error:', error.message);
     } else {
       console.error('🛑 Database query error:', error);
     }
     throw error; 
->>>>>>> refs/remotes/origin/forms
-  } finally {
-    client.release();
+  } finally {inally {
+    client.release();e();
   }
 }
