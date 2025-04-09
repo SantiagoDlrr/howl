@@ -1,6 +1,5 @@
 import { query } from '../lib/database.ts'; // Add the .ts extension
-import { google } from 'googleapis';
-import type { sheets_v4 } from 'googleapis'; // Use `import type` for type-only imports
+import { google, sheets_v4 } from 'googleapis'; // Explicitly import types for Google Sheets API
 import path from 'path';
 import { fileURLToPath } from 'url';
 
