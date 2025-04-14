@@ -42,6 +42,11 @@ export const authConfig = {
       clientId: env.AUTH_MICROSOFT_ENTRA_ID_ID,
       clientSecret: env.AUTH_MICROSOFT_ENTRA_ID_SECRET,
       issuer: env.AUTH_MICROSOFT_ENTRA_ID_ISSUER,
+      // authorization: {
+      //   params: {
+      //     scope: "openid profile email offline_access Calendars.Read OnlineMeetings.Read CallRecords.Read.All OnlineMeetings.Transcripts.Read.All",
+      //   },
+      // },
     }),
 
     CredentialsProvider({

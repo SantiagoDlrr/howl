@@ -1,6 +1,7 @@
 import { auth } from "howl/server/auth"
 import { api, HydrateClient } from "howl/trpc/server"
 import LandingSection from "./_components/landing/landingSection"
+import Test from "./_components/test";
 
 export default async function Home() {
   // const hello = await api.post.hello({ text: "from tRPC" });
@@ -13,6 +14,7 @@ export default async function Home() {
   return (
     <HydrateClient>
       <LandingSection />
+      <Test />
       <div className="bg-bg-dark min-h-screen p-20">
         <h1 className="text-3xl font-bold">
           Mejorando el <span className="text-primary">servicio al cliente</span>
