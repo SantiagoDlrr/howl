@@ -1,6 +1,6 @@
 
 const ToggleButton = ({ id, selected, setSelected }: { id: number, selected: boolean, setSelected: (id: number) => void }) => {
-    const label = id === 1 ? "Usuario" : "Empresa";
+    const label = id === 1 ? "Micrófono y dispositivo" : "Solo micrófono";
     const handleClick = () => {
         console.log(id);
         setSelected(id);

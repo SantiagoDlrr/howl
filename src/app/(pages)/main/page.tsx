@@ -6,14 +6,16 @@ import { CallSideBar } from "howl/app/_components/main/panels/callSidebar";
 import { AiAssistant } from "howl/app/_components/main/panels/aiAssistant";
 import { EmptyState } from "howl/app/_components/main/emptyState";
 import { ReportDisplay } from "howl/app/_components/main/panels/reportDisplay";
-import { UploadModal } from "howl/app/_components/main/upload";
+import { UploadModal } from "@/app/_components/main/uploadModal";
 import type { FileData } from "@/app/types/main";
 import RestrictedAccess from "@/app/_components/auth/restrictedAccess";
 import { useSession } from "next-auth/react";
+import { RecordModal } from "@/app/_components/main/recordModal";
 // import { generateDummyFiles } from "howl/app/_components/main/dummyData/dummyFiles"; // We can remove or keep
 
 export default function MainPage() {
-  const [showModal, setShowModal] = useState(false);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showRecordModal, setShowRecordModal] = useState(false);
 
   // Start empty or with dummy data:
   const [files, setFiles] = useState<FileData[]>([]);
@@ -22,8 +24,10 @@ export default function MainPage() {
   const [leftPanelWidth, setLeftPanelWidth] = useState(253);
   const [rightPanelWidth, setRightPanelWidth] = useState(300);
 
-  const handleUploadModalOpen = () => setShowModal(true);
-  const closeModal = () => setShowModal(false);
+  const handleUploadModalOpen = () => setShowUploadModal(true);
+  const handleRecordModalOpen = () => setShowRecordModal(true);
+  const closeUploadModal = () => setShowUploadModal(false);
+  const closeRecordingModal = () => setShowRecordModal(false);
   const { data: session } = useSession();
   if (!session?.user) {
     return (
@@ -62,9 +66,13 @@ export default function MainPage() {
       console.error("Error uploading file:", error);
       alert("Error uploading file. Check console for details.");
     } finally {
-      closeModal(); // Hide the modal even if there's an error
+      closeUploadModal(); // Hide the modal even if there's an error
     }
   };
+
+  const completeRecording = async (file: File) => {
+    console.log('hi')
+  }
 
   // If you want a separate callback that you pass to <UploadModal onUpload={...}/>, do so:
   // const handleFileUpload = (file: File) => {
@@ -154,7 +162,7 @@ export default function MainPage() {
             type={files[selectedFileIndex]?.type ?? ""}
           />
         ) : (
-          <EmptyState onUpload={handleUploadModalOpen} />
+          <EmptyState onUpload={handleUploadModalOpen} onRecord={handleRecordModalOpen} />
         )}
       </main>
       {/* Asistente de IA */}
@@ -176,7 +184,8 @@ export default function MainPage() {
       </ResizablePanel>
 
       {/* Modal de carga */}
-      {showModal && <UploadModal onClose={closeModal} onUpload={completeUpload} />}
+      {showUploadModal && <UploadModal onClose={closeUploadModal} onUpload={completeUpload} />}
+      {showRecordModal && <RecordModal onClose={closeRecordingModal} onUpload={completeRecording} />}
     </div>
   );
 }
