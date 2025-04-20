@@ -10,15 +10,6 @@ interface Props {
 export const RecordModal: React.FC<Props> = ({ onClose, onUpload }) => {
   const [uploading, setUploading] = useState(false);
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploading(true);
-    // Pass the file to parent. The parent will POST it to the backend.
-    onUpload(file);
-  };
-
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
@@ -31,7 +22,7 @@ export const RecordModal: React.FC<Props> = ({ onClose, onUpload }) => {
 
         {!uploading ? (
           <>
-           <Recording /> 
+           <Recording onUpload={onUpload} setUploading={setUploading} /> 
           </>
         ) : (
           <div>

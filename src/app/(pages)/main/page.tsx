@@ -67,12 +67,9 @@ export default function MainPage() {
       alert("Error uploading file. Check console for details.");
     } finally {
       closeUploadModal(); // Hide the modal even if there's an error
+      closeRecordingModal();
     }
   };
-
-  const completeRecording = async (file: File) => {
-    console.log('hi')
-  }
 
   // If you want a separate callback that you pass to <UploadModal onUpload={...}/>, do so:
   // const handleFileUpload = (file: File) => {
@@ -185,7 +182,7 @@ export default function MainPage() {
 
       {/* Modal de carga */}
       {showUploadModal && <UploadModal onClose={closeUploadModal} onUpload={completeUpload} />}
-      {showRecordModal && <RecordModal onClose={closeRecordingModal} onUpload={completeRecording} />}
+      {showRecordModal && <RecordModal onClose={closeRecordingModal} onUpload={completeUpload} />}
     </div>
   );
 }
