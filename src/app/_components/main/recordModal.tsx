@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Upload, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import Recording from './recording';
 
 interface Props {

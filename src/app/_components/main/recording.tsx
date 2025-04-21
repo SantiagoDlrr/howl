@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef } from "react";
-import Button from "../button";
 import { PiRecordFill } from "react-icons/pi";
 import { FaRegStopCircle } from "react-icons/fa";
 import ToggleButton from "../toggleButton";

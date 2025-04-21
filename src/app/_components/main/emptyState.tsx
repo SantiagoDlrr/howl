@@ -1,6 +1,5 @@
 import React from 'react';
 import { Upload } from 'lucide-react';
-import Recording from './recording';
 import LoadAction from './loadAction';
 import { FaMicrophone } from "react-icons/fa";
 interface Props {
@@ -12,12 +11,14 @@ interface Props {
 export const EmptyState: React.FC<Props> = ({ onUpload, onRecord, close }) => {
   const handleUpload = () => {
     onUpload();
-    close && close();
+    if (close) close();
   };
+  
   const handleRecord = () => {
     onRecord();
-    close && close();
-  }
+    if (close) close();
+  };
+   
 
   return (
     <div className="flex flex-col items-center justify-center h-full w-full p-6 ">

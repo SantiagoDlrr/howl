@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { Upload, X } from 'lucide-react';
-import Recording from './recording';
+import React from 'react';
+import { X } from 'lucide-react';
 import { EmptyState } from './emptyState';
 
 interface Props {
@@ -10,7 +9,6 @@ interface Props {
 }
 
 export const NewCallModal: React.FC<Props> = ({ onClose, onUpload, onRecord }) => {
-    const [uploading, setUploading] = useState(false);
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
