@@ -37,7 +37,28 @@ jobs:
     - name: Run build
       run: npm run build
 
-    - name: Install dependencies 
+  tests:
+    name: UI tests
+    runs-on: ubuntu-latest
+    env:
+      AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      AUTH_MICROSOFT_ENTRA_ID_ID: ${{ secrets.AUTH_MICROSOFT_ENTRA_ID_ID }}
+      AUTH_MICROSOFT_ENTRA_ID_SECRET: ${{ secrets.AUTH_MICROSOFT_ENTRA_ID_SECRET }}
+      AUTH_MICROSOFT_ENTRA_ID_ISSUER: ${{ secrets.AUTH_MICROSOFT_ENTRA_ID_ISSUER }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up nodejs
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
       run: npm install
 
     - name: Build 

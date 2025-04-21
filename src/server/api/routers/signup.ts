@@ -6,8 +6,8 @@ import {
   publicProcedure,
 } from "howl/server/api/trpc";
 
-export const registerRouter = createTRPCRouter({
-    register: publicProcedure
+export const signupRouter = createTRPCRouter({
+    signup: publicProcedure
     .input(
       z.object({
         name: z.string().min(1, "Name is required"),

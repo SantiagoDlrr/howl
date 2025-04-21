@@ -1,5 +1,5 @@
 import { postRouter } from "howl/server/api/routers/post";
-import { registerRouter } from "howl/server/api/routers/register";
+import { signupRouter } from "howl/server/api/routers/signup";
 import { createCallerFactory, createTRPCRouter } from "howl/server/api/trpc";
 
 /**
@@ -9,7 +9,7 @@ import { createCallerFactory, createTRPCRouter } from "howl/server/api/trpc";
  */
 export const appRouter = createTRPCRouter({
   post: postRouter,
-  register: registerRouter,
+  signup: signupRouter,
 });
 
 // export type definition of API
