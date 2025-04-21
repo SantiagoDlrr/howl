@@ -6,11 +6,21 @@ import { FaMicrophone } from "react-icons/fa";
 interface Props {
   onUpload: () => void;
   onRecord: () => void;
+  close?: () => void;
 }
 
-export const EmptyState: React.FC<Props> = ({ onUpload, onRecord }) => {
+export const EmptyState: React.FC<Props> = ({ onUpload, onRecord, close }) => {
+  const handleUpload = () => {
+    onUpload();
+    close && close();
+  };
+  const handleRecord = () => {
+    onRecord();
+    close && close();
+  }
+
   return (
-    <div className="flex flex-col items-center justify-center h-full w-full p-6 border-t border">
+    <div className="flex flex-col items-center justify-center h-full w-full p-6 ">
       <div className="text-center  w-full">
         {/* <Recording /> */}
         <h2 className="text-2xl font-semibold text-purple-600 mb-4">¡Bienvenido a HowlX!</h2>
@@ -18,7 +28,7 @@ export const EmptyState: React.FC<Props> = ({ onUpload, onRecord }) => {
         <div className='flex flex-row gap-10 items-center justify-center'>
           <div className="flex-1">
             <LoadAction
-              onClick={onRecord}
+              onClick={handleRecord}
               title="Graba y analiza tu llamada"
               label="Empieza una nueva grabación"
               buttonLabel="Graba"
@@ -27,7 +37,7 @@ export const EmptyState: React.FC<Props> = ({ onUpload, onRecord }) => {
           </div>
           <div className="flex-1">
             <LoadAction
-              onClick={onUpload}
+              onClick={handleUpload}
               title="Analiza y transcribe tu archivo"
               label="Arrastra o haz click para cargar"
               buttonLabel="Cargar archivo"

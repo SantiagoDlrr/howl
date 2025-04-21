@@ -11,11 +11,13 @@ import type { FileData } from "@/app/types/main";
 import RestrictedAccess from "@/app/_components/auth/restrictedAccess";
 import { useSession } from "next-auth/react";
 import { RecordModal } from "@/app/_components/main/recordModal";
+import NewCallModal from "@/app/_components/main/newCallModal";
 // import { generateDummyFiles } from "howl/app/_components/main/dummyData/dummyFiles"; // We can remove or keep
 
 export default function MainPage() {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showRecordModal, setShowRecordModal] = useState(false);
+  const [showNewCallModal, setShowNewCallModal] = useState(false);
 
   // Start empty or with dummy data:
   const [files, setFiles] = useState<FileData[]>([]);
@@ -26,8 +28,11 @@ export default function MainPage() {
 
   const handleUploadModalOpen = () => setShowUploadModal(true);
   const handleRecordModalOpen = () => setShowRecordModal(true);
+  const handleNewCallModalOpen = () => setShowNewCallModal(true);
   const closeUploadModal = () => setShowUploadModal(false);
   const closeRecordingModal = () => setShowRecordModal(false);
+  const closeNewCallModal = () => setShowNewCallModal(false);
+
   const { data: session } = useSession();
   if (!session?.user) {
     return (
@@ -144,7 +149,7 @@ export default function MainPage() {
           files={files}
           selectedFileIndex={selectedFileIndex}
           onSelectFile={setSelectedFileIndex}
-          onAddNewFile={handleUploadModalOpen}
+          onAddNewFile={handleNewCallModalOpen}
         />
       </ResizablePanel>
 
@@ -183,6 +188,7 @@ export default function MainPage() {
       {/* Modal de carga */}
       {showUploadModal && <UploadModal onClose={closeUploadModal} onUpload={completeUpload} />}
       {showRecordModal && <RecordModal onClose={closeRecordingModal} onUpload={completeUpload} />}
+      {showNewCallModal && <NewCallModal onClose={closeNewCallModal} onUpload={handleUploadModalOpen} onRecord={handleRecordModalOpen} />}
     </div>
   );
 }
