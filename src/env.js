@@ -19,6 +19,7 @@ export const env = createEnv({
     AUTH_MICROSOFT_ENTRA_ID_ISSUER: z.string(),
     DATABASE_URL: z.string().url(),
     OPENAI_API_KEY: z.string(),
+    GEMINI_API_KEY: z.string(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -54,6 +55,7 @@ export const env = createEnv({
     
     //NEXT_PUBLIC_GEMINI_API_KEY: process.env.NEXT_PUBLIC_GEMINI_API_KEY,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    GEMINI_API_KEY: process.env.GEMINI_API_KEY,
 
   },
   /**

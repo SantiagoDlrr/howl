@@ -23,4 +23,11 @@ export const routes = [
         href: "/logs",
         isSelected: false
     },
+
+    {
+        id:4,
+        label:"ChatBot",
+        href: "/ChatBot",
+        isSelected: false
+    }
 ];
