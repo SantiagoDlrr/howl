@@ -17,4 +17,10 @@ export const routes = [
         href: "/logs",
         isSelected: false
     },
+    {
+        id: 3,
+        label: "Clientes",
+        href: "/clients",
+        isSelected: false
+    }
 ];

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useRef, useState } from 'react';
 
 interface Props {
@@ -47,7 +49,7 @@ export const ResizablePanel: React.FC<Props> = ({ children, initialWidth, minWid
   return (
     <div
       ref={panelRef}
-      className={`relative ${side === 'left' ? 'border-r' : 'border-l'} border-gray-200`}
+      className={` relative ${side === 'left' ? 'border-r' : 'border-l'} border-gray-200`}
       style={{ width }}
     >
       {children}
