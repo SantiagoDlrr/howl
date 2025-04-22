@@ -3,18 +3,33 @@ import React, { useState, useMemo, useEffect } from 'react';
 import LogsTable from './logsTable';
 
 interface CallLogEntry {
+  id: number;
   callDate: string;
   client: string;
+  clientFirstName?: string;
+  clientLastName?: string;
   clientCompany: string;
+  consultant_id: number;
   category: string;
   rating: string;
   time: string;
+  context?: string;
+  summary?: string;
+  feedback?: string;
+}
+
+interface UserRole {
+  userId: string;
+  consultantId: number;
+  role: 'administrator' | 'supervisor' | 'consultant';
 }
 
 const CallLogsTable: React.FC = () => {
   const [callLogs, setCallLogs] = useState<CallLogEntry[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<UserRole | null>(null);
+  const [supervisedConsultants, setSupervisedConsultants] = useState<number[]>([]);
 
   // State for filters and search
   const [sortBy, setSortBy] = useState<'newest' | 'oldest'>('newest');
@@ -26,26 +41,85 @@ const CallLogsTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const logsPerPage = 10;
 
-  // Fetch data from API
+  // Fetch user role
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      try {
+        setLoading(true);
+        console.log("Obteniendo rol de usuario...");
+        const response = await fetch('/api/roles');
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to fetch user role');
+        }
+        
+        const data = await response.json();
+        console.log("Rol obtenido:", data);
+        setUserRole(data);
+        
+        // Si el usuario es un supervisor, obtener consultores supervisados
+        if (data.role === 'supervisor') {
+          await fetchSupervisedConsultants(data.consultantId);
+        }
+      } catch (err) {
+        console.error('Error obteniendo rol de usuario:', err);
+        setError(err instanceof Error ? err.message : 'Error obteniendo rol de usuario');
+      }
+    };
+
+    const fetchSupervisedConsultants = async (supervisorId: number) => {
+      try {
+        console.log("Obteniendo consultores supervisados...");
+        const response = await fetch(`/api/supervision?supervisor_id=${supervisorId}`);
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to fetch supervised consultants');
+        }
+        
+        const data = await response.json();
+        console.log("Consultores supervisados:", data);
+        setSupervisedConsultants(data.consultants || []);
+      } catch (err) {
+        console.error('Error obteniendo consultores supervisados:', err);
+      }
+    };
+
+    void fetchUserRole();
+  }, []);
+
+  // Fetch call logs data
   useEffect(() => {
     const fetchCallLogs = async () => {
       try {
-        setLoading(true);
-        const response = await fetch('/api/call-logs'); // Nota: "call-logs" no "call-logs"
+        // Solo obtener datos cuando tengamos información del rol del usuario
+        if (!userRole) return;
+        
+        console.log("Obteniendo logs de llamadas...");
+        const response = await fetch('/api/call-logs');
+        
         if (!response.ok) {
-          throw new Error('Failed to fetch call logs');
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to fetch call logs');
         }
+        
         const data = await response.json() as CallLogEntry[];
+        console.log(`${data.length} logs de llamadas obtenidos`);
         setCallLogs(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error occurred');
+        console.error('Error obteniendo logs de llamadas:', err);
+        setError(err instanceof Error ? err.message : 'Error obteniendo logs de llamadas');
       } finally {
         setLoading(false);
       }
     };
 
-    void fetchCallLogs();
-  }, []);
+    // Solo obtener logs de llamadas si tenemos la información del rol
+    if (userRole) {
+      void fetchCallLogs();
+    }
+  }, [userRole]);
 
   // Dynamically generate unique filter options
   const filterOptions = useMemo(() => {
@@ -70,12 +144,12 @@ const CallLogsTable: React.FC = () => {
           ))
       )
       .sort((a, b) => {
-        // Orden por fecha (mantén tu lógica existente)
+        // Orden por fecha
         const dateA = new Date(a.callDate).getTime();
         const dateB = new Date(b.callDate).getTime();
         let sortResult = sortBy === 'newest' ? dateB - dateA : dateA - dateB;
 
-        // Orden por tiempo (nueva lógica)
+        // Orden por tiempo
         if (timeSort !== 'none') {
           const timeA = parseInt(a.time);
           const timeB = parseInt(b.time);
@@ -92,8 +166,12 @@ const CallLogsTable: React.FC = () => {
   const currentLogs = filteredLogs.slice(indexOfFirstLog, indexOfLastLog);
   const totalPages = Math.ceil(filteredLogs.length / logsPerPage);
 
+  if (loading && !userRole) {
+    return <div className="w-full p-20 text-center">Cargando información de usuario...</div>;
+  }
+
   if (loading) {
-    return <div className="w-full p-20 text-center">Loading call logs...</div>;
+    return <div className="w-full p-20 text-center">Cargando registros de llamadas...</div>;
   }
 
   if (error) {
@@ -116,6 +194,21 @@ const CallLogsTable: React.FC = () => {
 
   return (
     <div className="space-y-4 w-full p-20">
+      {/* Role indicator */}
+      {userRole && (
+        <div className="bg-blue-50 p-3 rounded-md mb-4">
+          <span className="font-semibold">Rol actual:</span> {
+            userRole.role === 'administrator' ? 'Administrador' :
+            userRole.role === 'supervisor' ? 'Supervisor' : 'Consultor'
+          }
+          {userRole.role !== 'administrator' && (
+            <span className="ml-2 text-gray-500">
+              (Mostrando datos según tu nivel de acceso)
+            </span>
+          )}
+        </div>
+      )}
+      
       {/* Filters and Search */}
       <div className="flex space-x-2">
         {/* Sort By Dropdown */}
@@ -127,8 +220,8 @@ const CallLogsTable: React.FC = () => {
           }}
           className="border rounded px-2 py-1"
         >
-          <option value="newest">Newest</option>
-          <option value="oldest">Oldest</option>
+          <option value="newest">Más reciente</option>
+          <option value="oldest">Más antiguo</option>
         </select>
 
         {/* Company Filter */}
@@ -140,7 +233,7 @@ const CallLogsTable: React.FC = () => {
           }}
           className="border rounded px-2 py-1"
         >
-          <option value="">All Companies</option>
+          <option value="">Todas las empresas</option>
           {filterOptions.companies.map(company => (
             <option key={company} value={company}>{company}</option>
           ))}
@@ -155,7 +248,7 @@ const CallLogsTable: React.FC = () => {
           }}
           className="border rounded px-2 py-1"
         >
-          <option value="">All Categories</option>
+          <option value="">Todas las categorías</option>
           {filterOptions.categories.map(category => (
             <option key={category} value={category}>{category}</option>
           ))}
@@ -170,7 +263,7 @@ const CallLogsTable: React.FC = () => {
           }}
           className="border rounded px-2 py-1"
         >
-          <option value="">All Ratings</option>
+          <option value="">Todas las calificaciones</option>
           {filterOptions.ratings.map(rating => (
             <option key={rating} value={rating}>{rating}</option>
           ))}
@@ -185,16 +278,16 @@ const CallLogsTable: React.FC = () => {
           }}
           className="border rounded px-2 py-1"
         >
-          <option value="none">Time: Default</option>
-          <option value="longer">Longer First</option>
-          <option value="shorter">Shorter First</option>
+          <option value="none">Tiempo: Predeterminado</option>
+          <option value="longer">Más largos primero</option>
+          <option value="shorter">Más cortos primero</option>
         </select>
 
         {/* Search Input */}
         <div className="relative flex-grow">
           <input
             type="text"
-            placeholder="Type to search..."
+            placeholder="Buscar..."
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
@@ -223,15 +316,16 @@ const CallLogsTable: React.FC = () => {
           onClick={resetFilters}
           className="bg-[#F9FBFF] hover:bg-gray-300 rounded px-2 py-1 border border-black"
         >
-          Reset
+          Restablecer
         </button>
       </div>
 
       <LogsTable logs={currentLogs} />
+      
       {/* No results message */}
       {filteredLogs.length === 0 && (
         <div className="text-center py-4 text-gray-500">
-          No logs found matching your filters
+          No se encontraron registros que coincidan con tus filtros
         </div>
       )}
 
@@ -239,7 +333,7 @@ const CallLogsTable: React.FC = () => {
       {filteredLogs.length > 0 && (
         <div className="flex justify-between items-center">
           <div className="text-sm text-gray-600">
-            Showing {indexOfFirstLog + 1} to {Math.min(indexOfLastLog, filteredLogs.length)} of {filteredLogs.length} entries
+            Mostrando {indexOfFirstLog + 1} a {Math.min(indexOfLastLog, filteredLogs.length)} de {filteredLogs.length} registros
           </div>
           <div className="flex space-x-1">
             <button
