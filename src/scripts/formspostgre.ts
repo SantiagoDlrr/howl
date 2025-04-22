@@ -13,7 +13,7 @@ const KEY_PATH = path.join(__dirname, '/ninth-territory-456217-q1-a4e39a5e80ad.j
 const SPREADSHEET_ID = '1t-OEMm-oeQWwCaqHOyZ4-hcntQbi89JSChLLGpqB_dQ';
 const RANGE = 'Sheet1!A1:F100';
 
-async function importDataFromSheets(): Promise<void> {
+export async function importDataFromSheets(): Promise<void> {
   try {
     // Authenticate with Google Sheets
     const auth = new google.auth.JWT({
@@ -73,14 +73,27 @@ async function importDataFromSheets(): Promise<void> {
           ]
         );
         console.log(`✅ Row ${index} inserted successfully.`);
-      } catch (error) {
-        // Safely assert the error type to 'Error'
-        if (error instanceof Error) {
-          console.error(`❌ Failed to insert row ${index}:`, error.message);
-        } else {
-          console.error(`❌ Failed to insert row ${index}: Unexpected error`, error);
+      // } catch (error) {
+      //   // Safely assert the error type to 'Error'
+      //   if (error instanceof Error) {
+      //     console.error(`❌ Failed to insert row ${index}:`, error.message);
+      //   } else {
+      //     console.error(`❌ Failed to insert row ${index}: Unexpected error`, error);
+      //   }
+      // }
+    } catch (error) {
+      if (error instanceof AggregateError) {
+        console.error(`❌ Failed to insert row ${index}: AggregateError`);
+        for (const subError of error.errors) {
+          console.error('↪️ Inner error:', subError);
         }
+      } else if (error instanceof Error) {
+        console.error(`❌ Failed to insert row ${index}:`, error.message);
+        console.error(error.stack);
+      } else {
+        console.error(`❌ Failed to insert row ${index}:`, JSON.stringify(error, null, 2));
       }
+    }
     }
 
     console.log('✅ Data import completed!');
