@@ -43,7 +43,7 @@ const CallStatsDashboard: React.FC = () => {
     const fetchCallLogs = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch('/api/call-logs');
+        const response = await fetch('/api/callLogs');
 
         if (!response.ok) {
           throw new Error('Failed to fetch call logs');
