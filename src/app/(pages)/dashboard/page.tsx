@@ -13,8 +13,6 @@ export default async function DashboardPage() {
     )
   }
 
-  const results = await api.feedback.getAll();
-  
   return (
     <div className="container mx-auto p-4 pt-24">
       {/* <h1 className="text-2xl font-medium mb-4">Analytics Dashboard</h1> */}
@@ -23,7 +21,7 @@ export default async function DashboardPage() {
         title="Sales Performance"
         height="700px"
       />
-      <FormsResults results={results} />
+      <FormsResults />
     </div>
   );
 }

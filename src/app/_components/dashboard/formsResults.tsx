@@ -3,43 +3,28 @@ import { client_feedback } from "@prisma/client";
 import { api } from "howl/trpc/react";
 
 import type { Prisma } from "@prisma/client";
-
-type FeedbackWithRelations = Prisma.client_feedbackGetPayload<{
-  include: {
-    client: {
-      select: {
-        id: true;
-        firstname: true;
-        lastname: true;
-      };
-    };
-    consultant: {
-      select: {
-        id: true;
-        firstname: true;
-        lastname: true;
-        email: true;
-      };
-    };
-  };
-}>;
+import { useEffect } from "react";
 
 
-interface Props {
-    results: FeedbackWithRelations[];
-}
+const FormsResults = () => {
+    const { data: results, isLoading, error, refetch } = api.feedback.getAll.useQuery();
 
-const FormsResults = ({results} : Props) => {
-    // const { data: results, isLoading, error } = api.feedback.getAll.useQuery();
-    // if (isLoading) {
-    //     return <div>Loading forms results...</div>;
-    // }
+    useEffect(() => {
+        const interval = setInterval(() => {
+          refetch(); 
+        }, 10000); 
+    
+        return () => clearInterval(interval); 
+      }, [refetch]);
 
-    // if (error) {
-    //     console.error("Error fetching forms results:", error);
-    //     return <div>Error fetching forms results</div>;
-    // }
-    console.log("Results:", results);
+    if (isLoading) {
+        return <div className="text-center">Cargando...</div>;
+    }
+    if (error) {
+        return <div className="text-center">Error: {error.message}</div>;
+    }
+
+    
     return (
         <div className="bg-bg-dark my-10 p-10 rounded-md shadow-lg">
             <h2 className="text-xl font-semibold mb-8">Comentarios de encuestas</h2>
