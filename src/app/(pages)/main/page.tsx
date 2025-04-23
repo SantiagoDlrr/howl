@@ -7,7 +7,7 @@ import { AiAssistant } from "howl/app/_components/main/panels/aiAssistant";
 import { EmptyState } from "howl/app/_components/main/emptyState";
 import { ReportDisplay } from "howl/app/_components/main/panels/reportDisplay";
 import { UploadModal } from "@/app/_components/main/uploadModal";
-import type { FileData } from "@/app/types/main";
+import type { FileData } from "@/app/utils/types/main";
 import RestrictedAccess from "@/app/_components/auth/restrictedAccess";
 import { useSession } from "next-auth/react";
 import { RecordModal } from "@/app/_components/main/recordModal";
@@ -162,8 +162,8 @@ export default function MainPage() {
             title={files[selectedFileIndex]?.name ?? ""}
             onTitleChange={(newTitle) => updateFileName(selectedFileIndex, newTitle)}
             file={files[selectedFileIndex]!}
-            type={files[selectedFileIndex]?.type ?? ""}           />
-            
+            type={files[selectedFileIndex]?.type ?? ""} />
+
         ) : (
           <EmptyState onUpload={handleUploadModalOpen} onRecord={handleRecordModalOpen} />
         )}

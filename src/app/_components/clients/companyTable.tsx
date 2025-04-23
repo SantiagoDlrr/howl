@@ -1,25 +1,31 @@
+"use client";
 
-const CompanyTable = () => {
+import { api } from "@/trpc/react";
+import Spinner from "../spinner";
 
-    const logs = [
-        {
-            callDate: '2023-10-01',
-            client: 'John Doe',
-            clientCompany: 'Softek',
-            category: 'Technical Support',
-            rating: 'Positive',
-            time: '10:00 AM',
-        },
-        {
-            callDate: '2023-10-02',
-            client: 'Jane Smith',
-            clientCompany: 'Tech Corp',
-            category: 'Sales Inquiry',
-            rating: 'Negative',
-            time: '11:00 AM',
-        },
-        // Add more log entries as needed
-    ];
+interface CompanyProps {
+    onClick: (id: number) => void;
+}
+
+const CompanyTable = ({onClick} : CompanyProps) => {
+
+    const { data: companies, isLoading } = api.company.getAll.useQuery();
+
+    if (isLoading) {
+        return (
+            <Spinner />
+        )
+    }
+
+    if (!companies || companies.length === 0) {
+        return (
+            <div className="bg-bg h-screen pt-24 px-20 w-full">
+                <div className="flex justify-center items-center h-full">
+                    <p className="text-lg">No hay empresas registradas</p>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="bg-bg h-screen pt-24 px-20 w-full">
@@ -30,28 +36,30 @@ const CompanyTable = () => {
                     <thead>
                         <tr className="bg-gray-100 border-b">
                             <th className="p-3 text-left">Empresa</th>
-                            <th className="p-3 text-left">Ver</th>
-                            {/* <th className="p-3 text-left">Editar</th> */}
+                            <th className="p-3 text-left">Cliente Desde</th>
+                            <th className="p-3 text-left">Contactos</th>
+                            <th className="p-3 text-left">Acción</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {logs.map((log, index) => (
+                        {companies.map((company, index) => (
                             <tr
                                 key={index}
                                 className="border-b hover:bg-gray-50 transition-colors"
                             >
-                                <td className="p-3">{log.client}</td>
-                                {/* <td className="p-3">
-                        <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
-                            {log.category}
-                        </span>
-                    </td> */}
+                                <td className="p-3">{company.name}</td>
+                                <td className="p-3">{company.client_since.toLocaleDateString()}</td>
+                                <td className="p-3">
+                                    <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
+                                        {company._count.client}
+                                    </span>
+                                </td>
                                 <td className="p-3 flex flex-row gap-2">
                                     <button className="bg-bg-dark text-text px-3 py-1 rounded hover:bg-bg-extradark transition-colors">
-                                        Ver contactos
-                                    </button>
-                                    <button className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
                                         Editar
+                                    </button>
+                                    <button onClick={() => onClick(company.id)} className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
+                                        Ver detalles
                                     </button>
                                 </td>
                             </tr>

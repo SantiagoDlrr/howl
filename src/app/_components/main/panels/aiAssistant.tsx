@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { ChevronUp, User } from "lucide-react";
 import { askDeepseek } from "@/app/utils/deepseek";
 import { ChatMessage } from "../chatMessage";
-import type { FileData } from "@/app/types/main";
+import type { FileData } from "@/app/utils/types/main";
 
 interface Message {
   role: "user" | "assistant";

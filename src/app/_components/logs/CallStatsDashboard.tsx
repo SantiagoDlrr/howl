@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import StatsCard from './statsCard';
-import type { TrendData } from '@/app/types/logs';
+import type { TrendData } from '@/app/utils/types/logs';
 
 // Interfaces
 interface CallLogEntry {
@@ -48,11 +48,11 @@ const CallStatsDashboard: React.FC = () => {
         if (!response.ok) {
           throw new Error('Failed to fetch call logs');
         }
-        
+
         const data = await response.json() as CallLogEntry[];
         // setCallLogs(data);
         processData(data);
-        
+
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unknown error occurred');
       } finally {
@@ -74,7 +74,7 @@ const CallStatsDashboard: React.FC = () => {
     setPositiveCallsData(generateTrendData(30, 40, 70));
 
     void fetchCallLogs();
-    
+
   }, []);
 
   // Procesar datos de las llamadas

@@ -12,7 +12,7 @@ import {
   Edit2,
   Check
 } from 'lucide-react';
-import type { Report, TranscriptEntry, FileData } from '@/app/types/main';
+import type { Report, TranscriptEntry, FileData } from '@/app/utils/types/main';
 import { ReportSection } from '../reportSection';
 import TranscriptSection from '../transcriptSection';
 
@@ -108,8 +108,8 @@ export const ReportDisplay: React.FC<Props> = ({ report, file, transcript, title
           <div className="flex space-x-6">
             <button
               className={`py-3 px-1 text-sm font-medium relative ${activeTab === 'report'
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-gray-500 hover:text-gray-700'
+                ? 'text-primary border-b-2 border-primary'
+                : 'text-gray-500 hover:text-gray-700'
                 }`}
               onClick={() => setActiveTab('report')}
             >
@@ -117,8 +117,8 @@ export const ReportDisplay: React.FC<Props> = ({ report, file, transcript, title
             </button>
             <button
               className={`py-3 px-1 text-sm font-medium relative ${activeTab === 'transcript'
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-gray-500 hover:text-gray-700'
+                ? 'text-primary border-b-2 border-primary'
+                : 'text-gray-500 hover:text-gray-700'
                 }`}
               onClick={() => setActiveTab('transcript')}
             >

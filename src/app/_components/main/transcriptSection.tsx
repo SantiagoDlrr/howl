@@ -1,4 +1,4 @@
-import type { TranscriptEntry } from '@/app/types/main';
+import type { TranscriptEntry } from '@/app/utils/types/main';
 
 
 const TranscriptSection = ({ transcript }: { transcript: TranscriptEntry[] }) => {

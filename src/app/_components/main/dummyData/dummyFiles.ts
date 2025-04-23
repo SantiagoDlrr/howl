@@ -1,4 +1,4 @@
-import type { FileData } from "@/app/types/main";
+import type { FileData } from "@/app/utils/types/main";
 
 export const generateDummyFiles = (): FileData[] => [
   {

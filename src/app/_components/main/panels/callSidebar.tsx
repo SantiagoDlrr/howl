@@ -1,6 +1,6 @@
 import React from 'react';
 import { List } from 'lucide-react';
-import type { FileData } from '@/app/types/main';
+import type { FileData } from '@/app/utils/types/main';
 
 interface Props {
   files: FileData[];
