@@ -14,16 +14,16 @@ const LogsTable = ({ logs }: TableProps) => {
     return (
 
         <div className="w-full overflow-x-auto rounded border border-black">
-            <table className="w-full border-collapse text-sm">
+            <table className="w-full border-collapse text-sm text-center">
                 <thead>
                     <tr className="bg-gray-100 border-b">
-                        <th className="p-3 text-left">Call Date</th>
-                        <th className="p-3 text-left">Client</th>
-                        <th className="p-3 text-left">Client Company</th>
-                        <th className="p-3 text-left">Category</th>
-                        <th className="p-3 text-left">Rating</th>
-                        <th className="p-3 text-left">Time</th>
-                        <th className="p-3 text-left">AI Menu</th>
+                        <th className="p-3">Call Date</th>
+                        <th className="p-3">Client</th>
+                        <th className="p-3">Client Company</th>
+                        <th className="p-3">Category</th>
+                        <th className="p-3">Rating</th>
+                        <th className="p-3">Time</th>
+                        <th className="p-3">AI Menu</th>
                     </tr>
                 </thead>
                 <tbody>

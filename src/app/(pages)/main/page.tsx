@@ -49,7 +49,7 @@ export default function MainPage() {
       formData.append("file", file);
 
       // Adjust the URL as needed: if backend is on another port or domain
-      const response = await fetch("http://localhost:8000/upload", {
+      const response = await fetch("http://160.34.211.88:8000/upload", {
         method: "POST",
         body: formData
       });
@@ -161,8 +161,9 @@ export default function MainPage() {
             transcript={getDisplayedTranscript()}
             title={files[selectedFileIndex]?.name ?? ""}
             onTitleChange={(newTitle) => updateFileName(selectedFileIndex, newTitle)}
-            type={files[selectedFileIndex]?.type ?? ""}
-          />
+            file={files[selectedFileIndex]!}
+            type={files[selectedFileIndex]?.type ?? ""}           />
+            
         ) : (
           <EmptyState onUpload={handleUploadModalOpen} onRecord={handleRecordModalOpen} />
         )}

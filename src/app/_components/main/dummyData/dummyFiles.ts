@@ -7,15 +7,16 @@ export const generateDummyFiles = (): FileData[] => [
     date: '01/04/2025',
     type: 'Logística',
     duration: '12 min',
-    rating: 70,
+    
     report: {
       feedback: 'El cliente reporta que su paquete no ha llegado a tiempo.',
       keyTopics: ['Retraso en envío', 'Seguimiento de paquetes'],
       emotions: ['1. Frustración', '2. Inquietud', '3. Agradecimiento'],
       sentiment: 'Negativo - Neutro',
       output: 'Se abrió un ticket de seguimiento con paquetería.',
-      riskWords: 'El cliente amenazó con cancelar su suscripción.',
+      riskWords: ['1. peligro', '2. callate'],
       summary: 'El cliente llamó por un paquete que lleva 5 días de retraso. Se ofreció seguimiento y descuento.',
+      rating: 70,
     },
     transcript: [
       { speaker: 'Sandra', text: 'Buenas tardes, ¿en qué puedo ayudarte?' },
@@ -36,15 +37,16 @@ export const generateDummyFiles = (): FileData[] => [
     date: '30/03/2025',
     type: 'Administración',
     duration: '9 min',
-    rating: 85,
+
     report: {
       feedback: 'El cliente tenía dudas sobre la emisión de su CFDI.',
       keyTopics: ['Facturación', 'SAT', 'Datos fiscales'],
       emotions: ['1. Curiosidad', '2. Confusión'],
       sentiment: 'Neutro',
       output: 'Se explicó el proceso y se reenvió la factura.',
-      riskWords: 'El cliente mencionó posibles errores fiscales.',
+      riskWords: ['1. peligro', '2. callate'],
       summary: 'Llamada corta donde se aclaró el proceso de facturación digital.',
+      rating: 85,
     },
     transcript: [
       { speaker: 'Carlos', text: '¿Cómo puedo obtener mi factura? No la encuentro en el correo.' },
@@ -64,15 +66,16 @@ export const generateDummyFiles = (): FileData[] => [
     date: '28/03/2025',
     type: 'Finanzas',
     duration: '5 min',
-    rating: 95,
+
     report: {
       feedback: 'El cliente propuso una mejora en la app.',
       keyTopics: ['UX', 'Funcionalidades nuevas'],
       emotions: ['1. Entusiasmo'],
       sentiment: 'Positivo',
       output: 'Se documentó la sugerencia para revisión del equipo de producto.',
-      riskWords: 'Ninguna',
+      riskWords: ['1. None'],
       summary: 'El cliente dio una sugerencia sobre agregar notificaciones personalizadas.',
+      rating: 95,
     },
     transcript: [
       { speaker: 'Clienta', text: '¡Amo la app! Es muy útil, pero creo que le falta una opción para configurar alertas según mis metas de ahorro.' },
