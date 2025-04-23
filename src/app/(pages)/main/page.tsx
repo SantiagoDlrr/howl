@@ -6,14 +6,18 @@ import { CallSideBar } from "howl/app/_components/main/panels/callSidebar";
 import { AiAssistant } from "howl/app/_components/main/panels/aiAssistant";
 import { EmptyState } from "howl/app/_components/main/emptyState";
 import { ReportDisplay } from "howl/app/_components/main/panels/reportDisplay";
-import { UploadModal } from "howl/app/_components/main/uploadModal";
+import { UploadModal } from "@/app/_components/main/uploadModal";
 import type { FileData } from "@/app/types/main";
 import RestrictedAccess from "@/app/_components/auth/restrictedAccess";
 import { useSession } from "next-auth/react";
+import { RecordModal } from "@/app/_components/main/recordModal";
+import NewCallModal from "@/app/_components/main/newCallModal";
 // import { generateDummyFiles } from "howl/app/_components/main/dummyData/dummyFiles"; // We can remove or keep
 
 export default function MainPage() {
-  const [showModal, setShowModal] = useState(false);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showRecordModal, setShowRecordModal] = useState(false);
+  const [showNewCallModal, setShowNewCallModal] = useState(false);
 
   // Start empty or with dummy data:
   const [files, setFiles] = useState<FileData[]>([]);
@@ -22,8 +26,13 @@ export default function MainPage() {
   const [leftPanelWidth, setLeftPanelWidth] = useState(253);
   const [rightPanelWidth, setRightPanelWidth] = useState(300);
 
-  const handleUploadModalOpen = () => setShowModal(true);
-  const closeModal = () => setShowModal(false);
+  const handleUploadModalOpen = () => setShowUploadModal(true);
+  const handleRecordModalOpen = () => setShowRecordModal(true);
+  const handleNewCallModalOpen = () => setShowNewCallModal(true);
+  const closeUploadModal = () => setShowUploadModal(false);
+  const closeRecordingModal = () => setShowRecordModal(false);
+  const closeNewCallModal = () => setShowNewCallModal(false);
+
   const { data: session } = useSession();
   if (!session?.user) {
     return (
@@ -62,7 +71,8 @@ export default function MainPage() {
       console.error("Error uploading file:", error);
       alert("Error uploading file. Check console for details.");
     } finally {
-      closeModal(); // Hide the modal even if there's an error
+      closeUploadModal(); // Hide the modal even if there's an error
+      closeRecordingModal();
     }
   };
 
@@ -125,13 +135,6 @@ export default function MainPage() {
   };
 
 
-  const handleRecordAction = () => {
-    console.log("Record action triggered from EmptyState");
-    // TODO: Implement actual recording logic here
-    // Maybe set state to show a recording UI, call an API, etc.
-    alert("Recording feature not yet implemented!");
-  };
-
   return (
     <div className="h-screen flex justify-center items-stretch pt-16 bg-gray-50 overflow-hidden">
       {/* Historial de llamadas */}
@@ -146,7 +149,7 @@ export default function MainPage() {
           files={files}
           selectedFileIndex={selectedFileIndex}
           onSelectFile={setSelectedFileIndex}
-          onAddNewFile={handleUploadModalOpen}
+          onAddNewFile={handleNewCallModalOpen}
         />
       </ResizablePanel>
 
@@ -155,14 +158,14 @@ export default function MainPage() {
         {selectedFileIndex !== null && files.length > 0 ? (
           <ReportDisplay
             report={getDisplayedReport()!}
-            file={files[selectedFileIndex]!} // <-- ADD THIS LINE
             transcript={getDisplayedTranscript()}
             title={files[selectedFileIndex]?.name ?? ""}
             onTitleChange={(newTitle) => updateFileName(selectedFileIndex, newTitle)}
-            type={files[selectedFileIndex]?.type ?? ""}
-          />
+            file={files[selectedFileIndex]!}
+            type={files[selectedFileIndex]?.type ?? ""}           />
+            
         ) : (
-          <EmptyState onUpload={handleUploadModalOpen} onRecord={handleRecordAction}/>
+          <EmptyState onUpload={handleUploadModalOpen} onRecord={handleRecordModalOpen} />
         )}
       </main>
       {/* Asistente de IA */}
@@ -184,7 +187,9 @@ export default function MainPage() {
       </ResizablePanel>
 
       {/* Modal de carga */}
-      {showModal && <UploadModal onClose={closeModal} onUpload={completeUpload} />}
+      {showUploadModal && <UploadModal onClose={closeUploadModal} onUpload={completeUpload} />}
+      {showRecordModal && <RecordModal onClose={closeRecordingModal} onUpload={completeUpload} />}
+      {showNewCallModal && <NewCallModal onClose={closeNewCallModal} onUpload={handleUploadModalOpen} onRecord={handleRecordModalOpen} />}
     </div>
   );
 }
