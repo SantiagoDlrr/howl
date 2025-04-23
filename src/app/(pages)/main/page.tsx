@@ -161,8 +161,9 @@ export default function MainPage() {
             transcript={getDisplayedTranscript()}
             title={files[selectedFileIndex]?.name ?? ""}
             onTitleChange={(newTitle) => updateFileName(selectedFileIndex, newTitle)}
-            type={files[selectedFileIndex]?.type ?? ""}
-          />
+            file={files[selectedFileIndex]!}
+            type={files[selectedFileIndex]?.type ?? ""}           />
+            
         ) : (
           <EmptyState onUpload={handleUploadModalOpen} onRecord={handleRecordModalOpen} />
         )}
