@@ -26,7 +26,7 @@ export const routes = [
 
     {
         id:4,
-        label:"ChatBot",
+        label:"Howl AI",
         href: "/ChatBot",
         isSelected: false
     }

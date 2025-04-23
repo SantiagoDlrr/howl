@@ -5,6 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import { useSession } from "next-auth/react"
 import { ArrowUp } from "lucide-react"
+import Image from "next/image"
 
 export default function HowlAIPage() {
   const { data: session } = useSession()
@@ -24,7 +25,7 @@ export default function HowlAIPage() {
       const response = await fetch("/api/gemini", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: inputValue }),
+        body: JSON.stringify({ prompt: `Por favor, responde en español a la siguiente consulta: ${inputValue}` }),
       })
 
       const data = await response.json()
@@ -40,29 +41,19 @@ export default function HowlAIPage() {
   return (
     <div className="pt-16 flex flex-col items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-slate-50 text-gray-700">
       <div className="w-full max-w-3xl space-y-8">
-        {/* Logos y encabezado */}
+        {/* Logo y encabezado */}
         <div className="flex flex-col items-center space-y-4">
-          <div className="flex items-center space-x-4">
-            {/* Logo Howl AI */}
-            <svg
-              width="60"
-              height="60"
-              viewBox="0 0 60 60"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="text-violet-400"
-            >
-              <circle cx="30" cy="20" r="15" stroke="currentColor" strokeWidth="2" fill="none" />
-              <path d="M15 30C15 30 20 40 30 40C40 40 45 30 45 30" stroke="currentColor" strokeWidth="2" />
-              <circle cx="25" cy="15" r="2" fill="currentColor" />
-              <circle cx="35" cy="15" r="2" fill="currentColor" />
-            </svg>
-
-            {/* Logo HowlX */}
-            <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M20 15L25 45L30 15L35 45L40 15" stroke="black" strokeWidth="2" />
-              <rect x="15" y="15" width="30" height="30" stroke="black" strokeWidth="2" fill="none" />
-            </svg>
+          {/* Solo el logo de Howl centrado */}
+          <div className="flex justify-center">
+            <div className="relative w-20 h-20">
+              <Image 
+                src="/images/logo.png" 
+                alt="Howl AI Logo" 
+                width={80} 
+                height={80}
+                className="object-contain"
+              />
+            </div>
           </div>
 
           <div className="text-center">
