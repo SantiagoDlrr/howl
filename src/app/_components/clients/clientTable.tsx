@@ -5,12 +5,14 @@ import Spinner from "../spinner";
 
 interface CompanyProps {
     onClick: (id: number) => void;
-    onSeeClients: (id: number) => void;
+    onSeeCompany: (id: number) => void;
+    id: number | null;
 }
 
-const CompanyTable = ({ onClick, onSeeClients }: CompanyProps) => {
+const ClientTable = ({ onClick, onSeeCompany, id }: CompanyProps) => {
 
-    const { data: companies, isLoading } = api.company.getAll.useQuery();
+    // const { data: clients, isLoading } = id ? api.client.getById.useQuery(id) : api.client.getAll.useQuery();
+    const { data: clients, isLoading: isLoading } = api.client.get.useQuery(id);
 
     if (isLoading) {
         return (
@@ -18,7 +20,7 @@ const CompanyTable = ({ onClick, onSeeClients }: CompanyProps) => {
         )
     }
 
-    if (!companies || companies.length === 0) {
+    if (!clients || clients.length === 0) {
         return (
             <div className="bg-bg h-screen px-20 w-full">
                 <div className="flex justify-center items-center h-full">
@@ -43,23 +45,23 @@ const CompanyTable = ({ onClick, onSeeClients }: CompanyProps) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {companies.map((company, index) => (
+                        {clients.map((client, index) => (
                             <tr
                                 key={index}
                                 className="border-b hover:bg-gray-50 transition-colors"
                             >
-                                <td className="p-3">{company.name}</td>
-                                <td className="p-3">{company.client_since.toLocaleDateString()}</td>
+                                <td className="p-3">{client.firstname} {client.lastname} </td>
+                                <td className="p-3">{client.email}</td>
                                 <td className="p-3">
                                     <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
-                                        {company._count.client}
+                                        {client.company?.name}
                                     </span>
                                 </td>
                                 <td className="p-3 flex flex-row gap-2">
-                                    <button onClick={() => onSeeClients(company.id)} className="bg-bg-dark text-text px-3 py-1 rounded hover:bg-bg-extradark transition-colors">
-                                        Ver clientes
+                                    <button onClick={() => onSeeCompany(client.company_id ?? 0)} className="bg-bg-dark text-text px-3 py-1 rounded hover:bg-bg-extradark transition-colors">
+                                        Ver Empresa
                                     </button>
-                                    <button onClick={() => onClick(company.id)} className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
+                                    <button onClick={() => onClick(client.id)} className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
                                         Editar
                                     </button>
                                 </td>
@@ -73,4 +75,4 @@ const CompanyTable = ({ onClick, onSeeClients }: CompanyProps) => {
     )
 }
 
-export default CompanyTable;
+export default ClientTable;

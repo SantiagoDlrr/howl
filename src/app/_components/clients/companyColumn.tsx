@@ -6,22 +6,22 @@ import { useState } from "react";
 import { RingLoader } from "react-spinners";
 import Spinner from "../spinner";
 
-interface ClientColumnProps {
+interface CompanyColumnProps {
     id: number;
 }
 
-const ClientColumn = ({ id }: ClientColumnProps) => {
-    const { data: client, isLoading: loading } = api.client.getById.useQuery(id);
-    // const { data: clients, isLoading } = api.client.getByCompanyId.useQuery(id);
+const CompanyColumn = ({ id }: CompanyColumnProps) => {
+    const { data: company, isLoading: loadingCompany } = api.company.getById.useQuery(id);
+    const { data: clients, isLoading } = api.client.getByCompanyId.useQuery(id);
     const [editing, setEditing] = useState(false);
 
-    if (loading) {
+    if (loadingCompany || isLoading) {
         return (
             <Spinner />
         )
     }
 
-    if (!client) {
+    if (!company) {
         return (
             <div className="bg-bg h-screen pt-24 px-20 w-full">
                 <div className="flex justify-center items-center h-full">
@@ -34,10 +34,10 @@ const ClientColumn = ({ id }: ClientColumnProps) => {
     return (
         <div className="w-full flex flex-col gap-2 pt-20 px-10">
             <div className="font-semibold">
-                {client.firstname} {client.lastname}
+                {company.name}
             </div>
             <div>
-                {client.email}
+                Cliente desde {company.client_since.toLocaleDateString()}
             </div>
             <div>
 
@@ -49,4 +49,4 @@ const ClientColumn = ({ id }: ClientColumnProps) => {
     );
 }
 
-export default ClientColumn;
+export default CompanyColumn;

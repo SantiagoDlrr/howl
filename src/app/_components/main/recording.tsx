@@ -128,8 +128,8 @@ const Recording = ({ onUpload, setUploading }: Props) => {
         <div className="flex flex-col items-center gap-4">
 
             <div className="bg-bg-dark w-full flex flex-row items-center rounded-md p-1 mb-4">
-                <ToggleButton id={1} selected={selected === 1} setSelected={setSelected} />
-                <ToggleButton id={2} selected={selected === 2} setSelected={setSelected} />
+                <ToggleButton id={1} selected={selected === 1} setSelected={setSelected} label="Micrófono y Dispositivo"/>
+                <ToggleButton id={2} selected={selected === 2} setSelected={setSelected} label="Solo micrófono" />
             </div>
 
             {selected === 1 ? (
