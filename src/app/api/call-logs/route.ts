@@ -38,7 +38,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const consultantId = consultantResult[0].id;
+    const consultantId = consultantResult[0]?.id ?? null;
     console.log("ID de consultor obtenido:", consultantId);
 
     // Verificar si el usuario es administrador
@@ -87,7 +87,7 @@ export async function GET(request: Request) {
       WHERE 1=1
     `;
     
-    let queryParams = [];
+    const queryParams = [];
     let paramIndex = 1;
     
     // Aplicar filtros según el rol

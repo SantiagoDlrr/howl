@@ -29,7 +29,7 @@ const CallLogsTable: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<UserRole | null>(null);
-  const [supervisedConsultants, setSupervisedConsultants] = useState<number[]>([]);
+  const [, setSupervisedConsultants] = useState<number[]>([]);
 
   // State for filters and search
   const [sortBy, setSortBy] = useState<'newest' | 'oldest'>('newest');

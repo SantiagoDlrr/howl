@@ -2,7 +2,7 @@ import { query } from '@/lib/database';
 import { auth } from '@/server/auth';
 import { NextResponse } from 'next/server';
 
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     console.log("Iniciando proceso de obtención de rol...");
     
