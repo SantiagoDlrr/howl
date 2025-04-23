@@ -97,7 +97,7 @@ const CallLogsTable: React.FC = () => {
         if (!userRole) return;
         
         console.log("Obteniendo logs de llamadas...");
-        const response = await fetch('/api/call-logs');
+        const response = await fetch('/api/callLogs');
         
         if (!response.ok) {
           const errorData = await response.json();
