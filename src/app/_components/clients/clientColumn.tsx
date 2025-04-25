@@ -5,6 +5,7 @@ import Button from "../button";
 import { useState } from "react";
 import { RingLoader } from "react-spinners";
 import Spinner from "../spinner";
+import Field from "./field";
 
 interface ClientColumnProps {
     id: number;
@@ -35,6 +36,12 @@ const ClientColumn = ({ id }: ClientColumnProps) => {
         <div className="w-full flex flex-col gap-2 pt-20 px-10">
             <div className="font-semibold">
                 {client.firstname} {client.lastname}
+            </div>
+            <div className="flex flex-col gap-3 pb-10">
+                <Field label="Nombre" value={client.firstname} isEditing={editing} />
+                <Field label="Apellido" value={client.lastname} isEditing={editing} />
+                <Field label="Correo" value={client.email} isEditing={editing} />
+                <Field label="Empresa" value={client.company?.name} isEditing={editing} />
             </div>
             <div>
                 {client.email}

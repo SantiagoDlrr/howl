@@ -25,7 +25,7 @@ export const clientRouter = createTRPCRouter({
             } else {
                 return ctx.db.client.findMany({
                     where: {
-                        id: input,
+                        company_id: input,
                     },
                     include: {
                         company: true,

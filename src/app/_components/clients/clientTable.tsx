@@ -2,17 +2,53 @@
 
 import { api } from "@/trpc/react";
 import Spinner from "../spinner";
+import { useMemo, useState } from "react";
+import SearchBar from "./searchBar";
 
 interface CompanyProps {
     onClick: (id: number) => void;
     onSeeCompany: (id: number) => void;
-    id: number | null;
+    setCompanyId: (id: number | null) => void;
+    companyId: number | null;
 }
 
-const ClientTable = ({ onClick, onSeeCompany, id }: CompanyProps) => {
+const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId }: CompanyProps) => {
 
-    // const { data: clients, isLoading } = id ? api.client.getById.useQuery(id) : api.client.getAll.useQuery();
-    const { data: clients, isLoading: isLoading } = api.client.get.useQuery(id);
+    const { data: clients, isLoading: isLoading } = api.client.get.useQuery(companyId);
+    const { data: company, isLoading: isLoadingCompany } = api.company.getById.useQuery(companyId ?? -1);
+    const { data: companies, isLoading: isLoadingCompanies } = api.company.getAll.useQuery();
+    const [companyName, setCompanyName] = useState<string>(company?.name ?? 'Clientes');
+    const [companySelection, setCompanySelection] = useState<string>(companyName);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const filteredClients = useMemo(() => {
+        if (!clients) return [];
+        const filteredClients = clients?.filter(client =>
+            (companySelection === 'Clientes' || client.company?.name === companySelection) &&
+            (searchTerm === '' ||
+                Object.values(client).some(value =>
+                    typeof value === 'string' &&
+                    value.toLowerCase().includes(searchTerm.toLowerCase())
+                ))
+        );
+        // (searchTerm === '' || 
+        //     Object.values(client).some(value =>
+        //         typeof value === 'string' &&
+        //         value.toLowerCase().includes(searchTerm.toLowerCase())
+        //     ))
+        // );
+        return filteredClients;
+    }, [clients, searchTerm, companySelection]);
+
+
+    const resetFilters = () => {
+        setCompanyId(null);
+        setCompanyName('Clientes');
+        setCompanySelection('Clientes');
+        setSearchTerm("");
+        setCurrentPage(1);
+    }
 
     if (isLoading) {
         return (
@@ -20,7 +56,7 @@ const ClientTable = ({ onClick, onSeeCompany, id }: CompanyProps) => {
         )
     }
 
-    if (!clients || clients.length === 0) {
+    if (!clients || clients.length === 0 || !companies) {
         return (
             <div className="bg-bg h-screen px-20 w-full">
                 <div className="flex justify-center items-center h-full">
@@ -31,7 +67,33 @@ const ClientTable = ({ onClick, onSeeCompany, id }: CompanyProps) => {
     }
 
     return (
-        <div className="bg-bg h-screen pt-24 px-20 w-full">
+        <div className="bg-bg h-screen pt-4 pb-24 px-20 w-full">
+            <div className="text-xl font-semibold pb-5">
+                {company?.name ? `Clientes de ${company?.name}` : 'Clientes'}
+            </div>
+
+            <div className="w-full flex flex-row gap-3 mb-6">
+                <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} setCurrentPage={setCurrentPage} />
+                <select
+                    value={companySelection}
+                    onChange={(e) => {
+                        setCompanySelection(e.target.value);
+                        setCurrentPage(1);
+                    }}
+                    className="border rounded px-2 py-1"
+                >
+                    <option value="">Todas las empresas</option>
+                    {companies.map(company => (
+                        <option key={company.id} value={company.name}>{company.name}</option>
+                    ))}
+                </select>
+                <button
+                    onClick={resetFilters}
+                    className="bg-[#F9FBFF] hover:bg-gray-300 rounded px-2 border border-black"
+                >
+                    Restablecer
+                </button>
+            </div>
 
             <div className="overflow-x-auto rounded border border-black w-full">
 
@@ -45,7 +107,7 @@ const ClientTable = ({ onClick, onSeeCompany, id }: CompanyProps) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {clients.map((client, index) => (
+                        {filteredClients.map((client, index) => (
                             <tr
                                 key={index}
                                 className="border-b hover:bg-gray-50 transition-colors"

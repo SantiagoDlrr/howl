@@ -2,6 +2,8 @@
 
 import { api } from "@/trpc/react";
 import Spinner from "../spinner";
+import { useMemo, useState } from "react";
+import SearchBar from "./searchBar";
 
 interface CompanyProps {
     onClick: (id: number) => void;
@@ -11,6 +13,20 @@ interface CompanyProps {
 const CompanyTable = ({ onClick, onSeeClients }: CompanyProps) => {
 
     const { data: companies, isLoading } = api.company.getAll.useQuery();
+    const [searchTerm, setSearchTerm] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const filteredCompanies = useMemo(() => {
+        if (!companies) return [];
+        return companies
+            .filter(company =>
+                (searchTerm === '' ||
+                    Object.values(company).some(value =>
+                        typeof value === 'string' &&
+                        value.toLowerCase().includes(searchTerm.toLowerCase())
+                    ))
+            )
+    }, [companies, searchTerm]);
 
     if (isLoading) {
         return (
@@ -29,7 +45,13 @@ const CompanyTable = ({ onClick, onSeeClients }: CompanyProps) => {
     }
 
     return (
-        <div className="bg-bg h-screen pt-24 px-20 w-full">
+        <div className="bg-bg h-screen pt-4 pb-24 px-20 w-full">
+
+            <div className="text-xl font-semibold pb-5">
+                {"Empresas"}
+            </div>
+
+            <SearchBar classname="pb-6" searchTerm={searchTerm} setSearchTerm={setSearchTerm} setCurrentPage={setCurrentPage} />
 
             <div className="overflow-x-auto rounded border border-black w-full">
 
@@ -43,7 +65,7 @@ const CompanyTable = ({ onClick, onSeeClients }: CompanyProps) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {companies.map((company, index) => (
+                        {filteredCompanies.map((company, index) => (
                             <tr
                                 key={index}
                                 className="border-b hover:bg-gray-50 transition-colors"

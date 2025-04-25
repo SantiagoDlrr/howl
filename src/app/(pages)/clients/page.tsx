@@ -6,32 +6,30 @@ import CompanyColumn from "@/app/_components/clients/companyColumn";
 import CompanyTable from "@/app/_components/clients/companyTable";
 import { ResizablePanel } from "@/app/_components/main/panels/resizablePanel";
 import ToggleButton from "@/app/_components/toggleButton";
+import { X } from "lucide-react";
 import { useState } from "react";
 
 const ClientsPage = () => {
 
     const [leftPanelWidth, setLeftPanelWidth] = useState(500);
     const [selected, setSelected] = useState<number>(1);
-    const [selectedCompany, setSelectedCompany] = useState<number | null>(null);
+    const [columnId, setColumnId] = useState<number | null>(null);
     const [show, setShow] = useState(0);
-    const [client_id, setClientId] = useState<number | null>(null);
+    const [companyId, setCompanyId] = useState<number | null>(null);
 
-    const handleSelection = (companyId: number) => {
+    const handleSelectCompany = (companyId: number) => {
         setShow(1);
-        setSelectedCompany(companyId);
+        setColumnId(companyId);
     }
 
-    const handleClientSelection = (clientId: number) => {
-        // Handle client selection here
+    const handleSelectClient = (clientId: number) => {
         setShow(2);
-        setSelectedCompany(clientId);
+        setColumnId(clientId);
     }
 
     const handleSeeClients = (companyId: number) => {
-        setClientId(companyId);
+        setCompanyId(companyId);
         setSelected(2);
-        // setShow(1);
-        // setSelectedCompany(companyId);
     }
 
     return (
@@ -42,13 +40,13 @@ const ClientsPage = () => {
                     <ToggleButton id={2} selected={selected === 2} setSelected={setSelected} large label="Clientes" />
                 </div>
                 {selected === 1 ? (
-                    <CompanyTable onSeeClients={handleSeeClients} onClick={handleSelection} />
+                    <CompanyTable onSeeClients={handleSeeClients} onClick={handleSelectCompany} />
                 ) : (
-                    <ClientTable id={client_id} onSeeCompany={handleSelection} onClick={handleClientSelection} />
+                    <ClientTable companyId={companyId} setCompanyId={setCompanyId} onSeeCompany={handleSelectCompany} onClick={handleSelectClient} />
                 )}
             </div>
 
-            {selectedCompany && (
+            {(show !== 0 && columnId) && (
                 <ResizablePanel
                     initialWidth={500}
                     minWidth={500}
@@ -56,11 +54,16 @@ const ClientsPage = () => {
                     side="right"
                     onResize={setLeftPanelWidth}
                 >
+                    <div className="flex flex-row justify-end pr-6">
+                        <button onClick={() => setShow(0)} className="text-gray-400 hover:text-gray-500">
+                            <X className="w-5 h-5" />
+                        </button>
+                    </div>
                     {(show === 1) ? (
-                        <CompanyColumn id={selectedCompany} />
+                        <CompanyColumn id={columnId} />
                     ) : (
 
-                        <ClientColumn id={selectedCompany} />
+                        <ClientColumn id={columnId} />
                     )}
                 </ResizablePanel>
             )}
