@@ -62,10 +62,14 @@ const CompanyColumn = ({ id }: CompanyColumnProps) => {
                     </button>
                 </div>
             ) : (
-                <button onClick={() => setEditing(true)} className="w-full bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
-                    Editar
-                </button>
-
+                <div className="flex flex-row gap-3">
+                    <button onClick={() => setEditing(false)} className="flex-1 w-full bg-bg-dark text-text px-3 py-1 rounded hover:bg-bg-extradark transition-colors">
+                        Eliminar
+                    </button>
+                    <button onClick={() => setEditing(true)} className="flex-1 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
+                        Editar
+                    </button>
+                </div>
             )}
         </div>
     );

@@ -2,12 +2,13 @@ interface FieldProps {
     label: string;
     value: string | number | undefined | null;
     isEditing?: boolean;
+    strong?: boolean;
 }
 
-const Field = ({ label, value, isEditing }: FieldProps) => {
+const Field = ({ label, value, isEditing, strong }: FieldProps) => {
     return (
         <div className="flex flex-col">
-            <div className="font-normal">
+            <div className={`${strong ? "font-semibold pb-1" : "font-normal"}`}>
                 {label}
             </div>
             {isEditing ? (

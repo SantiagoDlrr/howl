@@ -4,13 +4,15 @@ import { api } from "@/trpc/react";
 import Spinner from "../spinner";
 import { useMemo, useState } from "react";
 import SearchBar from "./searchBar";
+import { GoPlus } from "react-icons/go";
 
 interface CompanyProps {
     onClick: (id: number) => void;
     onSeeClients: (id: number) => void;
+    openModal: () => void;
 }
 
-const CompanyTable = ({ onClick, onSeeClients }: CompanyProps) => {
+const CompanyTable = ({ onClick, onSeeClients, openModal }: CompanyProps) => {
 
     const { data: companies, isLoading } = api.company.getAll.useQuery();
     const [searchTerm, setSearchTerm] = useState("");
@@ -20,11 +22,11 @@ const CompanyTable = ({ onClick, onSeeClients }: CompanyProps) => {
         if (!companies) return [];
         return companies
             .filter(company =>
-                (searchTerm === '' ||
-                    Object.values(company).some(value =>
-                        typeof value === 'string' &&
-                        value.toLowerCase().includes(searchTerm.toLowerCase())
-                    ))
+            (searchTerm === '' ||
+                Object.values(company).some(value =>
+                    typeof value === 'string' &&
+                    value.toLowerCase().includes(searchTerm.toLowerCase())
+                ))
             )
     }, [companies, searchTerm]);
 
@@ -51,7 +53,15 @@ const CompanyTable = ({ onClick, onSeeClients }: CompanyProps) => {
                 {"Empresas"}
             </div>
 
-            <SearchBar classname="pb-6" searchTerm={searchTerm} setSearchTerm={setSearchTerm} setCurrentPage={setCurrentPage} />
+            <div className="flex flex-row items-center pb-6 gap-2">
+                <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} setCurrentPage={setCurrentPage} />
+                <button onClick={openModal} className="flex flex-row items-center gap-2 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
+                    <GoPlus className="text-xl" />
+                    <div>
+                        Nueva Empresa
+                    </div>
+                </button>
+            </div>
 
             <div className="overflow-x-auto rounded border border-black w-full">
 

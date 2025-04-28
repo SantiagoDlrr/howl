@@ -4,15 +4,18 @@ import { api } from "@/trpc/react";
 import Spinner from "../spinner";
 import { useMemo, useState } from "react";
 import SearchBar from "./searchBar";
+// import { FaPlus } from "react-icons/fa";
+import { GoPlus } from "react-icons/go";
 
 interface CompanyProps {
     onClick: (id: number) => void;
     onSeeCompany: (id: number) => void;
     setCompanyId: (id: number | null) => void;
+    openModal: () => void;
     companyId: number | null;
 }
 
-const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId }: CompanyProps) => {
+const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId, openModal}: CompanyProps) => {
 
     const { data: clients, isLoading: isLoading } = api.client.get.useQuery(companyId);
     const { data: company, isLoading: isLoadingCompany } = api.company.getById.useQuery(companyId ?? -1);
@@ -93,6 +96,13 @@ const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId }: Company
                 >
                     Restablecer
                 </button>
+                <button onClick={openModal} className="flex flex-row items-center gap-2 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
+                    <GoPlus className="text-xl" />
+                    <div>
+                        Nuevo Cliente
+                    </div>
+                </button>
+
             </div>
 
             <div className="overflow-x-auto rounded border border-black w-full">
