@@ -17,7 +17,7 @@ interface CompanyProps {
 
 const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId, openModal}: CompanyProps) => {
 
-    const { data: clients, isLoading: isLoading } = api.client.get.useQuery(companyId);
+    const { data: clients, isLoading: isLoading } = api.companyClient.get.useQuery(companyId);
     const { data: company, isLoading: isLoadingCompany } = api.company.getById.useQuery(companyId ?? -1);
     const { data: companies, isLoading: isLoadingCompanies } = api.company.getAll.useQuery();
     const [companyName, setCompanyName] = useState<string>(company?.name ?? 'Clientes');
@@ -53,7 +53,7 @@ const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId, openModal
         setCurrentPage(1);
     }
 
-    if (isLoading) {
+    if (isLoading || isLoadingCompany || isLoadingCompanies) {
         return (
             <Spinner />
         )

@@ -6,17 +6,34 @@ import { useState } from "react";
 import { RingLoader } from "react-spinners";
 import Spinner from "../spinner";
 import Field from "./field";
+import toast from "react-hot-toast";
 
 interface ClientColumnProps {
     id: number;
 }
 
 const ClientColumn = ({ id }: ClientColumnProps) => {
-    const { data: client, isLoading: loading } = api.client.getById.useQuery(id);
+    const utils = api.useUtils();   
+    const { data: client, isLoading: loading } = api.companyClient.getById.useQuery(id);
+    const deleteClient = api.companyClient.deleteClient.useMutation({
+        onSuccess: async () => {
+            toast.success(`Cliente ${client?.firstname} ${client?.lastname} eliminado`);
+            await utils.companyClient.invalidate();
+        },
+        onError: (error) => {
+            toast.error(`Error eliminando cliente: ${error.message}`);
+        },
+    });
     const [editing, setEditing] = useState(false);
     const { data: companies, isLoading: loadingCompanies } = api.company.getAll.useQuery();
     const [selectedCompany, setSelectedCompany] = useState<number>(-1);
 
+    const handleDelete = async () => {
+        if (!client) return;
+        if (confirm(`¿Estás seguro de que quieres eliminar a ${client.firstname} ${client.lastname}?`)) {
+            await deleteClient.mutateAsync(client.id);
+        }
+    }
     if (loading) {
         return (
             <Spinner />
@@ -27,7 +44,7 @@ const ClientColumn = ({ id }: ClientColumnProps) => {
         return (
             <div className="bg-bg h-screen pt-24 px-20 w-full">
                 <div className="flex justify-center items-center h-full">
-                    <p className="text-lg">No hay empresa registrada</p>
+                    <p className="text-lg">Selecciona un cliente</p>
                 </div>
             </div>
         )
@@ -55,7 +72,7 @@ const ClientColumn = ({ id }: ClientColumnProps) => {
                                 setSelectedCompany(parseInt(e.target.value));
                             }}
                         >
-                            <option value={-1} key={-1} selected>Selecciona una empresa</option>
+                            <option value={-1} key={-1}>Selecciona una empresa</option>
                             {companies?.map((company) => (
                                 <option key={company.id} value={company.id}>
                                     {company.name}
@@ -82,7 +99,7 @@ const ClientColumn = ({ id }: ClientColumnProps) => {
                 </div>
             ) : (
                 <div className="flex flex-row gap-3">
-                    <button onClick={() => setEditing(false)} className="flex-1 w-full bg-bg-dark text-text px-3 py-1 rounded hover:bg-bg-extradark transition-colors">
+                    <button onClick={handleDelete} className="flex-1 w-full bg-bg-dark text-text px-3 py-1 rounded hover:bg-bg-extradark transition-colors">
                         Eliminar
                     </button>
                     <button onClick={() => setEditing(true)} className="flex-1 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">

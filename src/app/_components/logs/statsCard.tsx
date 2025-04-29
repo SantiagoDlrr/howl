@@ -31,8 +31,8 @@ const StatsCard: React.FC<StatsCardProps> = ({
         <div className="flex flex-col items-baseline mb-4">
           <span className="text-5xl font-bold text-gray-900">{value}</span>
           <span className={`ml-2 px-2 py-1 text-sm rounded ${percentChange >= 0
-              ? 'bg-green-100 text-green-800'
-              : 'bg-red-100 text-red-800'
+            ? 'bg-green-100 text-green-800'
+            : 'bg-red-100 text-red-800'
             }`}>
             {percentChange >= 0 ? '+' : ''}{percentChange}%
           </span>

@@ -56,4 +56,34 @@ export const companyRouter = createTRPCRouter({
             }
         });
     }),
+
+    editCompany: protectedProcedure
+        .input(companySchema.extend({ id: z.number() }))
+        .mutation(async ({ ctx, input }) => {
+            const { address, ...companyData } = input;
+            return ctx.db.company.update({
+                where: {
+                    id: input.id,
+                },
+                data: {
+                    ...companyData,
+                    address: address
+                        ? {
+                              update: address,
+                          }
+                        : undefined,
+                }
+            });
+    }),
+
+    deleteCompany: protectedProcedure
+        .input(z.number())
+        .mutation(async ({ ctx, input }) => {
+            return ctx.db.company.delete({
+                where: {
+                    id: input,
+                }
+            });
+    }),
+    
 })

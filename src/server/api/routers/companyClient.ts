@@ -66,4 +66,28 @@ export const clientRouter = createTRPCRouter({
             })
         }
     ),
+
+    editClient: protectedProcedure
+        .input(clientSchema.extend({ id: z.number() }))
+        .mutation(async ({ ctx, input }) => {
+            return ctx.db.client.update({
+                where: {
+                    id: input.id,
+                },
+                data: {
+                    ...input,
+                }
+            })
+        }),
+
+    deleteClient: protectedProcedure
+        .input(z.number())
+        .mutation(async ({ ctx, input }) => {
+            return ctx.db.client.delete({
+                where: {
+                    id: input,
+                }
+            })
+        }
+    ),
 })

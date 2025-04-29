@@ -6,6 +6,7 @@ import { useState } from "react";
 import { RingLoader } from "react-spinners";
 import Spinner from "../spinner";
 import Field from "./field";
+import toast from "react-hot-toast";
 
 interface CompanyColumnProps {
     id: number;
@@ -13,6 +14,24 @@ interface CompanyColumnProps {
 
 const CompanyColumn = ({ id }: CompanyColumnProps) => {
     const { data: company, isLoading: loadingCompany } = api.company.getById.useQuery(id);
+    const utils = api.useUtils();
+
+    const deleteCompany = api.company.deleteCompany.useMutation({
+        onSuccess: async () => {
+            toast.success(`Empresa ${company?.name} eliminada`);
+            await utils.company.invalidate();
+        },
+        onError: (error) => {
+            toast.error(`Error eliminando empresa: ${error.message}`);
+        },
+    });
+
+    const handleDelete = async () => {
+        if (!company) return;
+        if (confirm(`¿Estás seguro de que quieres eliminar a ${company.name}?`)) {
+            await deleteCompany.mutateAsync(company.id);
+        }
+    }
     // const { data: clients, isLoading } = api.client.getByCompanyId.useQuery(id);
     const [editing, setEditing] = useState(false);
 
@@ -26,7 +45,7 @@ const CompanyColumn = ({ id }: CompanyColumnProps) => {
         return (
             <div className="bg-bg h-screen pt-24 px-20 w-full">
                 <div className="flex justify-center items-center h-full">
-                    <p className="text-lg">No hay empresa registrada</p>
+                    <p className="text-lg">Selecciona una empresa</p>
                 </div>
             </div>
         )
@@ -63,7 +82,7 @@ const CompanyColumn = ({ id }: CompanyColumnProps) => {
                 </div>
             ) : (
                 <div className="flex flex-row gap-3">
-                    <button onClick={() => setEditing(false)} className="flex-1 w-full bg-bg-dark text-text px-3 py-1 rounded hover:bg-bg-extradark transition-colors">
+                    <button onClick={handleDelete} className="flex-1 w-full bg-bg-dark text-text px-3 py-1 rounded hover:bg-bg-extradark transition-colors">
                         Eliminar
                     </button>
                     <button onClick={() => setEditing(true)} className="flex-1 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">

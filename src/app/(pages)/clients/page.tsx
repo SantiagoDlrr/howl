@@ -36,11 +36,21 @@ const ClientsPage = () => {
         setCompanyId(companyId);
     }
 
-    // TODO (@alecoeto): New company/client modals
+    // Backend
+    // TODO (@alecoeto): New company/client
     // TODO (@alecoeto): Edit company/client 
     // TODO (@alecoeto): Delete company/client
+
+    // Frontend
     // TODO (@alecoeto): Add paginaiton
     // TODO (@alecoeto): Add animation to sidebar
+
+    // Testing
+    // TODO (@alecoeto): Add tests to client and company table
+    // TODO (@alecoeto): Add tests to client and company column
+    // TODO (@alecoeto): Add tests to client and company modals
+    // TODO (@alecoeto): Add tests to page setup
+    
     return (
         <>
             <div className="w-full flex flex-row h-screen pt-24">
