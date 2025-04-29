@@ -48,6 +48,7 @@ export default function MainPage() {
       const formData = new FormData();
       formData.append("file", file);
 
+      // http://localhost:443/upload
       // Adjust the URL as needed: if backend is on another port or domain
       const response = await fetch("https://app.howlx.run.place:443/upload", {
         method: "POST",
