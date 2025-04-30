@@ -2,8 +2,6 @@ import RestrictedAccess from "@/app/_components/auth/restrictedAccess";
 import FormsResults from "@/app/_components/dashboard/formsResults";
 import LookerDashboard from "@/app/_components/dashboard/lookerDashboard";
 import { auth } from "@/server/auth";
-import { api } from "@/trpc/server";
-// import { api } from "";
 
 export default async function DashboardPage() {
   const session = await auth();

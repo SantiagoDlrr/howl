@@ -1,5 +1,5 @@
 // utils/generateContext.ts
-import type { FileData } from "@/app/types/main";
+import type { FileData } from "@/app/utils/types/main";
 
 export function generateContext(
   report: FileData["report"] | null,

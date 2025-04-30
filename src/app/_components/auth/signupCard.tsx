@@ -5,7 +5,7 @@ import FormField from "./formField";
 import LoginWith from "./loginWith";
 import { api } from "howl/trpc/react";
 import Button from "../button";
-import { emailSchema, passwordSchema } from "howl/app/utils/schemas";
+import { emailSchema, passwordSchema } from "@/app/utils/schemas/authSchemas";
 import ErrorMessage from "./errorMessage";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -16,7 +16,7 @@ const SignUpCard = () => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const router = useRouter();
-    
+
     const registerMutation = api.register.register.useMutation({
         onSuccess: () => {
             toast.success("Registro exitoso");

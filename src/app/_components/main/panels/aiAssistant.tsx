@@ -3,7 +3,7 @@ import { ChevronUp, User } from "lucide-react";
 import { askDeepseek } from "@/app/utils/deepseek";
 import { generateContext } from "@/app/utils/generateContext";
 import { ChatMessage } from "../chatMessage";
-import type { FileData } from "@/app/types/main";
+import type { FileData } from "@/app/utils/types/main";
 
 interface Message {
   role: "user" | "assistant";

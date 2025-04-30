@@ -1,9 +1,8 @@
 "use client";
-import { client_feedback } from "@prisma/client";
 import { api } from "howl/trpc/react";
 
-import type { Prisma } from "@prisma/client";
 import { useEffect } from "react";
+import Spinner from "../spinner";
 
 
 const FormsResults = () => {
@@ -11,20 +10,22 @@ const FormsResults = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-          refetch(); 
-        }, 10000); 
-    
-        return () => clearInterval(interval); 
-      }, [refetch]);
+            refetch();
+        }, 10000);
+
+        return () => clearInterval(interval);
+    }, [refetch]);
 
     if (isLoading) {
-        return <div className="text-center">Cargando...</div>;
+        return (
+            <Spinner />
+        )
     }
     if (error) {
         return <div className="text-center">Error: {error.message}</div>;
     }
 
-    
+
     return (
         <div className="bg-bg-dark my-10 p-10 rounded-md shadow-lg">
             <h2 className="text-xl font-semibold mb-8">Comentarios de encuestas</h2>
@@ -38,13 +39,13 @@ const FormsResults = () => {
                         <div key={index} className="mb-4 p-4 bg-gray-50 rounded-md">
                             <div className="flex flex-row justify-between items-start">
                                 <div className="font-medium">
-                                   <span className="font-normal">Comentario de</span> {result.client?.firstname} {result.client?.lastname} <span className="font-normal">sobre</span> {result.consultant?.firstname} {result.consultant?.lastname}
+                                    <span className="font-normal">Comentario de</span> {result.client?.firstname} {result.client?.lastname} <span className="font-normal">sobre</span> {result.consultant?.firstname} {result.consultant?.lastname}
                                 </div>
                                 <div className="text-text-light text-sm pt-2">
                                     {formattedDate} {formattedTime}
                                 </div>
                             </div>
-                                {result.consultant_feedback}
+                            {result.consultant_feedback}
                         </div>
                     );
                 })

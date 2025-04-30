@@ -1,6 +1,7 @@
 "use client"
 import React, { useState, useMemo, useEffect } from 'react';
 import LogsTable from './logsTable';
+import Spinner from '../spinner';
 
 interface CallLogEntry {
   id: number;
@@ -167,11 +168,15 @@ const CallLogsTable: React.FC = () => {
   const totalPages = Math.ceil(filteredLogs.length / logsPerPage);
 
   if (loading && !userRole) {
-    return <div className="w-full p-20 text-center">Cargando información de usuario...</div>;
+    return (
+      <Spinner />
+    )
   }
 
   if (loading) {
-    return <div className="w-full p-20 text-center">Cargando registros de llamadas...</div>;
+    return (
+      <Spinner />
+    )
   }
 
   if (error) {
