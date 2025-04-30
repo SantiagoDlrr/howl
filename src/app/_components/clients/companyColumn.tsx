@@ -2,11 +2,14 @@
 
 import { api } from "@/trpc/react";
 import Button from "../button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RingLoader } from "react-spinners";
 import Spinner from "../spinner";
-import Field from "./field";
+import Field from "./forms/field";
 import toast from "react-hot-toast";
+import { CompanyInput, defaultCompany } from "@/app/utils/types/companyInput";
+import CompanyForms from "./forms/companyForms";
+import DoubleButtons from "./forms/DoubleButtons";
 
 interface CompanyColumnProps {
     id: number;
@@ -15,6 +18,61 @@ interface CompanyColumnProps {
 const CompanyColumn = ({ id }: CompanyColumnProps) => {
     const { data: company, isLoading: loadingCompany } = api.company.getById.useQuery(id);
     const utils = api.useUtils();
+    const [input, setInput] = useState<CompanyInput>(defaultCompany);
+
+    const handleNameFieldChange = (value: string) => {
+        setInput((prev) => ({
+            ...prev,
+            ["name"]: value,
+        }));
+    }
+
+    const handleAddressFieldChange = (key: keyof CompanyInput["address"], value: string) => {
+        setInput((prev) => ({
+            ...prev,
+            address: {
+                ...prev.address,
+                [key]: value,
+            },
+        }));
+    };
+    const updateCompany = api.company.editCompany.useMutation({
+        onSuccess: async () => {
+            toast.success(`Empresa ${company?.name} actualizada`);
+            await utils.company.invalidate();
+        },
+        onError: (error) => {
+            toast.error(`Error actualizando empresa: ${error.message}`);
+        },
+    });
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            const parsedInput = {
+                ...input,
+                id: id,
+            };
+            await updateCompany.mutateAsync(parsedInput);
+            setEditing(false);
+        } catch (error) {
+            console.error("Error creating company:", error);
+        }
+    }
+
+    useEffect(() => {
+        if (company) {
+            setInput({
+                name: company.name ?? "",
+                client_since: company.client_since,
+                address: {
+                    country: company.address?.country ?? "",
+                    state: company.address?.state ?? "",
+                    city: company.address?.city ?? "",
+                    street: company.address?.street ?? "",
+                },
+            });
+        }
+    }, [company]);
 
     const deleteCompany = api.company.deleteCompany.useMutation({
         onSuccess: async () => {
@@ -60,35 +118,28 @@ const CompanyColumn = ({ id }: CompanyColumnProps) => {
                 Cliente desde {company.client_since.toLocaleDateString()}
             </div>
 
-            <div className="font-semibold">
-                Dirección
-            </div>
-            <div className="flex flex-col gap-3 pb-10">
-                <Field label="País" value={company.address?.country} isEditing={editing} />
-                <Field label="Estado" value={company.address?.state} isEditing={editing} />
-                <Field label="Ciudad" value={company.address?.city} isEditing={editing} />
-                <Field label="Calle" value={company.address?.street} isEditing={editing} />
-            </div>
-            <div>
-
-            </div>
-            {editing ? (
-                <div className="flex flex-row gap-3">
-                    <button onClick={() => setEditing(false)} className="flex-1 w-full bg-bg-dark text-text px-3 py-1 rounded hover:bg-bg-extradark transition-colors">
-                        Cancelar
-                    </button><button onClick={() => setEditing(false)} className="flex-1 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
-                        Guardar
-                    </button>
-                </div>
-            ) : (
-                <div className="flex flex-row gap-3">
-                    <button onClick={handleDelete} className="flex-1 w-full bg-bg-dark text-text px-3 py-1 rounded hover:bg-bg-extradark transition-colors">
-                        Eliminar
-                    </button>
-                    <button onClick={() => setEditing(true)} className="flex-1 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
-                        Editar
-                    </button>
-                </div>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+                {editing && (
+                    <div className="flex flex-col gap-3">
+                        <Field strong label="Nombre" required value={input.name} isEditing={editing} onChange={(val: string) => handleNameFieldChange(val)} />
+                    </div>
+                )}
+                <CompanyForms input={input} isEditing={editing} handleAddressFieldChange={handleAddressFieldChange} />
+                {editing && (
+                    <DoubleButtons
+                        labels={["Cancelar", "Guardar"]}
+                        onClick1={() => setEditing(false)}
+                        types={["button", "submit"]}
+                    />
+                )}
+            </form>
+            {!editing && (
+                <DoubleButtons
+                    labels={["Eliminar", "Editar"]}
+                    onClick1={handleDelete}
+                    onClick2={() => setEditing(true)}
+                    types={["button", "button"]}
+                />
             )}
         </div>
     );

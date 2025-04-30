@@ -2,18 +2,21 @@
 
 import { api } from "@/trpc/react";
 import Button from "../button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RingLoader } from "react-spinners";
 import Spinner from "../spinner";
-import Field from "./field";
+import Field from "./forms/field";
 import toast from "react-hot-toast";
+import { ClientInput, defaultClient } from "@/app/utils/types/clientInput";
+import DoubleButtons from "./forms/DoubleButtons";
+import ClientForms from "./forms/clientForms";
 
 interface ClientColumnProps {
     id: number;
 }
 
 const ClientColumn = ({ id }: ClientColumnProps) => {
-    const utils = api.useUtils();   
+    const utils = api.useUtils();
     const { data: client, isLoading: loading } = api.companyClient.getById.useQuery(id);
     const deleteClient = api.companyClient.deleteClient.useMutation({
         onSuccess: async () => {
@@ -24,9 +27,36 @@ const ClientColumn = ({ id }: ClientColumnProps) => {
             toast.error(`Error eliminando cliente: ${error.message}`);
         },
     });
+    const updateClient = api.companyClient.editClient.useMutation({
+        onSuccess: async () => {
+            toast.success(`Cliente ${client?.firstname} ${client?.lastname} actualizado`);
+            await utils.companyClient.invalidate();
+        },
+        onError: (error) => {
+            toast.error(`Error actualizando cliente: ${error.message}`);
+        },
+    });
     const [editing, setEditing] = useState(false);
     const { data: companies, isLoading: loadingCompanies } = api.company.getAll.useQuery();
     const [selectedCompany, setSelectedCompany] = useState<number>(-1);
+    const [input, setInput] = useState<ClientInput>(defaultClient);
+    useEffect(() => {
+        if (client) {
+            setInput({
+                firstname: client.firstname ?? "",
+                lastname: client.lastname ?? "",
+                email: client.email ?? "",
+                company_id: client.company_id ?? -1,
+            });
+            setSelectedCompany(client.company_id ?? -1); // Update selected company as well
+        }
+    }, [client]);
+    const handleInputChange = (key: keyof ClientInput, value: string) => {
+        setInput((prev) => ({
+            ...prev,
+            [key]: value,
+        }));
+    }
 
     const handleDelete = async () => {
         if (!client) return;
@@ -38,6 +68,26 @@ const ClientColumn = ({ id }: ClientColumnProps) => {
         return (
             <Spinner />
         )
+    }
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (selectedCompany === -1) {
+            toast.error("Por favor selecciona una empresa");
+            return;
+        }
+        try {
+            const parsedInput = {
+                ...input,
+                company_id: selectedCompany,
+                id: id
+            };
+            await updateClient.mutateAsync(parsedInput);
+            setEditing(false);
+        }
+        catch (error) {
+            console.error("Error creating client:", error);
+        }
     }
 
     if (!client) {
@@ -55,59 +105,32 @@ const ClientColumn = ({ id }: ClientColumnProps) => {
             <div className="font-semibold">
                 {client.firstname} {client.lastname}
             </div>
-            <div className="flex flex-col gap-3 pb-10">
-                <Field label="Nombre" value={client.firstname} isEditing={editing} />
-                <Field label="Apellido" value={client.lastname} isEditing={editing} />
-                <Field label="Correo" value={client.email} isEditing={editing} />
+            <form onSubmit={handleSubmit}>
 
-                <div>
-                    <div className="font-normal pb-1">
-                        Empresa
-                    </div>
-                    {editing ? (
-                        <select
-                            value={selectedCompany}
-                            className="border w-full rounded px-2 py-1"
-                            onChange={(e) => {
-                                setSelectedCompany(parseInt(e.target.value));
-                            }}
-                        >
-                            <option value={-1} key={-1}>Selecciona una empresa</option>
-                            {companies?.map((company) => (
-                                <option key={company.id} value={company.id}>
-                                    {company.name}
-                                </option>
-                            ))}
-                        </select>
+                <ClientForms
+                    isEditing={editing}
+                    input={input}
+                    companies={companies}
+                    selectedCompany={selectedCompany}
+                    handleInputChange={handleInputChange}
+                    setSelectedCompany={setSelectedCompany}
+                />
+                {editing && (
+                    <DoubleButtons
+                        labels={["Cancelar", "Guardar"]}
+                        onClick1={() => setEditing(false)}
+                        types={["button", "submit"]}
+                    />
+                )}
+            </form>
 
-                    ) : (
-                        <div className="text-text-light">
-                            {client.company?.name}
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            {editing ? (
-                <div className="flex flex-row gap-3">
-                    <button onClick={() => setEditing(false)} className="flex-1 w-full bg-bg-dark text-text px-3 py-1 rounded hover:bg-bg-extradark transition-colors">
-                        Cancelar
-                    </button>
-                    <button onClick={() => setEditing(false)} className="flex-1 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
-                        Guardar
-                    </button>
-                </div>
-            ) : (
-                <div className="flex flex-row gap-3">
-                    <button onClick={handleDelete} className="flex-1 w-full bg-bg-dark text-text px-3 py-1 rounded hover:bg-bg-extradark transition-colors">
-                        Eliminar
-                    </button>
-                    <button onClick={() => setEditing(true)} className="flex-1 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
-                        Editar
-                    </button>
-                </div>
-
-
+            {!editing && (
+                <DoubleButtons
+                    labels={["Eliminar", "Editar"]}
+                    onClick1={handleDelete}
+                    onClick2={() => setEditing(true)}
+                    types={["button", "button"]}
+                />
             )}
         </div>
     );

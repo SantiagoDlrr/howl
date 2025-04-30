@@ -37,13 +37,11 @@ const ClientsPage = () => {
     }
 
     // Backend
-    // TODO (@alecoeto): New company/client
-    // TODO (@alecoeto): Edit company/client 
-    // TODO (@alecoeto): Delete company/client
 
     // Frontend
     // TODO (@alecoeto): Add paginaiton
     // TODO (@alecoeto): Add animation to sidebar
+    // TODO (@alecoeto): When row click open menu, set editing true when select edit
 
     // Testing
     // TODO (@alecoeto): Add tests to client and company table
@@ -82,17 +80,16 @@ const ClientsPage = () => {
                         {(show === 1) ? (
                             <CompanyColumn id={columnId} />
                         ) : (
-
                             <ClientColumn id={columnId} />
                         )}
                     </ResizablePanel>
                 )}
             </div>
             {showNewCompanyModal && (
-                <NewCompanyModal isOpen={showNewCompanyModal} onClose={() => setShowNewCompanyModal(false)} />
+                <NewCompanyModal isOpen={showNewCompanyModal} onClose={() => setShowNewCompanyModal(false)} setColumnId={setColumnId} setShow={setShow}/>
             )}
             {showNewClientModal && (
-                <NewClientModal isOpen={showNewClientModal} onClose={() => setShowNewClientModal(false)} />
+                <NewClientModal isOpen={showNewClientModal} onClose={() => setShowNewClientModal(false)} setColumnId={setColumnId} setShow={setShow} />
             )}
         </>
     )

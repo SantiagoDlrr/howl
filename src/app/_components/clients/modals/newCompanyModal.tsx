@@ -1,45 +1,29 @@
 "use client";
 
 import { api } from "@/trpc/react";
-import Field from "../field";
+import Field from "../forms/field";
 import Modal from "./modal";
 import { useState } from "react";
 import { companySchema } from "@/app/utils/schemas/companySchemas";
 import toast from "react-hot-toast";
+import { CompanyInput, defaultCompany } from "@/app/utils/types/companyInput";
+import CompanyForms from "../forms/companyForms";
 
 interface NewCompanyModalProps {
     isOpen: boolean;
     onClose: () => void;
+    setColumnId: (id: number | null) => void;
+    setShow: (num: number) => void;
 }
 
-interface CompanyInput {
-    name: string;
-    address: {
-        country: string;
-        state: string;
-        city: string;
-        street: string;
-    };
-    client_since: Date;
-}
-
-const defaultCompany: CompanyInput = {
-    name: "",
-    address: {
-        country: "",
-        state: "",
-        city: "",
-        street: "",
-    },
-    client_since: new Date(),
-}
-
-const NewCompanyModal = ({ isOpen, onClose }: NewCompanyModalProps) => {
+const NewCompanyModal = ({ isOpen, onClose, setColumnId, setShow }: NewCompanyModalProps) => {
     const utils = api.useUtils();
 
     const createCompany = api.company.createCompany.useMutation({
         onSuccess: async (data) => {
             toast.success(`Empresa ${data.name} creada`);
+            setShow(1);
+            setColumnId(data.id);
             await utils.company.getAll.invalidate();
         },
         onError: (error) => {
@@ -89,15 +73,7 @@ const NewCompanyModal = ({ isOpen, onClose }: NewCompanyModalProps) => {
                 <div className="flex flex-col gap-3">
                     <Field strong label="Nombre" required value={input.name} isEditing={true} onChange={(val: string) => handleNameFieldChange(val)} />
                 </div>
-                <div className="font-semibold pb-3 pt-8">
-                    Dirección
-                </div>
-                <div className="flex flex-col gap-3">
-                    <Field label="País" value={input.address.country} isEditing={true} onChange={(val: string) => handleAddressFieldChange("country", val)} />
-                    <Field label="Estado" value={input.address.state} isEditing={true} onChange={(val: string) => handleAddressFieldChange("state", val)} />
-                    <Field label="Ciudad" value={input.address.city} isEditing={true} onChange={(val: string) => handleAddressFieldChange("city", val)} />
-                    <Field label="Calle" value={input.address.street} isEditing={true} onChange={(val: string) => handleAddressFieldChange("street", val)} />
-                </div>
+                <CompanyForms input={input} isEditing={true} handleAddressFieldChange={handleAddressFieldChange} />
                 <div className="flex flex-row gap-4 pt-8">
                     <button onClick={onClose} className="flex-1 w-full bg-bg-dark text-text px-3 py-1 rounded hover:bg-bg-extradark transition-colors">
                         Cancelar

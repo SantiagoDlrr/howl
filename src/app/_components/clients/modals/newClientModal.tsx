@@ -1,39 +1,30 @@
 "use client";
 import { api } from "@/trpc/react";
-import Field from "../field";
+import Field from "../forms/field";
 import Modal from "./modal";
 import Spinner from "../../spinner";
 import { useState } from "react";
 import { company } from "@prisma/client";
 import toast from "react-hot-toast";
+import { ClientInput, defaultClient } from "@/app/utils/types/clientInput";
+import ClientForms from "../forms/clientForms";
 
 interface NewClientModalProps {
     isOpen: boolean;
     onClose: () => void;
+    setColumnId: (id: number | null) => void;
+    setShow: (num: number) => void;
 }
 
-interface ClientInput {
-    firstname: string;
-    lastname: string;
-    email: string;
-    company_id: number;
-}
-
-const defaultClient: ClientInput = {
-    firstname: "",
-    lastname: "",
-    email: "",
-    company_id: -1,
-}
-
-
-const NewClientModal = ({ isOpen, onClose }: NewClientModalProps) => {
+const NewClientModal = ({ isOpen, onClose, setColumnId, setShow }: NewClientModalProps) => {
     const { data: companies, isLoading } = api.company.getAll.useQuery();
     const utils = api.useUtils();
 
     const createClient = api.companyClient.createClient.useMutation({
         onSuccess: async (data) => {
             toast.success(`Cliente ${data.firstname} ${data.lastname} creado`);
+            setShow(2);
+            setColumnId(data.id);
             await utils.companyClient.invalidate();
         },
         onError: (error) => {
@@ -90,30 +81,14 @@ const NewClientModal = ({ isOpen, onClose }: NewClientModalProps) => {
                         </div>
                     )}
                     <form onSubmit={handleSubmit} className="px-2 pt-4 pb-5">
-                        <div className="flex flex-col gap-3">
-                            <Field label="Nombre" value={input.firstname} required onChange={(val: string) => handleInputChange("firstname", val)} isEditing={true} />
-                            <Field label="Apellido" value={input.lastname} required onChange={(val: string) => handleInputChange("lastname", val)} isEditing={true} />
-                            <Field label="Email" value={input.email} required onChange={(val: string) => handleInputChange("email", val)} isEditing={true} />
-                            <div>
-                                <div className="font-normal pt-1 pb-1">
-                                    Empresa
-                                </div>
-                                <select
-                                    value={selectedCompany}
-                                    className="border w-full rounded px-2 py-1"
-                                    onChange={(e) => {
-                                        setSelectedCompany(parseInt(e.target.value));
-                                    }}
-                                >
-                                    <option value={-1} key={-1} >Selecciona una empresa</option>
-                                    {companies?.map((company) => (
-                                        <option key={company.id} value={company.id}>
-                                            {company.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
+                        <ClientForms
+                            input={input}
+                            isEditing={true}
+                            companies={companies}
+                            selectedCompany={selectedCompany}
+                            handleInputChange={handleInputChange}
+                            setSelectedCompany={setSelectedCompany}
+                        />
                         <div className="flex flex-row gap-4 pt-8">
                             <button onClick={onClose} className="flex-1 w-full bg-bg-dark text-text px-3 py-1 rounded hover:bg-bg-extradark transition-colors">
                                 Cancelar
