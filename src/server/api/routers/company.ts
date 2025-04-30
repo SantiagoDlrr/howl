@@ -3,7 +3,6 @@ import { z } from 'zod';
 import {
   createTRPCRouter,
   protectedProcedure,
-  publicProcedure,
 } from 'howl/server/api/trpc';
 import { companySchema } from '@/app/utils/schemas/companySchemas';
 

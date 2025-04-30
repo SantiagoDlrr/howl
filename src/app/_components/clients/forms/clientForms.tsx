@@ -1,4 +1,4 @@
-import { ClientInput } from "@/app/utils/types/clientInput";
+import type { ClientInput } from "@/app/utils/types/clientInput";
 import Field from "./field";
 import { company } from "@prisma/client";
 

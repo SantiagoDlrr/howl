@@ -1,4 +1,4 @@
-import { CompanyInput } from "@/app/utils/types/companyInput"
+import type { CompanyInput } from "@/app/utils/types/companyInput"
 import Field from "./field"
 
 interface CompanyFormsProps {

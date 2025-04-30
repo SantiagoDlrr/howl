@@ -1,13 +1,11 @@
-import { z } from "zod";
 
 import {
   createTRPCRouter,
   protectedProcedure,
-  publicProcedure,
 } from "howl/server/api/trpc";
 
 export const feedbackRouter = createTRPCRouter({
-    getAll: publicProcedure
+    getAll: protectedProcedure 
     .query(async ({ ctx }) => {
         const results = await ctx.db.client_feedback.findMany({
             include: {

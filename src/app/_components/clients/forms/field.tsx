@@ -1,14 +1,3 @@
-import { Plane } from "lucide-react";
-
-interface CompanyInput {
-    name: string;
-    address: {
-        country: string;
-        state: string;
-        city: string;
-        street: string;
-    };
-}
 
 interface FieldProps {
     label: string;

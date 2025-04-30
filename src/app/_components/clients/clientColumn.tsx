@@ -1,11 +1,8 @@
 "use client";
 
 import { api } from "@/trpc/react";
-import Button from "../button";
 import { useEffect, useState } from "react";
-import { RingLoader } from "react-spinners";
 import Spinner from "../spinner";
-import Field from "./forms/field";
 import toast from "react-hot-toast";
 import { ClientInput, defaultClient } from "@/app/utils/types/clientInput";
 import DoubleButtons from "./forms/DoubleButtons";
@@ -64,7 +61,7 @@ const ClientColumn = ({ id }: ClientColumnProps) => {
             await deleteClient.mutateAsync(client.id);
         }
     }
-    if (loading) {
+    if (loading || loadingCompanies) {
         return (
             <Spinner />
         )

@@ -4,7 +4,6 @@ import { api } from "@/trpc/react";
 import Spinner from "../spinner";
 import { useMemo, useState } from "react";
 import SearchBar from "./searchBar";
-// import { FaPlus } from "react-icons/fa";
 import { GoPlus } from "react-icons/go";
 
 interface CompanyProps {

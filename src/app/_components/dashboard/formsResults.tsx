@@ -1,8 +1,6 @@
 "use client";
-import { client_feedback } from "@prisma/client";
 import { api } from "howl/trpc/react";
 
-import type { Prisma } from "@prisma/client";
 import { useEffect } from "react";
 import Spinner from "../spinner";
 

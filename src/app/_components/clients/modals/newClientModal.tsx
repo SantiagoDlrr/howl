@@ -1,10 +1,8 @@
 "use client";
 import { api } from "@/trpc/react";
-import Field from "../forms/field";
 import Modal from "./modal";
 import Spinner from "../../spinner";
 import { useState } from "react";
-import { company } from "@prisma/client";
 import toast from "react-hot-toast";
 import { ClientInput, defaultClient } from "@/app/utils/types/clientInput";
 import ClientForms from "../forms/clientForms";
