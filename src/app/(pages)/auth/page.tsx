@@ -1,6 +1,5 @@
 import SignUpCard from "@/app/_components/auth/signupCard";
 import LoginCard from "howl/app/_components/auth/loginCard";
-import { headers } from "next/headers";
 
 interface LoginPageProps {
     searchParams: { mode?: string };
