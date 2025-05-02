@@ -1,6 +1,7 @@
 import { query } from '@/lib/database';
 import { auth } from '@/server/auth';
 import { NextResponse } from 'next/server';
+import { UserRoleData, ErrorResponse } from '@/types/userTypes';
 
 export async function GET(_request: Request) {
   try {
@@ -13,7 +14,7 @@ export async function GET(_request: Request) {
     if (!session?.user?.id) {
       console.log("Usuario no autenticado o ID no disponible", { session });
       return NextResponse.json(
-        { error: "Usuario no autenticado o ID no disponible" },
+        { error: "Usuario no autenticado o ID no disponible" } as ErrorResponse,
         { status: 401 }
       );
     }
@@ -21,19 +22,25 @@ export async function GET(_request: Request) {
     const userId = session.user.id;
 
     // First, get the consultant.id that matches the user_id
-    const consultantResult = await query(
+    const consultantResult = await query<{ id: string }>(
       `SELECT id FROM consultant WHERE user_id = $1`,
       [userId]
     );
 
     if (consultantResult.length === 0) {
-      return NextResponse.json({ error: "Consultant not found for this user" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Consultant not found for this user" } as ErrorResponse, 
+        { status: 404 }
+      );
     }
 
     const consultantId = consultantResult[0]?.id;
 
     if (!consultantId) {
-      return NextResponse.json({ error: "Consultant ID not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Consultant ID not found" } as ErrorResponse, 
+        { status: 404 }
+      );
     }
 
     // Check roles based on consultantId
@@ -51,9 +58,13 @@ export async function GET(_request: Request) {
     if (isAdmin.length > 0) role = "administrator";
     else if (isSupervisor.length > 0) role = "supervisor";    
 
-    return NextResponse.json({ userId, consultantId, role });
+    const userData: UserRoleData = { userId, consultantId, role };
+    return NextResponse.json(userData);
   } catch (error) {
     console.error("Error detallado al obtener rol de usuario:", error);
-    return NextResponse.json({ error: "Internal Server Error", details: error instanceof Error ? error.message : String(error) }, { status: 500 });
+    return NextResponse.json({ 
+      error: "Internal Server Error", 
+      details: error instanceof Error ? error.message : String(error) 
+    } as ErrorResponse, { status: 500 });
   }
 }
