@@ -62,7 +62,7 @@ jobs:
       run: npm ci
 
     - name: Run Cypress tests
-      run: npx start-server-and-test start http://localhost:3000 'cypress run'
+      run: npx start-server-and-test dev http://localhost:3000 'cypress run'
 
   unit-tests:
     name: Unit tests
