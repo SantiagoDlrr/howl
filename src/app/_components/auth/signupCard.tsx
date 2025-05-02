@@ -16,8 +16,8 @@ const SignUpCard = () => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const router = useRouter();
-
-    const registerMutation = api.register.register.useMutation({
+ 
+    const signupMutation = api.signup.signup.useMutation({
         onSuccess: () => {
             toast.success("Registro exitoso");
             router.push("/main");
@@ -35,10 +35,10 @@ const SignUpCard = () => {
         setError("");
     }
 
-    const handleRegister = (e: React.FormEvent) => {
+    const handleSignup = (e: React.FormEvent) => {
         e.preventDefault();
         if (validName() && validEmail() && validPassword()) {
-            registerMutation.mutate({ name, email, password });
+            signupMutation.mutate({ name, email, password });
             resetValues();
         }
     };
@@ -89,16 +89,11 @@ const SignUpCard = () => {
     }
 
     return (
-        <div className="bg-white w-1/3 p-8 rounded-lg flex flex-col px-20">
+        <div data-testid="signup-card" className="bg-white w-1/3 p-8 rounded-lg flex flex-col px-20">
             <h1 className="text-center font-normal text-2xl pb-6">
                 Registro
             </h1>
-
-            {/* <div className="bg-bg-dark w-full flex flex-row items-center rounded-md p-1 mb-4">
-                <ToggleButton id={1} selected={selected === 1} setSelected={setSelected} />
-                <ToggleButton id={2} selected={selected === 2} setSelected={setSelected} />
-            </div> */}
-            <form onSubmit={handleRegister} className="flex flex-col items-center w-full">
+            <form onSubmit={handleSignup} className="flex flex-col items-center w-full">
                 {error && <ErrorMessage message={error} />}
                 <div className="flex flex-col gap-2 w-full pb-10">
                     <FormField label="Name" xl type="text" value={name} onChange={(e) => setName(e.target.value)} />

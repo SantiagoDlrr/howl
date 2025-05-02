@@ -54,7 +54,7 @@ const LoginCard = () => {
 
 
     return (
-        <div className="bg-white w-1/3 p-14 rounded-lg flex flex-col px-20">
+        <div data-testid="login-card" className="bg-white w-1/3 p-14 rounded-lg flex flex-col px-20">
             <h1 className="text-center font-normal text-2xl pb-8">
                 Login
             </h1>

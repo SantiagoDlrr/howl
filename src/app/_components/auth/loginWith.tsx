@@ -36,7 +36,7 @@ const LoginWith = ({ login }: { login?: boolean }) => {
                 </button>
             </div>
 
-            <Link href={login ? "/register" : "/login"} className="text-text-light pt-10 text-sm">
+            <Link href={login ? "/auth?mode=signup" : "/auth?mode=login"} className="text-text-light pt-10 text-sm">
                 {login ? "Nuevo a HowlX?" : "¿Ya tienes cuenta?"}
                 <span className="text-primary-light underline hover:text-primary-extralight pl-2">
                     {login ? "Regístrate" : "Inicia sesión"}
