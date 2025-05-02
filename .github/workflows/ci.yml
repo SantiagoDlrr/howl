@@ -37,8 +37,8 @@ jobs:
     - name: Run build
       run: npm run build
 
-  tests:
-    name: UI tests
+  e2e-tests:
+    name: E2E tests
     runs-on: ubuntu-latest
     env:
       AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
@@ -59,10 +59,32 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies
-      run: npm install
-
-    - name: Build 
-      run: npm run build
+      run: npm ci
 
     - name: Run Cypress tests
-      run: npx start-server-and-test start http://localhost:3000 'cypress run'
+      uses: cypress-io/github-action@v6
+      with:
+        start: npm run dev
+        wait-on: 'http://localhost:3000'
+        config-file: cypress.config.js
+        browser: chrome
+
+  unit-tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up nodejs
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run unit tests
+      run: npm test -- --watchAll=false --passWithNoTests
