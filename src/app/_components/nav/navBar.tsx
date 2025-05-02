@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import NavElement from "./navElement";
-import { routes } from "howl/app/utils/routes";
+import { routes } from "@/app/utils/routes";
 import LogoElement from "./logoElement";
 import { useSession } from "next-auth/react";
 import NavDropdown from "./navDropDown";

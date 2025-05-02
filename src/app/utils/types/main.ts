@@ -9,8 +9,9 @@ export interface Report {
   emotions: string[];
   sentiment: string;
   output: string;
-  riskWords: string;
+  riskWords: string[];
   summary: string;
+  rating: number;
 }
 
 export interface FileData {
@@ -19,7 +20,7 @@ export interface FileData {
   date: string;
   type: string;
   duration: string;
-  rating: number;
+  
   report: Report;
   transcript?: TranscriptEntry[]; 
   messages?: {

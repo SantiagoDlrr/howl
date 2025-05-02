@@ -12,18 +12,19 @@ import {
   Edit2,
   Check
 } from 'lucide-react';
-import type { Report, TranscriptEntry } from '@/app/types/main';
+import type { Report, TranscriptEntry, FileData } from '@/app/utils/types/main';
 import { ReportSection } from '../reportSection';
 import TranscriptSection from '../transcriptSection';
 
 interface Props {
   report: Report;
+  file: FileData;
   transcript: TranscriptEntry[];
   title: string;
   onTitleChange: (newTitle: string) => void;
   type: string;
 }
-export const ReportDisplay: React.FC<Props> = ({ report, transcript, title, onTitleChange, type }) => {
+export const ReportDisplay: React.FC<Props> = ({ report, file, transcript, title, onTitleChange, type }) => {
   const [activeTab, setActiveTab] = useState<'report' | 'transcript'>('report');
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [reportTitle, setReportTitle] = useState(title);
@@ -83,11 +84,11 @@ export const ReportDisplay: React.FC<Props> = ({ report, transcript, title, onTi
             </div>
 
             <div className="mt-2 text-sm text-gray-500">
-              <div className="mb-1">Reporte de Llamada: 13 de Marzo</div>
-              <div className="mb-1">Duración: 7 min</div>
+              <div className="mb-1">Reporte de Llamada: {file?.date ?? '—'}</div>
+              <div className="mb-1">Duración: {file?.duration ?? '—'}</div>
               <div>
                 Calificación de Satisfacción:{' '}
-                <span className="bg-gray-200 px-2 py-0.5 rounded-md">80</span>
+                <span className="bg-gray-200 px-2 py-0.5 rounded-md"> {report?.rating ?? '—'}</span>
               </div>
             </div>
           </div>
@@ -98,7 +99,7 @@ export const ReportDisplay: React.FC<Props> = ({ report, transcript, title, onTi
             </span>
             <span className="bg-green-100 text-green-800 font-medium text-xs px-3 py-1 rounded-full">
               {/*Copia lo de arriba del type */}
-              Positive
+              {report?.sentiment ?? '—'}
             </span>
           </div>
         </div>
@@ -107,8 +108,8 @@ export const ReportDisplay: React.FC<Props> = ({ report, transcript, title, onTi
           <div className="flex space-x-6">
             <button
               className={`py-3 px-1 text-sm font-medium relative ${activeTab === 'report'
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-gray-500 hover:text-gray-700'
+                ? 'text-primary border-b-2 border-primary'
+                : 'text-gray-500 hover:text-gray-700'
                 }`}
               onClick={() => setActiveTab('report')}
             >
@@ -116,8 +117,8 @@ export const ReportDisplay: React.FC<Props> = ({ report, transcript, title, onTi
             </button>
             <button
               className={`py-3 px-1 text-sm font-medium relative ${activeTab === 'transcript'
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-gray-500 hover:text-gray-700'
+                ? 'text-primary border-b-2 border-primary'
+                : 'text-gray-500 hover:text-gray-700'
                 }`}
               onClick={() => setActiveTab('transcript')}
             >
@@ -156,7 +157,7 @@ export const ReportDisplay: React.FC<Props> = ({ report, transcript, title, onTi
             <ReportSection
               title="Palabras de Riesgo"
               icon={<AlertTriangle className="w-5 h-5 text-primary" />}
-              content={report.riskWords}
+              listItems={report.riskWords}
             />
             <ReportSection
               title="Resumen"
