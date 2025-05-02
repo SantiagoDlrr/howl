@@ -1,5 +1,24 @@
 import axios from 'axios';
-import { RoleResponse, ErrorResponse } from '@/types/userTypes';
+
+// Definimos los tipos aquí directamente para evitar problemas de importación
+export type UserRole = 'consultant' | 'supervisor' | 'administrator';
+
+export interface UserRoleData {
+  userId: string;
+  consultantId: string;
+  role: UserRole;
+}
+
+export interface RoleResponse {
+  userId: string;
+  consultantId: string;
+  role: UserRole;
+}
+
+export interface ErrorResponse {
+  error: string;
+  details?: string;
+}
 
 export const getUserRole = async (): Promise<RoleResponse> => {
   try {
@@ -13,6 +32,6 @@ export const getUserRole = async (): Promise<RoleResponse> => {
   }
 };
 
-export const isAdminOrSupervisor = (role: string): boolean => {
+export const isAdminOrSupervisor = (role: UserRole): boolean => {
   return role === 'administrator' || role === 'supervisor';
 };

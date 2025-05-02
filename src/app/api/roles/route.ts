@@ -1,7 +1,7 @@
 import { query } from '@/lib/database';
 import { auth } from '@/server/auth';
 import { NextResponse } from 'next/server';
-import { UserRoleData, ErrorResponse } from '@/types/userTypes';
+import { UserRoleData, ErrorResponse, UserRole } from '@/app/utils/services/userService';
 
 export async function GET(_request: Request) {
   try {
@@ -54,7 +54,7 @@ export async function GET(_request: Request) {
       [consultantId]
     );
 
-    let role = "consultant";
+    let role: UserRole = "consultant";
     if (isAdmin.length > 0) role = "administrator";
     else if (isSupervisor.length > 0) role = "supervisor";    
 
