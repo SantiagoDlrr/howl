@@ -19,7 +19,7 @@
     "preview": "next build && next start",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test": "jest"
+    "test": "jest --verbose"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.2",
