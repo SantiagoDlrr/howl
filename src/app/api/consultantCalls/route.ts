@@ -15,7 +15,7 @@ export async function GET(request: Request) {
       SELECT c.date, co.name as company, c.id as call_id
       FROM calls c
       INNER JOIN client ci ON ci.id = c.client_id
-      INNER JOIN companies co ON ci.company_id = co.id
+      INNER JOIN company co ON ci.company_id = co.id
       WHERE c.consultant_id = $1
       ORDER BY c.date DESC;
     `, [consultantId]);
