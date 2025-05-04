@@ -1,6 +1,3 @@
-import axios from 'axios';
-
-// Definimos los tipos aquí directamente para evitar problemas de importación
 export type UserRole = 'consultant' | 'supervisor' | 'administrator';
 
 export interface UserRoleData {
@@ -20,17 +17,26 @@ export interface ErrorResponse {
   details?: string;
 }
 
-export const getUserRole = async (): Promise<RoleResponse> => {
+export const getUserRole = async (): Promise<UserRoleData> => {
   try {
-    const response = await axios.get<RoleResponse>('/api/roles');
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw new Error((error.response.data as ErrorResponse).error);
+    // Usar la API fetch nativa en lugar de axios para simplificar
+    const apiUrl = '/api/roles';
+    console.log('Iniciando petición para obtener rol del usuario en URL:', apiUrl);
+    
+    const response = await fetch(apiUrl);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `Error HTTP: ${response.status}`);
     }
-    throw new Error('Error al obtener el rol del usuario');
+    
+    const data = await response.json();
+    console.log('Respuesta recibida:', data);
+    return data;
+  } catch (error) {
+    console.error('Error obteniendo rol del usuario:', error);
+    throw error;
   }
-};
+}
 
 export const isAdminOrSupervisor = (role: UserRole): boolean => {
   return role === 'administrator' || role === 'supervisor';
