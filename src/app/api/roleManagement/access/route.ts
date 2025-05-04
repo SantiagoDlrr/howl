@@ -85,14 +85,14 @@ export async function PUT(request: Request) {
         }
         
         // 4. Eliminar roles anteriores para este consultor
-        await query('DELETE FROM administration WHERE administrator_id = $1', [consultantId]);
+        await query('DELETE FROM administration WHERE administrator_id = $1 AND administrated_id = 22', [consultantId]);
         await query('DELETE FROM supervision WHERE supervisor_id = $1', [consultantId]);
         
         // 5. Asignar nuevo rol
         if (updateData.accessLevel === 'administrator') {
           await query(
-            'INSERT INTO administration (administrator_id) VALUES ($1)',
-            [consultantId]
+            'INSERT INTO administration (administrator_id, administrated_id) VALUES ($1, $2)',
+            [consultantId, 22] // Asignamos el administrated_id por defecto como 22
           );
         } else if (updateData.accessLevel === 'supervisor') {
           await query(
