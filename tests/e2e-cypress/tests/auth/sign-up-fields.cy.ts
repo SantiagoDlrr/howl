@@ -49,3 +49,4 @@ describe('Sign-up field validation', () => {
     });
 
 });
+
