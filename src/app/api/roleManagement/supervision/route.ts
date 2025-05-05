@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     }
     
     // Solo permitir a administradores o al mismo supervisor consultar
-    const isOwnRecord = userRole.consultantId === parseInt(supervisorId);
+    const isOwnRecord = userRole.consultantId.toString() === supervisorId;
     
     if (userRole.role !== 'administrator' && !isOwnRecord) {
       return NextResponse.json(
