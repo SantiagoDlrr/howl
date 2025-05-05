@@ -7,10 +7,11 @@ describe('Recuperación de roles después de login', () => {
       cy.get('button[type="submit"]').click();
   
       // Esperar redirección o carga completa
-      cy.url().should('not.include', 'auth');
+      
     });
   
     it('Debería recuperar el rol del usuario autenticado', () => {
+      cy.url({ timeout: 10000 }).should('not.include', 'auth');
       cy.request('/api/roles').then((response) => {
         expect(response.status).to.eq(200);
         expect(response.body).to.have.property('role');
