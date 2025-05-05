@@ -1,7 +1,7 @@
 import RestrictedAccess from "@/app/_components/auth/restrictedAccess";
 import CallStatsDashboard from "@/app/_components/logs/CallStatsDashboard";
 import { auth } from "@/server/auth";
-import CallLogsTable from "howl/app/_components/logs/callLogsTable";
+import CallLogsTable from "@/app/_components/logs/callLogsTable";
 
 const LogCalls = async () => {
     const session = await auth();
