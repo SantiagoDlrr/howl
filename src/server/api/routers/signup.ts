@@ -34,4 +34,14 @@ export const signupRouter = createTRPCRouter({
 
       return { success: true, user };
     }),
+
+    deleteUser: publicProcedure
+    .input(z.object({ email: z.string().email() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.user.delete({
+        where: {
+          email: input.email,
+        },
+      });
+    }),
 })

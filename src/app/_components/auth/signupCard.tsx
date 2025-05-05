@@ -78,7 +78,7 @@ const SignUpCard = () => {
             return false
         }
         if (name.length < 3) {
-            setError("Nombre muy corto")
+            setError("Nombre muy corto. (Al menos 3 caracteres)")
             return false
         }
         if (name.length > 50) {
@@ -96,9 +96,9 @@ const SignUpCard = () => {
             <form onSubmit={handleSignup} className="flex flex-col items-center w-full">
                 {error && <ErrorMessage message={error} />}
                 <div className="flex flex-col gap-2 w-full pb-10">
-                    <FormField label="Name" xl type="text" value={name} onChange={(e) => setName(e.target.value)} />
-                    <FormField label="Email" xl type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                    <FormField label="Password" xl type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <FormField testId="signup-name" label="Name" xl type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                    <FormField testId="signup-email" label="Email" xl type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <FormField testId="signup-password" label="Password" xl type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
                 <div className="flex flex-row justify-center pb-10 w-full">
                     <Button label="Registrar" xl type="submit" />

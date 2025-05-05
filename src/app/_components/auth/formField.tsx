@@ -9,10 +9,11 @@ interface FormFieldProps {
     type?: string;
     xl?: boolean;
     value: string;
+    testId?: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const FormField = ({ label, type, value, onChange }: FormFieldProps) => {
+const FormField = ({ label, type, value, onChange, testId }: FormFieldProps) => {
     const [view, setView] = useState(false);
     const originalType = type ?? "text";
     const [inputType, setInputType] = useState(type ?? "text");
@@ -32,7 +33,7 @@ const FormField = ({ label, type, value, onChange }: FormFieldProps) => {
                 {label}
             </div>
             <div className="relative flex flex-row justify-center items-center">
-                <input type={inputType} value={value} onChange={onChange} className={`bg-bg-dark rounded-md px-2 w-full`} />
+                <input data-testid={testId} type={inputType} value={value} onChange={onChange} className={`bg-bg-dark rounded-md px-2 w-full`} />
                 {originalType === "password" && (
                     <button type="button" className="absolute right-0 mr-2 hover:text-gray-400" onClick={toggleView}>
                         <IoMdEye />
