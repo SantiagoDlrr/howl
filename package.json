@@ -19,7 +19,8 @@
     "preview": "next build && next start",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test": "jest"
+    "test": "jest --verbose",
+    "cypress": "cypress run"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.2",
