@@ -1,5 +1,5 @@
 import { auth } from "@/server/auth";
-import { getUserRoleFromDb, isAdminOrSupervisor } from "@/app/api/roles/utils";
+import { getUserRoleFromDb } from "@/app/api/roles/utils";
 import RestrictedAccess from "@/app/_components/auth/restrictedAccess";
 import UserManagementTable from "@/app/_components/roles/roleManagementTable";
 
