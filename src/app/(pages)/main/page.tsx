@@ -34,11 +34,11 @@ export default function MainPage() {
   const closeNewCallModal = () => setShowNewCallModal(false);
 
   const { data: session } = useSession();
-  if (!session?.user) {
-    return (
-      <RestrictedAccess />
-    )
-  }
+  // if (!session?.user) {
+  //   return (
+  //     <RestrictedAccess />
+  //   )
+  // }
 
   /**
    * Actually performs the POST to the backend.

@@ -37,6 +37,7 @@ const ClientsPage = () => {
     }
 
     // Backend
+    // Protect page
 
     // Frontend
     // TODO (@alecoeto): Add paginaiton
