@@ -4,7 +4,8 @@ import { api } from "@/trpc/react";
 import { useEffect, useState } from "react";
 import Spinner from "../spinner";
 import toast from "react-hot-toast";
-import { ClientInput, defaultClient } from "@/app/utils/types/clientInput";
+import { defaultClient } from "@/app/utils/types/clientInput";
+import type { ClientInput } from "@/app/utils/types/clientInput";
 import DoubleButtons from "./forms/DoubleButtons";
 import ClientForms from "./forms/clientForms";
 

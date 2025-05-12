@@ -66,7 +66,6 @@ const ClientsPage = () => {
                     )}
                 </div>
 
-                {/* {(columnId) && ( */}
                 <ResizablePanel
                     width={panelWidth}
                     minWidth={0}

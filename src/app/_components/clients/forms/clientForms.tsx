@@ -1,6 +1,6 @@
 import type { ClientInput } from "@/app/utils/types/clientInput";
 import Field from "./field";
-import { company } from "@prisma/client";
+import type { company } from "@prisma/client";
 
 interface ClientFormsProps {
     input: ClientInput;

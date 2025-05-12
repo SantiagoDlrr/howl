@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import Spinner from "../spinner";
 import Field from "./forms/field";
 import toast from "react-hot-toast";
-import { CompanyInput, defaultCompany } from "@/app/utils/types/companyInput";
+import { defaultCompany } from "@/app/utils/types/companyInput";
+import type { CompanyInput } from "@/app/utils/types/companyInput";
 import CompanyForms from "./forms/companyForms";
 import DoubleButtons from "./forms/DoubleButtons";
 
