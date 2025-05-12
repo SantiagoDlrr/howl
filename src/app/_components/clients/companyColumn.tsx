@@ -11,9 +11,11 @@ import DoubleButtons from "./forms/DoubleButtons";
 
 interface CompanyColumnProps {
     id: number;
+    editing: boolean;
+    setEditing: (editing: boolean) => void;
 }
 
-const CompanyColumn = ({ id }: CompanyColumnProps) => {
+const CompanyColumn = ({ id, editing, setEditing }: CompanyColumnProps) => {
     const { data: company, isLoading: loadingCompany } = api.company.getById.useQuery(id);
     const utils = api.useUtils();
     const [input, setInput] = useState<CompanyInput>(defaultCompany);
@@ -88,8 +90,6 @@ const CompanyColumn = ({ id }: CompanyColumnProps) => {
             await deleteCompany.mutateAsync(company.id);
         }
     }
-    // const { data: clients, isLoading } = api.client.getByCompanyId.useQuery(id);
-    const [editing, setEditing] = useState(false);
 
     if (loadingCompany) {
         return (
@@ -112,23 +112,26 @@ const CompanyColumn = ({ id }: CompanyColumnProps) => {
             <div className="font-semibold text-xl">
                 {company.name}
             </div>
-            <div className="text-text-light pb-10">
+            <div className="text-text-light pb-6">
                 Cliente desde {company.client_since.toLocaleDateString()}
             </div>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-3 pb-10">
                 {editing && (
                     <div className="flex flex-col gap-3">
                         <Field strong label="Nombre" required value={input.name} isEditing={editing} onChange={(val: string) => handleNameFieldChange(val)} />
                     </div>
                 )}
+
                 <CompanyForms input={input} isEditing={editing} handleAddressFieldChange={handleAddressFieldChange} />
                 {editing && (
-                    <DoubleButtons
-                        labels={["Cancelar", "Guardar"]}
-                        onClick1={() => setEditing(false)}
-                        types={["button", "submit"]}
-                    />
+                    <div className="pt-10">
+                        <DoubleButtons
+                            labels={["Cancelar", "Guardar"]}
+                            onClick1={() => setEditing(false)}
+                            types={["button", "submit"]}
+                        />
+                    </div>
                 )}
             </form>
             {!editing && (

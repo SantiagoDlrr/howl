@@ -13,22 +13,26 @@ import { useState } from "react";
 
 const ClientsPage = () => {
 
-    const [leftPanelWidth, setLeftPanelWidth] = useState(500);
+    const [panelWidth, setpanelWidth] = useState(0);
     const [selected, setSelected] = useState<number>(1);
     const [columnId, setColumnId] = useState<number | null>(null);
     const [show, setShow] = useState(0);
     const [companyId, setCompanyId] = useState<number | null>(null);
     const [showNewCompanyModal, setShowNewCompanyModal] = useState(false);
     const [showNewClientModal, setShowNewClientModal] = useState(false);
+    const [editingCompany, setEditingCompany] = useState(false);
+    const [editingClient, setEditingClient] = useState(false);
 
     const handleSelectCompany = (companyId: number) => {
         setShow(1);
         setColumnId(companyId);
+        setpanelWidth(500);
     }
 
     const handleSelectClient = (clientId: number) => {
         setShow(2);
         setColumnId(clientId);
+        setpanelWidth(500);
     }
 
     const handleSeeClients = (companyId: number) => {
@@ -36,19 +40,17 @@ const ClientsPage = () => {
         setCompanyId(companyId);
     }
 
-    // Backend
-
-    // Frontend
-    // TODO (@alecoeto): Add paginaiton
-    // TODO (@alecoeto): Add animation to sidebar
-    // TODO (@alecoeto): When row click open menu, set editing true when select edit
+    const handleCloseColumn = () => {
+        setShow(0);
+        setpanelWidth(0);
+    }
 
     // Testing
     // TODO (@alecoeto): Add tests to client and company table
     // TODO (@alecoeto): Add tests to client and company column
     // TODO (@alecoeto): Add tests to client and company modals
     // TODO (@alecoeto): Add tests to page setup
-    
+
     return (
         <>
             <div className="w-full flex flex-row h-screen pt-24">
@@ -58,35 +60,39 @@ const ClientsPage = () => {
                         <ToggleButton id={2} selected={selected === 2} setSelected={setSelected} large label="Clientes" />
                     </div>
                     {selected === 1 ? (
-                        <CompanyTable onSeeClients={handleSeeClients} onClick={handleSelectCompany} openModal={() => setShowNewCompanyModal(true)} />
+                        <CompanyTable onSeeClients={handleSeeClients} onClick={handleSelectCompany} openModal={() => setShowNewCompanyModal(true)} editCompany={setEditingCompany} />
                     ) : (
-                        <ClientTable companyId={companyId} setCompanyId={setCompanyId} onSeeCompany={handleSelectCompany} onClick={handleSelectClient} openModal={() => setShowNewClientModal(true)} />
+                        <ClientTable companyId={companyId} setCompanyId={setCompanyId} onSeeCompany={handleSelectCompany} onClick={handleSelectClient} openModal={() => setShowNewClientModal(true)} editClient={setEditingClient} />
                     )}
                 </div>
 
-                {(show !== 0 && columnId) && (
-                    <ResizablePanel
-                        initialWidth={500}
-                        minWidth={500}
-                        maxWidth={1000}
-                        side="right"
-                        onResize={setLeftPanelWidth}
-                    >
+                {/* {(columnId) && ( */}
+                <ResizablePanel
+                    width={panelWidth}
+                    minWidth={0}
+                    maxWidth={1000}
+                    side="right"
+                    onResize={setpanelWidth}
+                >
+                    {panelWidth > 0 && (
                         <div className="flex flex-row justify-end pr-6">
-                            <button onClick={() => setShow(0)} className="text-gray-400 hover:text-gray-500">
+                            <button onClick={handleCloseColumn} className="text-gray-400 hover:text-gray-500">
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
-                        {(show === 1) ? (
-                            <CompanyColumn id={columnId} />
+                    )}
+                    {columnId && (
+                        (show === 1) ? (
+                            <CompanyColumn id={columnId} editing={editingCompany} setEditing={setEditingCompany} />
                         ) : (
-                            <ClientColumn id={columnId} />
-                        )}
-                    </ResizablePanel>
-                )}
+                            <ClientColumn id={columnId} editing={editingClient} setEditing={setEditingClient} />
+                        )
+                    )}
+                </ResizablePanel>
+                {/* )} */}
             </div>
             {showNewCompanyModal && (
-                <NewCompanyModal isOpen={showNewCompanyModal} onClose={() => setShowNewCompanyModal(false)} setColumnId={setColumnId} setShow={setShow}/>
+                <NewCompanyModal isOpen={showNewCompanyModal} onClose={() => setShowNewCompanyModal(false)} setColumnId={setColumnId} setShow={setShow} />
             )}
             {showNewClientModal && (
                 <NewClientModal isOpen={showNewClientModal} onClose={() => setShowNewClientModal(false)} setColumnId={setColumnId} setShow={setShow} />

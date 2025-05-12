@@ -5,6 +5,7 @@ import Spinner from "../spinner";
 import { useMemo, useState } from "react";
 import SearchBar from "./searchBar";
 import { GoPlus } from "react-icons/go";
+import Pagination from "./pagination";
 
 interface CompanyProps {
     onClick: (id: number) => void;
@@ -12,9 +13,10 @@ interface CompanyProps {
     setCompanyId: (id: number | null) => void;
     openModal: () => void;
     companyId: number | null;
+    editClient: (val: boolean) => void;
 }
 
-const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId, openModal}: CompanyProps) => {
+const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId, openModal, editClient }: CompanyProps) => {
 
     const { data: clients, isLoading: isLoading } = api.companyClient.get.useQuery(companyId);
     const { data: company, isLoading: isLoadingCompany } = api.company.getById.useQuery(companyId ?? -1);
@@ -23,6 +25,15 @@ const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId, openModal
     const [companySelection, setCompanySelection] = useState<string>(companyName);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
+
+    const logsPerPage = 8;
+    const lastIndex = currentPage * logsPerPage;
+    const firstIndex = lastIndex - logsPerPage;
+
+    const totalPages = useMemo(() => {
+        if (!clients) return 0;
+        return Math.ceil(clients.length / logsPerPage);
+    }, [clients, logsPerPage]);
 
     const filteredClients = useMemo(() => {
         if (!clients) return [];
@@ -34,15 +45,16 @@ const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId, openModal
                     value.toLowerCase().includes(searchTerm.toLowerCase())
                 ))
         );
-        // (searchTerm === '' || 
-        //     Object.values(client).some(value =>
-        //         typeof value === 'string' &&
-        //         value.toLowerCase().includes(searchTerm.toLowerCase())
-        //     ))
-        // );
+
         return filteredClients;
     }, [clients, searchTerm, companySelection]);
 
+    const currentClients = useMemo(() => {
+        if (!filteredClients) return [];
+        return filteredClients.slice(firstIndex, lastIndex);
+    }, [filteredClients, firstIndex, lastIndex]);
+
+    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
     const resetFilters = () => {
         setCompanyId(null);
@@ -50,6 +62,16 @@ const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId, openModal
         setCompanySelection('Clientes');
         setSearchTerm("");
         setCurrentPage(1);
+    }
+
+    const openClientHandler = (id: number) => {
+        onClick(id);
+        editClient(false);
+    }
+
+    const editClientHandler = (id: number) => {
+        onClick(id);
+        editClient(true);
     }
 
     if (isLoading || isLoadingCompany || isLoadingCompanies) {
@@ -116,9 +138,13 @@ const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId, openModal
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredClients.map((client, index) => (
+                        {currentClients.map((client, index) => (
                             <tr
                                 key={index}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    openClientHandler(client.id)
+                                }}
                                 className="border-b hover:bg-gray-50 transition-colors"
                             >
                                 <td className="p-3">{client.firstname} {client.lastname} </td>
@@ -132,7 +158,11 @@ const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId, openModal
                                     <button onClick={() => onSeeCompany(client.company_id ?? 0)} className="bg-bg-dark text-text px-3 py-1 rounded hover:bg-bg-extradark transition-colors">
                                         Ver Empresa
                                     </button>
-                                    <button onClick={() => onClick(client.id)} className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
+                                    <button onClick={(e) => {
+                                        e.stopPropagation();
+                                        editClientHandler(client.id)
+                                    }}
+                                        className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
                                         Editar
                                     </button>
                                 </td>
@@ -142,6 +172,15 @@ const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId, openModal
                 </table>
 
             </div>
+
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                length={filteredClients.length}
+                firstIndex={firstIndex}
+                lastIndex={lastIndex}
+                paginate={paginate}
+            />
         </div>
     )
 }
