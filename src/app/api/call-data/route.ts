@@ -113,8 +113,9 @@ export async function POST(request: Request) {
     // const callRiskWords = riskWords ? JSON.stringify(riskWords) : null;
   
   const callMainIdeas = keyTopics ? keyTopics : null; // Pass the array directly
-    const callRiskWords = riskWords ? riskWords : null; // Pass the array directly
-    // const callRiskWords = ['Risk', 'words'];
+    // const callRiskWords = riskWords ? riskWords : null; // Pass the array directly
+    const callRiskWords = riskWords ? `{${riskWords.map(word => `"${word}"`).join(',')}}` : null;
+
     
     const callEmotionNames = emotions ? emotions : null; // Pass the array directly
 
@@ -146,7 +147,7 @@ export async function POST(request: Request) {
 
 
     // Insert data using the stored procedure
-    const rows = await query<{ call_id: number }>(`
+    const rows = await query<{insert_call_with_emotions: number }>(`
       CALL insert_call_with_emotions(
         $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15
       ) ;
