@@ -4,7 +4,8 @@ import Modal from "./modal";
 import Spinner from "../../spinner";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { ClientInput, defaultClient } from "@/app/utils/types/clientInput";
+import { defaultClient } from "@/app/utils/types/clientInput";
+import type { ClientInput } from "@/app/utils/types/clientInput";
 import ClientForms from "../forms/clientForms";
 
 interface NewClientModalProps {
