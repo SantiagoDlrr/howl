@@ -88,19 +88,26 @@ const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId, openModal
 
             <div className="w-full flex flex-row gap-3 mb-6">
                 <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} setCurrentPage={setCurrentPage} />
-                <select
-                    value={companySelection}
-                    onChange={(e) => {
-                        setCompanySelection(e.target.value);
-                        setCurrentPage(1);
-                    }}
-                    className="border rounded px-2 py-1"
-                >
-                    <option value="">Todas las empresas</option>
-                    {companies.map(company => (
-                        <option key={company.id} value={company.name}>{company.name}</option>
-                    ))}
-                </select>
+                {companies ? (
+                    <select
+                        value={companySelection}
+                        onChange={(e) => {
+                            setCompanySelection(e.target.value);
+                            setCurrentPage(1);
+                        }}
+                        className="border rounded px-2 py-1"
+                    >
+                        <option value="">Todas las empresas</option>
+                        {companies.map(company => (
+                            <option key={company.id} value={company.name}>{company.name}</option>
+                        ))}
+                    </select>
+                ) : (
+                    <div className="border rounded px-2 py-1">
+                        Aún no hay empresas
+                    </div>
+                )}
+
                 <button
                     onClick={resetFilters}
                     className="bg-[#F9FBFF] hover:bg-gray-300 rounded px-2 border border-black"
