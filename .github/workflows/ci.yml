@@ -97,8 +97,8 @@ jobs:
       run: npx prisma generate
 
     - name: Push schema to test DB
-      run: npx prisma db push --preview-feature
-      
+      run: npx prisma db push
+
     - name: Run Cypress tests
       run: npx start-server-and-test dev http://localhost:3000 'cypress run'
 

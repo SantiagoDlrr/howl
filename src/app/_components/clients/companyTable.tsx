@@ -17,7 +17,6 @@ interface CompanyProps {
 const CompanyTable = ({ onClick, onSeeClients, openModal, editCompany }: CompanyProps) => {
 
     const { data: companies, isLoading } = api.company.getAll.useQuery();
-    console.log("COMPANIES ", companies);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const logsPerPage = 8;
@@ -65,15 +64,6 @@ const CompanyTable = ({ onClick, onSeeClients, openModal, editCompany }: Company
         )
     }
 
-    if (!companies || companies.length === 0) {
-        return (
-            <div className="bg-bg h-screen px-20 w-full">
-                <div className="flex justify-center items-center h-full">
-                    <p className="text-lg">No hay empresas registradas</p>
-                </div>
-            </div>
-        )
-    }
 
     return (
         <div className="bg-bg h-screen pt-4 pb-24 px-20 w-full">

@@ -80,16 +80,6 @@ const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId, openModal
         )
     }
 
-    if (!clients || clients.length === 0 || !companies) {
-        return (
-            <div className="bg-bg h-screen px-20 w-full">
-                <div className="flex justify-center items-center h-full">
-                    <p className="text-lg">No hay empresas registradas</p>
-                </div>
-            </div>
-        )
-    }
-
     return (
         <div data-testid="clients-card" className="bg-bg h-screen pt-4 pb-24 px-20 w-full">
             <div className="text-xl font-semibold pb-5">
