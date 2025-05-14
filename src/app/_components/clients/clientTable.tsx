@@ -91,7 +91,7 @@ const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId, openModal
     }
 
     return (
-        <div className="bg-bg h-screen pt-4 pb-24 px-20 w-full">
+        <div data-testid="clients-card" className="bg-bg h-screen pt-4 pb-24 px-20 w-full">
             <div className="text-xl font-semibold pb-5">
                 {company?.name ? `Clientes de ${company?.name}` : 'Clientes'}
             </div>
@@ -119,7 +119,7 @@ const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId, openModal
                 </button>
                 <button onClick={openModal} className="flex flex-row items-center gap-2 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
                     <GoPlus className="text-xl" />
-                    <div>
+                    <div data-testid="new-client-button">
                         Nuevo Cliente
                     </div>
                 </button>

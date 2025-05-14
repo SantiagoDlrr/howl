@@ -21,16 +21,15 @@ describe('Sign-up Page', () => {
         });
     });
 
-    // it('checks redirection to main after valid signup', () => {
-    //     cy.fixture('auth/sign-up-users').then((users) => {
-    //       const user = users.validUser;
-    //       cy.get('[data-testid="signup-name"]').type(user.name);
-    //       cy.get('[data-testid="signup-email"]').type(user.email);
-    //       cy.get('[data-testid="signup-password"]').type(user.password);
-    //       cy.get('button[type="submit"]').click();
-    //     });
-    //     cy.url().should('include', '/main');
-    // });
+    it('checks redirection to main after valid signup', () => {
+        cy.fixture('auth/sign-up-users').then((users) => {
+          const user = users.validUser;
+          cy.get('[data-testid="signup-name"]').type(user.name);
+          cy.get('[data-testid="signup-email"]').type(user.email);
+          cy.get('[data-testid="signup-password"]').type(user.password);
+          cy.get('button[type="submit"]').click();
+        });
+    });
     
 });
 

@@ -20,6 +20,12 @@ describe('Auth Page', () => {
         cy.get('button[type="submit"]').click();
         cy.contains('Contraseña vacía').should('exist');
       });
+      
+      it('redirect if login is successful', () => {
+        cy.login();
+        cy.wait(5000);
+        cy.url().should('include', '/main');
+      });
     
   });
     

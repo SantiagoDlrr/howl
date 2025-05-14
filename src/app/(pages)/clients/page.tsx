@@ -1,5 +1,6 @@
 "use client";
 
+import RestrictedAccess from "@/app/_components/auth/restrictedAccess";
 import ClientColumn from "@/app/_components/clients/clientColumn";
 import ClientTable from "@/app/_components/clients/clientTable";
 import CompanyColumn from "@/app/_components/clients/companyColumn";
@@ -9,9 +10,12 @@ import NewCompanyModal from "@/app/_components/clients/modals/newCompanyModal";
 import { ResizablePanel } from "@/app/_components/main/panels/resizablePanel";
 import ToggleButton from "@/app/_components/toggleButton";
 import { X } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 const ClientsPage = () => {
+
+    
 
     const [panelWidth, setpanelWidth] = useState(0);
     const [selected, setSelected] = useState<number>(1);
@@ -45,7 +49,16 @@ const ClientsPage = () => {
         setpanelWidth(0);
     }
 
+    const { data: session } = useSession();
+    if (!session?.user) {
+      return (
+        <RestrictedAccess />
+      )
+    }
+    
+
     // Testing
+    // TODO (@alecoeto): Show page for admins only?
     // TODO (@alecoeto): Add tests to client and company table
     // TODO (@alecoeto): Add tests to client and company column
     // TODO (@alecoeto): Add tests to client and company modals
