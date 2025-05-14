@@ -15,3 +15,9 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
+before(() => {
+    // This runs ONCE before all specs
+    cy.log('Running before ALL tests');
+    cy.signup();
+    cy.login();
+  });
