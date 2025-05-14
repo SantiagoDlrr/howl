@@ -1,0 +1,12 @@
+{
+    "new-company": {
+      "name": "Alice",
+      "email": "alice@example.com",
+      "password": "Abcde123#"
+    },
+    "loginUser": {
+      "name": "Admin",
+      "email": "admin@tec.mx",
+      "password": "123456#A"
+    }
+  }

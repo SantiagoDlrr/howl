@@ -1,9 +1,0 @@
-{
-    "user": {
-      "id": "12345",
-      "name": "Test User",
-      "email": "test@example.com",
-      "image": null
-    },
-    "expires": "2050-01-01T00:00:00.000Z"
-  }

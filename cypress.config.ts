@@ -1,5 +1,7 @@
 import { defineConfig } from "cypress";
 
+let userCreated = false;
+
 export default defineConfig({
   projectId: "as7vff",
 
@@ -11,7 +13,13 @@ export default defineConfig({
     screenshotsFolder: "tests/e2e-cypress/screenshots",
     experimentalRunAllSpecs: true,
     setupNodeEvents(on, config) {
-      // implement node event listeners here
+      on('task', {
+        checkUserCreated: () => userCreated,
+        setUserCreated: () => {
+          userCreated = true;
+          return null;
+        },
+      });
     },
   },
 

@@ -2,8 +2,9 @@
 declare global {
     namespace Cypress {
       interface Chainable {
-        login(): void;
-        signup(): void;
+        login(): Chainable<void>;
+        signup(): Chainable<void>;
+        maybeSignup(): Chainable<void>;
         mockTrpcQuery(procedure: string, data: any): Chainable<void>;
       }
     }
@@ -31,4 +32,14 @@ Cypress.Commands.add('login', () => {
         cy.get('button[type="submit"]').click();
       });
       cy.url().should('include', '/main', { timeout: 10000 });
+});
+
+Cypress.Commands.add('maybeSignup', () => {
+    cy.task('checkUserCreated').then((created) => {
+      if (!created) {
+        cy.signup().then(() => {
+          cy.task('setUserCreated');
+        });
+      }
+    });
 });
