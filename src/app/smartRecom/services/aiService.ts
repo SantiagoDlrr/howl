@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 interface AIInput {
   systemPrompt: string;
@@ -29,7 +29,7 @@ export async function askAI({ systemPrompt, context, question }: AIInput): Promi
       }
     );
 
-    console.log('AI raw response:', response.data); // 
+    console.log('AI raw response:', response.data);
 
     const content = response.data?.choices?.[0]?.message?.content;
 
@@ -39,8 +39,12 @@ export async function askAI({ systemPrompt, context, question }: AIInput): Promi
     }
 
     return content;
-  } catch (error: any) {
-    console.error('AI error:', error?.response?.data || error.message || error);
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      console.error('AI error (Axios):', error.response?.data || error.message);
+    } else {
+      console.error('AI error (Unknown):', error);
+    }
     return 'No se pudo generar una recomendación. Intenta más tarde.';
   }
 }
