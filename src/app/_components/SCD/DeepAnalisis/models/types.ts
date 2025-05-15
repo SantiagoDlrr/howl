@@ -6,7 +6,7 @@ export interface FileData {
     date: string;
     type: string;
     duration: string;
-  
+
     report: {
       feedback: string;
       keyTopics: string[];
@@ -16,18 +16,17 @@ export interface FileData {
       summary: string;
       rating: number;
     };
-  
+
     transcript?: {
       speaker: string;
       text: string;
     }[];
-  
+
     messages?: {
       role: "user" | "assistant";
       text: string;
     }[];
   }
-  
-  export interface Response {
 
-  }
+  // Using a more specific type instead of an empty interface
+  export type Response = Record<string, unknown>;

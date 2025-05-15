@@ -32,7 +32,8 @@ const SlidingChatPanel = ({
     onAddCallId(callId);
   };
 
-  const useQuestion = (sampleQuestion: string) => {
+  // Renamed from useQuestion to handleQuestionSelect to avoid React Hook naming convention
+  const handleQuestionSelect = (sampleQuestion: string) => {
     onQuestionChange(sampleQuestion);
   };
 
@@ -41,7 +42,7 @@ const SlidingChatPanel = ({
       <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
         <h2 className="text-xl font-semibold text-gray-800">Input</h2>
       </div>
-      
+
       <div className="p-6 flex-1 overflow-y-auto">
         <div className="mb-6">
           <label htmlFor="question" className="block mb-2 font-medium text-gray-700">
@@ -56,7 +57,7 @@ const SlidingChatPanel = ({
             rows={4}
           />
         </div>
-        
+
         <div className="mb-6">
           <label className="block mb-2 font-medium text-gray-700">
             Call IDs:
@@ -76,10 +77,10 @@ const SlidingChatPanel = ({
               Add
             </button>
           </div>
-          
+
           <div className="max-h-[150px] overflow-y-auto">
             {callIds.map((callId) => (
-              <div 
+              <div
                 key={callId}
                 className="flex justify-between items-center p-2 mb-2 bg-red-50 rounded-md text-sm"
               >
@@ -97,7 +98,7 @@ const SlidingChatPanel = ({
             ))}
           </div>
         </div>
-        
+
         <div className="mb-6">
           <h3 className="font-medium text-gray-700 mb-2">Sample Call IDs:</h3>
           <div className="flex flex-wrap gap-2">
@@ -121,81 +122,54 @@ const SlidingChatPanel = ({
             </button>
           </div>
         </div>
-        
+
         <div className="mb-6">
-          {/* <h3 className="font-medium text-gray-700 mb-2">Sample Questions:</h3>
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => useQuestion("What was the customer's issue with their order?")}
-              className="bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1 rounded-md text-sm transition-colors"
-            >
-              Order Issue
-            </button>
-            <button
-              onClick={() => useQuestion("How did the agent help with the printer setup?")}
-              className="bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1 rounded-md text-sm transition-colors"
-            >
-              Printer Setup
-            </button>
-            <button
-              onClick={() => useQuestion("What was the order number mentioned in the call?")}
-              className="bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1 rounded-md text-sm transition-colors"
-            >
-              Order Number
-            </button>
-            <button
-              onClick={() => useQuestion("What should the customer do if they don't receive their order?")}
-              className="bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1 rounded-md text-sm transition-colors"
-            >
-              Follow-up Action
-            </button>
-          </div> */}
 
             <div className="flex flex-wrap gap-2">
             <button
-                onClick={() => useQuestion("Can you summarize the main issue discussed in the meeting?")}
+                onClick={() => handleQuestionSelect("Can you summarize the main issue discussed in the meeting?")}
                 className="bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1 rounded-md text-sm transition-colors"
             >
                 Meeting Summary
             </button>
             <button
-                onClick={() => useQuestion("What resolution did the agent provide for the login error?")}
+                onClick={() => handleQuestionSelect("What resolution did the agent provide for the login error?")}
                 className="bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1 rounded-md text-sm transition-colors"
             >
                 Tech Resolution
             </button>
             <button
-                onClick={() => useQuestion("What are the next steps agreed upon in the call?")}
+                onClick={() => handleQuestionSelect("What are the next steps agreed upon in the call?")}
                 className="bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1 rounded-md text-sm transition-colors"
             >
                 Action Items
             </button>
             <button
-                onClick={() => useQuestion("Was there any mention of deadlines or delivery dates?")}
+                onClick={() => handleQuestionSelect("Was there any mention of deadlines or delivery dates?")}
                 className="bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1 rounded-md text-sm transition-colors"
             >
                 Deadlines
             </button>
             <button
-                onClick={() => useQuestion("What did the customer say about their previous experience?")}
+                onClick={() => handleQuestionSelect("What did the customer say about their previous experience?")}
                 className="bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1 rounded-md text-sm transition-colors"
             >
                 Customer Feedback
             </button>
             <button
-                onClick={() => useQuestion("Did the agent confirm the refund process?")}
+                onClick={() => handleQuestionSelect("Did the agent confirm the refund process?")}
                 className="bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1 rounded-md text-sm transition-colors"
             >
                 Refund Confirmation
             </button>
             <button
-                onClick={() => useQuestion("Who will be responsible for the follow-up?")}
+                onClick={() => handleQuestionSelect("Who will be responsible for the follow-up?")}
                 className="bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1 rounded-md text-sm transition-colors"
             >
                 Responsible Person
             </button>
             <button
-                onClick={() => useQuestion("Was there any confusion or disagreement during the meeting?")}
+                onClick={() => handleQuestionSelect("Was there any confusion or disagreement during the meeting?")}
                 className="bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1 rounded-md text-sm transition-colors"
             >
                 Disagreements
@@ -204,7 +178,7 @@ const SlidingChatPanel = ({
 
 
         </div>
-        
+
         <button
           onClick={onSubmitQuestion}
           className="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-4 rounded-lg transition-colors"

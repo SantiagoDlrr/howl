@@ -16,7 +16,7 @@ import NewCallModal from "@/app/_components/main/newCallModal";
 
 export default function MainPage() {
   const MAX_STORED_FILES = 10; // Set maximum number of files to store
-  
+
   // Initialize state from sessionStorage if available
   const [files, setFiles] = useState<FileData[]>(() => {
     if (typeof window !== 'undefined') {
@@ -25,7 +25,7 @@ export default function MainPage() {
     }
     return [];
   });
-  
+
   const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(() => {
     if (typeof window !== 'undefined') {
       const savedIndex = sessionStorage.getItem('howlx-selected-index');
@@ -33,21 +33,21 @@ export default function MainPage() {
     }
     return null;
   });
-  
+
   // Save to sessionStorage whenever files change, keeping only the most recent MAX_STORED_FILES
   useEffect(() => {
     if (typeof window !== 'undefined' && files.length > 0) {
       // Only keep the most recent files
       const recentFiles = files.slice(-MAX_STORED_FILES);
       sessionStorage.setItem('howlx-files', JSON.stringify(recentFiles));
-      
+
       // If selectedFileIndex is out of bounds after trimming, adjust it
       if (selectedFileIndex !== null && selectedFileIndex >= recentFiles.length) {
         setSelectedFileIndex(recentFiles.length - 1);
       }
     }
-  }, [files]);
-  
+  }, [files, selectedFileIndex]);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       sessionStorage.setItem('howlx-selected-index', JSON.stringify(selectedFileIndex));
@@ -99,9 +99,9 @@ export default function MainPage() {
       // Insert the newly returned FileData, keeping only the most recent MAX_STORED_FILES
       setFiles((prev) => {
         const updated = [...prev, data];
-        const trimmed = updated.length > MAX_STORED_FILES ? 
+        const trimmed = updated.length > MAX_STORED_FILES ?
           updated.slice(-MAX_STORED_FILES) : updated;
-        
+
         // Automatically select the newly added file
         setSelectedFileIndex(trimmed.length - 1);
         return trimmed;
