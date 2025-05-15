@@ -1,4 +1,3 @@
-// src/smartFeatures/services/aiService.ts
 import axios from 'axios';
 
 interface AIInput {
@@ -11,7 +10,7 @@ export async function askAI({ systemPrompt, context, question }: AIInput): Promi
   try {
     const messages = [
       { role: 'system', content: systemPrompt },
-      { role: 'user', content: `${context}\n\n${question}` }
+      { role: 'user', content: `${context}\n\n${question}` },
     ];
 
     const response = await axios.post(
@@ -22,7 +21,7 @@ export async function askAI({ systemPrompt, context, question }: AIInput): Promi
       },
       {
         headers: {
-          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
           'HTTP-Referer': process.env.SITE_URL || '',
           'X-Title': process.env.SITE_NAME || '',
@@ -30,9 +29,18 @@ export async function askAI({ systemPrompt, context, question }: AIInput): Promi
       }
     );
 
-    return response.data.choices[0].message.content;
-  } catch (error) {
-    console.error('AI error:', error);
+    console.log('AI raw response:', response.data); // 
+
+    const content = response.data?.choices?.[0]?.message?.content;
+
+    if (!content) {
+      console.error('AI returned unexpected response format:', response.data);
+      return 'La IA no devolvió una respuesta válida.';
+    }
+
+    return content;
+  } catch (error: any) {
+    console.error('AI error:', error?.response?.data || error.message || error);
     return 'No se pudo generar una recomendación. Intenta más tarde.';
   }
 }

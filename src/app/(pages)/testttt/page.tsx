@@ -16,10 +16,12 @@ export default function DebugInsightPage() {
         Generate Insight for Client 1
       </button>
 
-      {mutation.isLoading && <p className="mt-2">Loading...</p>}
+      {mutation.isPending && <p className="mt-2">Loading...</p>}
+
       {mutation.error && (
         <p className="mt-2 text-red-500">Error: {mutation.error.message}</p>
       )}
+
       {mutation.data && (
         <pre className="mt-4 bg-gray-100 p-4 rounded text-sm overflow-x-auto">
           {JSON.stringify(mutation.data, null, 2)}
