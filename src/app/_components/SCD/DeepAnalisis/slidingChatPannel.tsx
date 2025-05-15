@@ -123,7 +123,7 @@ const SlidingChatPanel = ({
         </div>
         
         <div className="mb-6">
-          <h3 className="font-medium text-gray-700 mb-2">Sample Questions:</h3>
+          {/* <h3 className="font-medium text-gray-700 mb-2">Sample Questions:</h3>
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => useQuestion("What was the customer's issue with their order?")}
@@ -149,7 +149,60 @@ const SlidingChatPanel = ({
             >
               Follow-up Action
             </button>
-          </div>
+          </div> */}
+
+            <div className="flex flex-wrap gap-2">
+            <button
+                onClick={() => useQuestion("Can you summarize the main issue discussed in the meeting?")}
+                className="bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1 rounded-md text-sm transition-colors"
+            >
+                Meeting Summary
+            </button>
+            <button
+                onClick={() => useQuestion("What resolution did the agent provide for the login error?")}
+                className="bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1 rounded-md text-sm transition-colors"
+            >
+                Tech Resolution
+            </button>
+            <button
+                onClick={() => useQuestion("What are the next steps agreed upon in the call?")}
+                className="bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1 rounded-md text-sm transition-colors"
+            >
+                Action Items
+            </button>
+            <button
+                onClick={() => useQuestion("Was there any mention of deadlines or delivery dates?")}
+                className="bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1 rounded-md text-sm transition-colors"
+            >
+                Deadlines
+            </button>
+            <button
+                onClick={() => useQuestion("What did the customer say about their previous experience?")}
+                className="bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1 rounded-md text-sm transition-colors"
+            >
+                Customer Feedback
+            </button>
+            <button
+                onClick={() => useQuestion("Did the agent confirm the refund process?")}
+                className="bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1 rounded-md text-sm transition-colors"
+            >
+                Refund Confirmation
+            </button>
+            <button
+                onClick={() => useQuestion("Who will be responsible for the follow-up?")}
+                className="bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1 rounded-md text-sm transition-colors"
+            >
+                Responsible Person
+            </button>
+            <button
+                onClick={() => useQuestion("Was there any confusion or disagreement during the meeting?")}
+                className="bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1 rounded-md text-sm transition-colors"
+            >
+                Disagreements
+            </button>
+            </div>
+
+
         </div>
         
         <button
