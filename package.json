@@ -60,6 +60,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
+    "@types/axios": "^0.14.4",
     "@types/bcrypt": "^5.0.2",
     "@types/eslint": "^8.56.10",
     "@types/express": "^5.0.1",
