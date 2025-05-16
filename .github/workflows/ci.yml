@@ -72,12 +72,9 @@ jobs:
       with:
         node-version: '18'
         cache: 'npm'
-        
-    - name: Install sharp for Linux
-      run: npm install sharp --platform=linux --arch=x64
 
     - name: Install dependencies
-      run: npm install 
+      run: npm install --include=optional sharp
 
     - name: Run Cypress tests
       run: npx start-server-and-test dev http://localhost:3000 'cypress run'
