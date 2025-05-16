@@ -3,12 +3,14 @@
 import { useState } from "react";
 import { api } from "@/trpc/react";
 import EnhancedClientInsight from "@/app/_components/sr/EnhancedClientInsight";
+import { ClientInsight } from "@/app/utils/types/ClientInsight";
+
 
 export default function SmartRecommendationsPage() {
   const [chatHistory, setChatHistory] = useState<string[]>([]);
   const [chatInput, setChatInput] = useState("");
   const [clientId, setClientId] = useState<string | null>(null);
-  const [clientInsight, setClientInsight] = useState<any>(null);
+  const [clientInsight, setClientInsight] = useState<ClientInsight | null>(null);
   const [showPopup, setShowPopup] = useState(false);
 
   const chatMutation = api.clientResolver.conversationalResolve.useMutation();
@@ -34,7 +36,30 @@ export default function SmartRecommendationsPage() {
             if (parsed?.type === "client" && parsed?.id) {
               setClientId(parsed.id);
               insightMutation.mutate({ id: parsed.id }, {
-                onSuccess: (insight) => setClientInsight(insight),
+                onSuccess: (insight) => {
+                  const transformedInsight: ClientInsight = {
+                    ...insight,
+                    reports: insight.reports.map((report) => ({
+                      id: report.id.toString(),
+                      name: report.name,
+                      date: report.date,
+                      duration: report.duration,
+                      report: {
+                        sentiment: report.report.sentiment,
+                        rating: report.report.rating,
+                        summary: report.report.summary,
+                        feedback: report.report.feedback,
+                        keyTopics: report.report.keyTopics,
+                        emotions: report.report.emotions,
+                      },
+                      transcript: report.transcript?.map((t) => ({
+                        speaker: t.speaker,
+                        text: t.text,
+                      })),
+                    })),
+                  };
+                  setClientInsight(transformedInsight);
+                },
               });
             }
           } catch {

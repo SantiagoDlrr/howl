@@ -1,6 +1,9 @@
+// sr/
 'use client'
 import { useState } from "react";
 
+
+// ESTA MAL ESTO DEBERÍA IMPORTAR DEL MODEL QUE YA HICE
 interface ClientInsight {
   clientName: string;
   lastContact: string;
