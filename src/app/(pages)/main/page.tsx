@@ -48,9 +48,9 @@ export default function MainPage() {
       const formData = new FormData();
       formData.append("file", file);
 
-      // http://localhost:443/upload
-      // Adjust the URL as needed: if backend is on another port or domain
+      // First, upload the file to the processing service
       const response = await fetch("https://app.howlx.run.place:443/upload", {
+      // const response = await fetch("http://localhost:8000/upload", {
         method: "POST",
         body: formData
       });
@@ -58,8 +58,39 @@ export default function MainPage() {
         throw new Error(`Failed to upload file: ${response.status} ${response.statusText}`);
       }
 
-      // The backend already sends JSON shaped like our FileData interface
+      // Get the processed data from the upload service
       const data = await response.json() as FileData;
+
+      // Now send the processed data to our database API
+      const dbResponse = await fetch("/api/call-data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...data,
+          // Add required IDs - you'll need to get these from your app state or context
+          consultant_id: 1, // Replace with actual consultant ID
+          client_id: 1,     // Replace with actual client ID
+          name: file.name,  // Use the original filename
+          // Make sure these required fields exist
+          report_data: data.report || {}, // Ensure report_data exists
+          full_transcript_text: data.transcript ? 
+            data.transcript.map(t => t.text).join(' ') : '', // Create full text from transcript
+        }),
+      });
+
+      if (!dbResponse.ok) {
+        const errorData = await dbResponse.json();
+        console.error("Database storage error:", errorData);
+        // Continue with UI update even if DB storage fails
+      } else {
+        const dbResult = await dbResponse.json();
+        console.log("Call data stored in database with ID:", dbResult.callId);
+        
+        // You could update the data object with the database ID if needed
+        // data.dbId = dbResult.callId;
+      }
 
       // Insert the newly returned FileData at the end of the array
       setFiles((prev) => {
