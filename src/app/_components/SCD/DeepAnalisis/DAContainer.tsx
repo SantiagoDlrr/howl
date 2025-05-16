@@ -88,9 +88,9 @@ const DAContainer = () => {
     
     try {
       // Send request to the API
-      // const response = await fetch('http://localhost:8000/rag_chat', {
+      const response = await fetch('http://localhost:8000/rag_chat', {
       // Uncomment below for cloud server
-      const response = await fetch('https://app.howlx.run.place:443/rag_chat', {
+      // const response = await fetch('https://app.howlx.run.place:443/rag_chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
