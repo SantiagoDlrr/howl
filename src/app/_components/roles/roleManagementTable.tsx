@@ -226,7 +226,7 @@ const UserManagementTable: React.FC = () => {
                         }
                         setModalOpen(true);
                       }}
-                      className="px-3 py-1 bg-blue-500 text-black rounded hover:bg-blue-600"
+                      className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors"
                     >
                       Gestionar Supervisados
                     </button>
