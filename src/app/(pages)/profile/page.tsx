@@ -14,7 +14,7 @@ export default function ProfilePage() {
 
   if (status === "unauthenticated") {
     redirect("/login");
-    return null;
+    // return null;/
   }
 
   return (
