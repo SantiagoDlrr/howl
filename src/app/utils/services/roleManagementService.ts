@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { UserTableData, UserUpdateData, SupervisionData, AccessLevel } from '../types/roleManagementType';
+import type { UserTableData, UserUpdateData } from '../types/roleManagementType';
 
 /**
  * Obtiene todos los usuarios con sus niveles de acceso

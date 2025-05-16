@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CallLogEntry } from '../types/callLogTypes';
+import type { CallLogEntry } from '../types/callLogTypes';
 
 export const getCallLogs = async (): Promise<CallLogEntry[]> => {
   try {

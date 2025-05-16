@@ -1,6 +1,6 @@
 "use client"
 import React from 'react';
-import { CallLogEntry } from '@/app/utils/types/callLogTypes';
+import type { CallLogEntry } from '@/app/utils/types/callLogTypes';
 
 interface LogsTableProps {
   logs: CallLogEntry[];

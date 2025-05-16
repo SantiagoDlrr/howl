@@ -1,11 +1,21 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/database';
 import { auth } from '@/server/auth';
-import { getUserRoleFromDb, isAdminOrSupervisor } from '@/app/api/roles/utils';
-import { AccessLevel, UserTableData } from '@/app/utils/types/roleManagementType';
+import { getUserRoleFromDb } from '@/app/api/roles/utils';
+import type { AccessLevel, UserTableData } from '@/app/utils/types/roleManagementType';
+
+// Define an interface for the user data returned from the database query
+interface UserQueryResult {
+  id: string;
+  name: string | null;
+  email: string;
+  consultant_id: number | null;
+  firstname: string | null;
+  lastname: string | null;
+}
 
 // Obtener todos los usuarios con sus roles
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     // Verificar autorización (solo administradores pueden ver todos los usuarios)
     const session = await auth();
@@ -42,11 +52,11 @@ export async function GET(request: Request) {
         consultant c ON u.id = c.user_id
     `;
     
-    const users = await query(usersQuery);
+    const users = (await query(usersQuery)) as UserQueryResult[];
     
     // Para cada usuario, determinar su nivel de acceso
     const usersWithRoles: UserTableData[] = await Promise.all(
-      users.map(async (user: any) => {
+      users.map(async (user: UserQueryResult) => {
         let accessLevel: AccessLevel = 'unassigned';
         
         if (user.consultant_id) {

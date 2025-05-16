@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { query } from '@/lib/database';
 import { auth } from '@/server/auth';
 import { getUserRoleFromDb } from '@/app/api/roles/utils';
-import { UserTableData, UserUpdateData } from '@/app/utils/types/roleManagementType';
+import type { UserTableData, UserUpdateData } from '@/app/utils/types/roleManagementType';
 
 // Actualizar el nivel de acceso de un usuario
 export async function PUT(request: Request) {
@@ -64,7 +64,7 @@ export async function PUT(request: Request) {
         );
         
         if (consultantCheck.length > 0) {
-          consultantId = consultantCheck[0].id;
+          consultantId = consultantCheck[0]?.id ?? null;
         }
       }
       
@@ -72,6 +72,10 @@ export async function PUT(request: Request) {
       if (updateData.accessLevel !== 'unassigned') {
         if (!consultantId) {
           // Crear nuevo registro de consultor
+          if (!user) {
+            throw new Error('Usuario no encontrado o datos incompletos');
+          }
+
           const nameparts = user.name?.split(' ') || ['', ''];
           const firstName = nameparts[0] || '';
           const lastName = nameparts.slice(1).join(' ') || '';
@@ -81,23 +85,27 @@ export async function PUT(request: Request) {
             [firstName, lastName, user.email, updateData.userId]
           );
           
-          consultantId = newConsultant[0].id;
+          consultantId = newConsultant[0]?.id ?? null;
         }
         
         // 4. Eliminar roles anteriores para este consultor
-        await query('DELETE FROM administration WHERE administrator_id = $1 AND administrated_id = 22', [consultantId]);
-        await query('DELETE FROM supervision WHERE supervisor_id = $1', [consultantId]);
+        if (consultantId !== undefined) {
+          await query('DELETE FROM administration WHERE administrator_id = $1 AND administrated_id = 22', [consultantId]);
+        }
+        if (consultantId !== undefined) {
+          await query('DELETE FROM supervision WHERE supervisor_id = $1', [consultantId]);
+        }
         
         // 5. Asignar nuevo rol
         if (updateData.accessLevel === 'administrator') {
           await query(
             'INSERT INTO administration (administrator_id, administrated_id) VALUES ($1, $2)',
-            [consultantId, 22] // Asignamos el administrated_id por defecto como 22
+            [consultantId!, 22] // Asignamos el administrated_id por defecto como 22
           );
         } else if (updateData.accessLevel === 'supervisor') {
           await query(
             'INSERT INTO supervision (supervisor_id, supervised_id) VALUES ($1, $1)',
-            [consultantId]
+            [consultantId!]
           );
           
           // Si hay usuarios supervisados, agregarlos
@@ -106,7 +114,7 @@ export async function PUT(request: Request) {
               if (supervisedId !== consultantId) {
                 await query(
                   'INSERT INTO supervision (supervisor_id, supervised_id) VALUES ($1, $2)',
-                  [consultantId, supervisedId]
+                  [consultantId!, supervisedId]
                 );
               }
             }
@@ -125,9 +133,9 @@ export async function PUT(request: Request) {
       const userData: UserTableData = {
         id: updateData.userId,
         consultantId: consultantId,
-        firstName: user.name?.split(' ')[0] || '',
-        lastName: user.name?.split(' ').slice(1).join(' ') || '',
-        email: user.email,
+        firstName: user?.name?.split(' ')[0] || '',
+        lastName: user?.name?.split(' ').slice(1).join(' ') || '',
+        email: user?.email,
         accessLevel: updateData.accessLevel,
         supervisedUsers: updateData.supervisedUsers
       };

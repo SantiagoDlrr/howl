@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import { UserTableData, AccessLevel } from '@/app/utils/types/roleManagementType';
+import type { UserTableData, AccessLevel } from '@/app/utils/types/roleManagementType';
 import { 
   getAllUsers, 
   updateUserAccess, 

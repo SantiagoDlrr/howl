@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     }
     
     // Solo permitir a administradores o al mismo supervisor consultar
-    const isOwnRecord = userRole.consultantId === parseInt(supervisorId);
+    const isOwnRecord = parseInt(userRole.consultantId, 10) === parseInt(supervisorId, 10);
     
     if (userRole.role !== 'administrator' && !isOwnRecord) {
       return NextResponse.json(
@@ -53,10 +53,14 @@ export async function GET(request: Request) {
        FROM supervision 
        WHERE supervisor_id = $1 AND supervised_id <> supervisor_id`,
       [supervisorId]
-    );
+    ) as SupervisedRecord[];
     
     // Extraer solo los IDs
-    const supervisedIds = supervised.map((s: any) => s.supervised_id);
+    interface SupervisedRecord {
+      supervised_id: number;
+    }
+
+    const supervisedIds = supervised.map((s) => s.supervised_id);
     
     return NextResponse.json({ supervisedUsers: supervisedIds });
   } catch (error) {

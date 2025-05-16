@@ -1,5 +1,5 @@
 "use client"
-import { UserTableData } from '@/app/utils/types/roleManagementType';
+import type { UserTableData } from '@/app/utils/types/roleManagementType';
 import React, { useState } from 'react';
 
 interface SupervisedUsersModalProps {

@@ -1,6 +1,6 @@
 "use client"
 import React from 'react';
-import { FilterOptions, SortDirection, TimeSort } from '@/app/utils/types/callLogTypes';
+import type { FilterOptions, SortDirection, TimeSort } from '@/app/utils/types/callLogTypes';
 
 interface FilterBarProps {
   filterOptions: FilterOptions;

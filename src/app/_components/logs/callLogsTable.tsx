@@ -1,7 +1,8 @@
 "use client"
 import React, { useState, useEffect, useMemo } from 'react';
-import { CallLogEntry, SortDirection, TimeSort } from '@/app/utils/types/callLogTypes';
-import { getUserRole, UserRoleData } from '@/app/utils/services/userService';
+import type { CallLogEntry, SortDirection, TimeSort } from '@/app/utils/types/callLogTypes';
+import type { UserRoleData } from '@/app/utils/services/userService';
+import { getUserRole } from '@/app/utils/services/userService';
 import { getCallLogs, getSupervisedConsultants } from '@/app/utils/services/callLogsService';
 import { generateFilterOptions, filterAndSortLogs } from '@/app/utils/filterUtils';
 import LogsTable from './logsTable';
@@ -18,7 +19,7 @@ const CallLogsTable: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<UserRoleData | null>(null);
-  const [supervisedConsultants, setSupervisedConsultants] = useState<number[]>([]);
+  const [, setSupervisedConsultants] = useState<number[]>([]);
 
   // Estado para filtros y búsqueda
   const [sortBy, setSortBy] = useState<SortDirection>('newest');

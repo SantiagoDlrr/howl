@@ -1,4 +1,4 @@
-import { UserRole, UserRoleData } from '@/app/utils/services/userService';
+import type { UserRole, UserRoleData } from '@/app/utils/services/userService';
 import { query } from '@/lib/database';
 
 export async function getUserRoleFromDb(userId: string): Promise<UserRoleData | null> {

@@ -1,4 +1,4 @@
-import { CallLogEntry, SortDirection, TimeSort, FilterOptions } from './types/callLogTypes';
+import type { CallLogEntry, SortDirection, TimeSort, FilterOptions } from './types/callLogTypes';
 
 export const generateFilterOptions = (logs: CallLogEntry[]): FilterOptions => {
   return {
