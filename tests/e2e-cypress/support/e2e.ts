@@ -20,6 +20,6 @@ import './commands'
 before(() => {
     // This runs ONCE before all specs
     cy.log('Running before ALL tests');
-    // cy.maybeSignup(); 
+    cy.maybeSignup(); 
     cy.login();
   });

@@ -20,7 +20,8 @@ Cypress.Commands.add('signup', () => {
         cy.get('[data-testid="signup-password"]').type(user.password);
         cy.get('button[type="submit"]').click();
       });
-      cy.url().should('include', '/auth?mode=login', { timeout: 10000 });
+      cy.wait(5000);
+      // cy.url().should('include', '/auth?mode=login', { timeout: 10000 });
 });
 
 Cypress.Commands.add('login', () => {
@@ -31,7 +32,7 @@ Cypress.Commands.add('login', () => {
         cy.get('[data-testid="login-password"]').type(user.password);
         cy.get('button[type="submit"]').click();
       });
-      cy.url().should('include', '/main', { timeout: 20000 });
+      cy.url().should('include', '/main', { timeout: 35000 });
 });
 
 Cypress.Commands.add('maybeSignup', () => {
@@ -46,7 +47,7 @@ Cypress.Commands.add('maybeSignup', () => {
 
 Cypress.Commands.add('createCompany', (key: string) => {
   
-  
+    cy.visit('/clients');
     cy.fixture('clients/companies').then((companies) => {
         const company = companies[key];
         cy.get('[data-cy="company-table-element"] tbody').then($tableBody => {

@@ -1,6 +1,7 @@
 
 describe("Company tests", () => {
     beforeEach(() => {
+        cy.login();
         cy.visit("/clients");
         cy.get('[data-cy="company-table"]', { timeout: 5000 }).should('be.visible');
       })
@@ -12,12 +13,26 @@ describe("Company tests", () => {
        * - Confirms success dialog message
       */
       it('should verify a new company is created through the new company modal', () => {
-        cy.createCompany('newCompany').then(() => {
-          cy.fixture('clients/companies').then((companies) => {
-            const company = companies.newCompany;
-            cy.contains(`Empresa ${company.name} creada`, { timeout: 10000 });
-          })
-        });
+        cy.fixture('clients/companies').then((companies) => {
+          const company = companies.newCompany;
+                // Create company
+                cy.get('#new-company-btn').click();
+                cy.wait(1000);
+                cy.get('[data-cy="company-modal"]', { timeout: 5000 }).should('be.visible');
+                cy.get('[data-cy="company-name"]').type(company.name);
+                cy.get('[data-cy="company-country"]').type(company.country);
+                cy.get('[data-cy="company-state"]').type(company.state);
+                cy.get('[data-cy="company-city"]').type(company.city);
+                cy.get('[data-cy="company-street"]').type(company.street);
+                cy.get('#save-company-btn').click();
+                cy.contains(`Empresa ${company.name} creada`, { timeout: 10000 });
+
+                // Delete the company after creation
+                cy.get('[data-cy="searchbar"]').clear().type(company.name);
+                cy.get('[data-cy="company-table"]', { timeout: 5000 }).should('be.visible');
+                cy.get('[data-cy="company-0"]').click();
+                cy.get('#first-btn').click();
+            })
       });
 
       /**
@@ -29,27 +44,28 @@ describe("Company tests", () => {
       */
       it ('should verify that the data of a company can be modified', () => {
         // Open edit panel
-        
-        cy.get('[data-cy="edit-company-0"]').click();
-        cy.fixture('clients/companies').then((companies) => {
-          // Edit company data
-          const company = companies.editedCompany;
-          cy.get('[data-cy="company-name"]').clear().type(company.name);
-          cy.get('[data-cy="company-country"]').clear().type(company.country);
-          cy.get('[data-cy="company-state"]').clear().type(company.state);
-          cy.get('[data-cy="company-city"]').clear().type(company.city);
-          cy.get('[data-cy="company-street"]').clear().type(company.street);
-          cy.get('#second-btn').click();
-          cy.get('#company-close-column').click();
-
-          // Verify that the company data has been updated
-          cy.get('[data-cy="company-table"]', { timeout: 5000 }).should('be.visible');
+        cy.createCompany('newCompany').then(() => {
           cy.get('[data-cy="edit-company-0"]').click();
-          cy.contains(company.name, { timeout: 10000 });
-          cy.contains(company.country, { timeout: 10000 });
-          cy.contains(company.state, { timeout: 10000 });
-          cy.contains(company.city, { timeout: 10000 });
-          cy.contains(company.street, { timeout: 10000 });
+          cy.fixture('clients/companies').then((companies) => {
+            // Edit company data
+            const company = companies.editedCompany;
+            cy.get('[data-cy="company-name"]').clear().type(company.name);
+            cy.get('[data-cy="company-country"]').clear().type(company.country);
+            cy.get('[data-cy="company-state"]').clear().type(company.state);
+            cy.get('[data-cy="company-city"]').clear().type(company.city);
+            cy.get('[data-cy="company-street"]').clear().type(company.street);
+            cy.get('#second-btn').click();
+            cy.get('#company-close-column').click();
+
+            // Verify that the company data has been updated
+            cy.get('[data-cy="company-table"]', { timeout: 5000 }).should('be.visible');
+            cy.get('[data-cy="edit-company-0"]').click();
+            cy.contains(company.name, { timeout: 10000 });
+            cy.contains(company.country, { timeout: 10000 });
+            cy.contains(company.state, { timeout: 10000 });
+            cy.contains(company.city, { timeout: 10000 });
+            cy.contains(company.street, { timeout: 10000 });
+          })
         })
       });
 

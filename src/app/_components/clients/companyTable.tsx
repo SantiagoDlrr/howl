@@ -113,7 +113,7 @@ const CompanyTable = ({ onClick, onSeeClients, openModal, editCompany }: Company
                                         Ver clientes
                                     </button>
                                     <button
-                                        data-cy={`edit-company-${company.id}`}
+                                        data-cy={`edit-company-${index}`}
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             editCompanyHandler(company.id)
