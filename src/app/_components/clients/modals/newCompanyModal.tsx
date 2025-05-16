@@ -70,9 +70,9 @@ const NewCompanyModal = ({ isOpen, onClose, setColumnId, setShow }: NewCompanyMo
             <div className="text-xl font-semibold mb-4">
                 Nueva Empresa
             </div>
-            <form onSubmit={handleSubmit} className="px-2 pt-4 pb-5">
-                <div className="flex flex-col gap-3">
-                    <Field strong label="Nombre" required value={input.name} isEditing={true} onChange={(val: string) => handleNameFieldChange(val)} />
+            <form onSubmit={handleSubmit} className="px-2 pt-4 pb-6">
+                <div className="flex flex-col gap-3 pb-6">
+                    <Field strong label="Nombre *" required value={input.name} isEditing={true} onChange={(val: string) => handleNameFieldChange(val)} />
                 </div>
                 <CompanyForms input={input} isEditing={true} handleAddressFieldChange={handleAddressFieldChange} />
                 <div className="flex flex-row gap-4 pt-8">
