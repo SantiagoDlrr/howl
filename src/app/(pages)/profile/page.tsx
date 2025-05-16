@@ -18,7 +18,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20">
+    <div className="min-h-screen bg-gray-50 pt-24">
       <div className="max-w-5xl mx-auto py-6 px-4 sm:px-6">
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
           <div className="bg-gradient-to-r from-indigo-600 to-purple-600 h-56 relative">
@@ -32,7 +32,7 @@ export default function ProfilePage() {
                 <rect width="100%" height="100%" fill="url(#pattern)" />
               </svg>
             </div>
-            
+
             <div className="flex items-center h-full px-8">
               <div className="flex items-center space-x-6">
                 <div className="relative ring-4 ring-white/30 rounded-full shadow-lg">
@@ -76,7 +76,7 @@ export default function ProfilePage() {
                   {/* Tarjeta de información personal */}
                   <div>
                     <h2 className="text-xl font-bold mb-4 flex items-center text-gray-800">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2 text-indigo-600">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2 text-primary">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" />
                       </svg>
                       Información Personal
@@ -102,7 +102,7 @@ export default function ProfilePage() {
                   {/* Tarjeta de actividad reciente */}
                   <div>
                     <h2 className="text-xl font-bold mb-4 flex items-center text-gray-800">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2 text-indigo-600">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2 text-primary">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       Actividad reciente
@@ -122,7 +122,7 @@ export default function ProfilePage() {
               {/* Columna derecha - Acciones */}
               <div>
                 <h2 className="text-xl font-bold mb-4 flex items-center text-gray-800">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2 text-indigo-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2 text-primary">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                   </svg>
                   Acciones
@@ -138,8 +138,8 @@ export default function ProfilePage() {
                       </svg>
                       Ir a Llamadas
                     </Link>
-                    
-                    <button 
+
+                    <button
                       onClick={() => alert("Funcionalidad en desarrollo")}
                       className="flex items-center px-4 py-3 text-indigo-600 bg-white hover:bg-indigo-50 border border-indigo-200 rounded-lg transition duration-200 w-full"
                     >
@@ -148,8 +148,8 @@ export default function ProfilePage() {
                       </svg>
                       Editar Perfil
                     </button>
-                    
-                    <button 
+
+                    <button
                       onClick={() => alert("Funcionalidad en desarrollo")}
                       className="flex items-center px-4 py-3 text-gray-600 bg-white hover:bg-gray-50 border border-gray-200 rounded-lg transition duration-200 w-full"
                     >
@@ -158,9 +158,9 @@ export default function ProfilePage() {
                       </svg>
                       Cambiar Contraseña
                     </button>
-                    
+
                     <div className="border-t border-gray-200 my-3 pt-3">
-                      <button 
+                      <button
                         onClick={() => alert("Funcionalidad en desarrollo")}
                         className="flex items-center px-4 py-3 text-red-600 bg-white hover:bg-red-50 border border-red-200 rounded-lg transition duration-200 w-full"
                       >
