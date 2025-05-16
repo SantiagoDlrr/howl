@@ -46,7 +46,7 @@ export async function generateClientInsight(calls: FileData[]): Promise<ClientIn
   });
 
   return {
-    clientName: lastCall.name.replace(/\..*$/, ""),
+    clientName: mockClients.find(c => c.reports.includes(lastCall))?.name || "Cliente Desconocido",
     lastContact: lastCall.date,
     summary: combinedSummaries,
     keyEmotions: [...new Set(calls.flatMap(c => c.report.emotions))].slice(0, 5),
