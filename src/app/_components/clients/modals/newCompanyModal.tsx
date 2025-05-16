@@ -6,7 +6,8 @@ import Modal from "./modal";
 import { useState } from "react";
 import { companySchema } from "@/app/utils/schemas/companySchemas";
 import toast from "react-hot-toast";
-import { CompanyInput, defaultCompany } from "@/app/utils/types/companyInput";
+import { defaultCompany } from "@/app/utils/types/companyInput";
+import type { CompanyInput } from "@/app/utils/types/companyInput";
 import CompanyForms from "../forms/companyForms";
 
 interface NewCompanyModalProps {

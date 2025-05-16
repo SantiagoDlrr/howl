@@ -47,8 +47,8 @@ yarn-error.log*
 
 
 # cypress
-/cypress/videos
-/cypress/screenshots
+**/videos
+**/screenshots
 
 a00835462@tec.mx_2025-03-12T22_39_39.019Z.pem
 **/__pycache__/

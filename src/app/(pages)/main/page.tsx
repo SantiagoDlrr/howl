@@ -140,7 +140,7 @@ export default function MainPage() {
     <div className="h-screen flex justify-center items-stretch pt-16 bg-gray-50 overflow-hidden">
       {/* Historial de llamadas */}
       <ResizablePanel
-        initialWidth={leftPanelWidth}
+        width={leftPanelWidth}
         minWidth={253}
         maxWidth={300}
         side="left"
@@ -171,7 +171,7 @@ export default function MainPage() {
       </main>
       {/* Asistente de IA */}
       <ResizablePanel
-        initialWidth={rightPanelWidth}
+        width={rightPanelWidth}
         minWidth={200}
         maxWidth={400}
         side="right"

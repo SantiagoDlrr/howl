@@ -6,10 +6,10 @@ interface CompanyFormsProps {
     isEditing?: boolean,
     handleAddressFieldChange: (key: keyof CompanyInput["address"], value: string) => void;
 }
-const CompanyForms = ({input, isEditing, handleAddressFieldChange} : CompanyFormsProps) => {
+const CompanyForms = ({ input, isEditing, handleAddressFieldChange }: CompanyFormsProps) => {
     return (
         <div>
-            <div className="font-semibold pb-3 pt-8">
+            <div className="font-semibold pb-3">
                 Dirección
             </div>
             <div className="flex flex-col gap-3">

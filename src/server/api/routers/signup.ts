@@ -6,8 +6,8 @@ import {
   publicProcedure,
 } from "howl/server/api/trpc";
 
-export const registerRouter = createTRPCRouter({
-    register: publicProcedure
+export const signupRouter = createTRPCRouter({
+    signup: publicProcedure
     .input(
       z.object({
         name: z.string().min(1, "Name is required"),
@@ -33,5 +33,15 @@ export const registerRouter = createTRPCRouter({
       });
 
       return { success: true, user };
+    }),
+
+    deleteUser: publicProcedure
+    .input(z.object({ email: z.string().email() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.user.delete({
+        where: {
+          email: input.email,
+        },
+      });
     }),
 })

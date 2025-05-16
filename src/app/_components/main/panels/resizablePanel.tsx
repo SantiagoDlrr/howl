@@ -4,15 +4,15 @@ import React, { useEffect, useRef, useState } from 'react';
 
 interface Props {
   children: React.ReactNode;
-  initialWidth: number;
+  width: number;
   minWidth: number;
   maxWidth: number;
   side: 'left' | 'right';
-  onResize?: (width: number) => void;
+  onResize: (width: number) => void;
 }
 
-export const ResizablePanel: React.FC<Props> = ({ children, initialWidth, minWidth, maxWidth, side, onResize }) => {
-  const [width, setWidth] = useState(initialWidth);
+export const ResizablePanel: React.FC<Props> = ({ children, width, minWidth, maxWidth, side, onResize }) => {
+  // const [width, setWidth] = useState(width);
   const [resizing, setResizing] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -29,8 +29,9 @@ export const ResizablePanel: React.FC<Props> = ({ children, initialWidth, minWid
       const newWidth = side === 'left' ? e.clientX - rect.left : rect.right - e.clientX;
 
       const constrained = Math.max(minWidth, Math.min(maxWidth, newWidth));
-      setWidth(constrained);
-      if (onResize) onResize(constrained);
+      // setWidth(constrained);
+      onResize(constrained);
+      // if (onResize) onResize(constrained);
     };
 
     const stopResize = () => setResizing(false);
@@ -49,7 +50,7 @@ export const ResizablePanel: React.FC<Props> = ({ children, initialWidth, minWid
   return (
     <div
       ref={panelRef}
-      className={` relative ${side === 'left' ? 'border-r' : 'border-l'} border-gray-200`}
+      className={`relative transition-[width] duration-500 ease-in-out ${side === 'left' ? 'border-r' : 'border-l'} border-gray-200`} 
       style={{ width }}
     >
       {children}
