@@ -11,14 +11,14 @@ describe("Company tests", () => {
        * - Writes new company data
        * - Confirms success dialog message
       */
-      // it('should verify a new company is created through the new company modal', () => {
-      //   cy.createCompany('newCompany').then(() => {
-      //     cy.fixture('clients/companies').then((companies) => {
-      //       const company = companies.newCompany;
-      //       cy.contains(`Empresa ${company.name} creada`, { timeout: 10000 });
-      //     })
-      //   });
-      // });
+      it('should verify a new company is created through the new company modal', () => {
+        cy.createCompany('newCompany').then(() => {
+          cy.fixture('clients/companies').then((companies) => {
+            const company = companies.newCompany;
+            cy.contains(`Empresa ${company.name} creada`, { timeout: 10000 });
+          })
+        });
+      });
 
       /**
        * Verifies the edit functionality of the company table
@@ -60,21 +60,21 @@ describe("Company tests", () => {
        * - Confirms the company is found (appears in the table)
        * - Confirms the company data matches the created company
       */
-      // it ('should verify that a company can be searched', () => {
-      //   cy.createCompany('searchCompany').then(() => {
-      //     cy.fixture('clients/companies').then((companies) => {
-      //       const company = companies.searchCompany;
-      //       cy.get('[data-cy="searchbar"]').clear().type(company.name);
-      //       cy.get('[data-cy="company-table"]', { timeout: 5000 }).should('be.visible');
-      //       cy.get('[data-cy="company-0"]').click();
-      //       cy.contains(company.name, { timeout: 10000 });
-      //       cy.contains(company.country, { timeout: 10000 });
-      //       cy.contains(company.state, { timeout: 10000 });
-      //       cy.contains(company.city, { timeout: 10000 });
-      //       cy.contains(company.street, { timeout: 10000 }); 
-      //     });
-      //   });
-      // });
+      it ('should verify that a company can be searched', () => {
+        cy.createCompany('searchCompany').then(() => {
+          cy.fixture('clients/companies').then((companies) => {
+            const company = companies.searchCompany;
+            cy.get('[data-cy="searchbar"]').clear().type(company.name);
+            cy.get('[data-cy="company-table"]', { timeout: 5000 }).should('be.visible');
+            cy.get('[data-cy="company-0"]').click();
+            cy.contains(company.name, { timeout: 10000 });
+            cy.contains(company.country, { timeout: 10000 });
+            cy.contains(company.state, { timeout: 10000 });
+            cy.contains(company.city, { timeout: 10000 });
+            cy.contains(company.street, { timeout: 10000 }); 
+          });
+        });
+      });
 
 
      /**
@@ -85,21 +85,21 @@ describe("Company tests", () => {
        * - Confirms the success dialog message
        * - Confirms the company is not found (does not appear in the table)
       */ 
-      // it ('should verify that a company can be deleted', () => {
-      //   cy.createCompany('deletedCompany').then(() => {
-      //     cy.fixture('clients/companies').then((companies) => {
-      //       const company = companies.deletedCompany;
-      //       cy.get('[data-cy="searchbar"]').clear().type(company.name);
-      //       cy.get('[data-cy="company-table"]', { timeout: 5000 }).should('be.visible');
-      //       cy.get('[data-cy="company-0"]').click();
-      //       cy.get('#first-btn').click();
-      //       cy.contains(`Empresa ${company.name} eliminada`, { timeout: 10000 });
-      //       cy.wait(1000);
-      //       cy.get('[data-cy="company-table"]', { timeout: 5000 }).should('be.visible');
-      //       cy.contains(company.name).should('not.exist');
-      //     })
-      //   })
-      // });
+      it ('should verify that a company can be deleted', () => {
+        cy.createCompany('deletedCompany').then(() => {
+          cy.fixture('clients/companies').then((companies) => {
+            const company = companies.deletedCompany;
+            cy.get('[data-cy="searchbar"]').clear().type(company.name);
+            cy.get('[data-cy="company-table"]', { timeout: 5000 }).should('be.visible');
+            cy.get('[data-cy="company-0"]').click();
+            cy.get('#first-btn').click();
+            cy.contains(`Empresa ${company.name} eliminada`, { timeout: 10000 });
+            cy.wait(1000);
+            cy.get('[data-cy="company-table"]', { timeout: 5000 }).should('be.visible');
+            cy.contains(company.name).should('not.exist');
+          })
+        })
+      });
 
   });
   

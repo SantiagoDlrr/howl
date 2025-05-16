@@ -15,8 +15,6 @@ import { useState } from "react";
 
 const ClientsPage = () => {
 
-    
-
     const [panelWidth, setpanelWidth] = useState(0);
     const [selected, setSelected] = useState<number>(1);
     const [columnId, setColumnId] = useState<number | null>(null);
@@ -51,11 +49,35 @@ const ClientsPage = () => {
 
     const { data: session } = useSession();
     if (!session?.user) {
-      return (
-        <RestrictedAccess />
-      )
+        return (
+            <RestrictedAccess />
+        )
     }
-    
+
+    //     // Obtener el rol del usuario
+    // try {
+
+    //     const userRole = await getUserRoleFromDb(session.user.id);
+
+    //     if (!userRole || userRole.role !== 'administrator') {
+    //         // Solo los administradores pueden acceder a esta página
+    //         return (
+    //             <RestrictedAccess />
+    //         )
+    //     }
+    // } catch (error) {
+    //     console.error('Error al verificar rol del usuario:', error);
+
+    //     return (
+    //         <div className="container mx-auto py-8 px-4">
+    //             <div className="p-4 bg-red-100 text-red-700 rounded">
+    //                 Error al verificar permisos. Por favor, intenta de nuevo más tarde.
+    //             </div>
+    //         </div>
+    //     );
+    // }
+
+
 
     // Testing
     // TODO (@alecoeto): Show page for admins only?
@@ -114,3 +136,4 @@ const ClientsPage = () => {
 }
 
 export default ClientsPage;
+
