@@ -1,4 +1,18 @@
-import axios, { AxiosError } from 'axios';
+// services/aiService.ts
+import { GoogleGenAI } from '@google/genai';
+import { FileData } from "../models/types";
+
+export async function summarizeMultipleReports(reports: FileData[]): Promise<string> {
+  const summaries = reports.map(r => r.report.summary).join("\n");
+
+  const response = await askAI({
+    systemPrompt: "Eres un analista de soporte al cliente. Tu trabajo es escribir un resumen narrativo breve y claro basado en varios reportes de llamadas de un mismo agente.",
+    context: summaries,
+    question: `Genera un resumen narrativo en lenguaje natural que combine los puntos clave de todos los reportes anteriores. Este resumen será mostrado a un agente humano para entender el contexto emocional y temático del cliente.`,
+  });
+
+  return response;
+}
 
 interface AIInput {
   systemPrompt: string;
@@ -6,45 +20,29 @@ interface AIInput {
   question: string;
 }
 
+const ai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY || '',
+});
+
 export async function askAI({ systemPrompt, context, question }: AIInput): Promise<string> {
   try {
-    const messages = [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: `${context}\n\n${question}` },
-    ];
+    const prompt = `${systemPrompt}\n\nContexto:\n${context}\n\nPregunta:\n${question}`;
 
-    const response = await axios.post(
-      'https://openrouter.ai/api/v1/chat/completions',
-      {
-        model: 'google/gemini-2.0-flash-exp:free',
-        messages,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': process.env.SITE_URL || '',
-          'X-Title': process.env.SITE_NAME || '',
-        },
-      }
-    );
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.0-flash',
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+    });
 
-    console.log('AI raw response:', response.data);
+    const text = response.text;
 
-    const content = response.data?.choices?.[0]?.message?.content;
-
-    if (!content) {
-      console.error('AI returned unexpected response format:', response.data);
+    if (!text) {
+      console.error('Gemini no devolvió contenido.');
       return 'La IA no devolvió una respuesta válida.';
     }
 
-    return content;
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      console.error('AI error (Axios):', error.response?.data || error.message);
-    } else {
-      console.error('AI error (Unknown):', error);
-    }
+    return text;
+  } catch (error) {
+    console.error('Error en Gemini API:', error);
     return 'No se pudo generar una recomendación. Intenta más tarde.';
   }
 }
