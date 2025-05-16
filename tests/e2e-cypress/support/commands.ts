@@ -5,7 +5,7 @@ declare global {
         login(): Chainable<void>;
         signup(): Chainable<void>;
         maybeSignup(): Chainable<void>;
-        mockTrpcQuery(procedure: string, data: any): Chainable<void>;
+        createCompany(key: string): Chainable<void>;
       }
     }
 }
@@ -31,7 +31,7 @@ Cypress.Commands.add('login', () => {
         cy.get('[data-testid="login-password"]').type(user.password);
         cy.get('button[type="submit"]').click();
       });
-      cy.url().should('include', '/main', { timeout: 10000 });
+      cy.url().should('include', '/main', { timeout: 20000 });
 });
 
 Cypress.Commands.add('maybeSignup', () => {
@@ -42,4 +42,28 @@ Cypress.Commands.add('maybeSignup', () => {
         });
       }
     });
+});
+
+Cypress.Commands.add('createCompany', (key: string) => {
+  
+  
+    cy.fixture('clients/companies').then((companies) => {
+        const company = companies[key];
+        cy.get('[data-cy="company-table-element"] tbody').then($tableBody => {
+          const companyExists = $tableBody.text().includes(company.name);
+          console.log("compnay exists", companyExists);
+          // const contains = cy.contains(company.name);
+          if (!companyExists) {
+            cy.get('#new-company-btn').click();
+            cy.wait(1000);
+            cy.get('[data-cy="company-modal"]', { timeout: 5000 }).should('be.visible');
+            cy.get('[data-cy="company-name"]').type(company.name);
+            cy.get('[data-cy="company-country"]').type(company.country);
+            cy.get('[data-cy="company-state"]').type(company.state);
+            cy.get('[data-cy="company-city"]').type(company.city);
+            cy.get('[data-cy="company-street"]').type(company.street);
+            cy.get('#save-company-btn').click();
+          }
+        })
+    })
 });

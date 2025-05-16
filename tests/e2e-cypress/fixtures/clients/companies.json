@@ -1,12 +1,30 @@
 {
-    "new-company": {
-      "name": "Alice",
-      "email": "alice@example.com",
-      "password": "Abcde123#"
-    },
-    "loginUser": {
-      "name": "Admin",
-      "email": "admin@tec.mx",
-      "password": "123456#A"
-    }
+  "newCompany": {
+    "name": "Text Company",
+    "country": "Mexico",
+    "state": "Nuevo León",
+    "city": "Monterrey",
+    "street": "Avenida de la Luz"
+  },
+  "editedCompany": {
+    "name": "Edited Company",
+    "country": "USA",
+    "state": "California",
+    "city": "Mountain View",
+    "street": "Pine Street"
+  },
+  "searchCompany": {
+    "name": "Search Company",
+    "country": "Ecuador",
+    "state": "Pichincha",
+    "city": "Quito",
+    "street": "Kassel"
+  },
+  "deletedCompany": {
+    "name": "Remove Company",
+    "country": "United States",
+    "state": "Washington",
+    "city": "Seattle",
+    "street": "Walker Street"
   }
+}
