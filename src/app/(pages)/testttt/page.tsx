@@ -32,7 +32,7 @@ export default function SmartRecommendationsPage() {
             const message = parsed.message || res.response;
 
             setChatHistory((prev) => [...prev, `AI: ${message}`]);
-
+            //rrr
             if (parsed?.type === "client" && parsed?.id) {
               setClientId(parsed.id);
               insightMutation.mutate({ id: parsed.id }, {
