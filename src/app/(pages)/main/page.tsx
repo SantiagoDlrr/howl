@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ResizablePanel } from "howl/app/_components/main/panels/resizablePanel";
 import { CallSideBar } from "howl/app/_components/main/panels/callSidebar";
 import { AiAssistant } from "howl/app/_components/main/panels/aiAssistant";
@@ -15,13 +15,48 @@ import NewCallModal from "@/app/_components/main/newCallModal";
 // import { generateDummyFiles } from "howl/app/_components/main/dummyData/dummyFiles"; // We can remove or keep
 
 export default function MainPage() {
+  const MAX_STORED_FILES = 10; // Set maximum number of files to store
+
+  // Initialize state from sessionStorage if available
+  const [files, setFiles] = useState<FileData[]>(() => {
+    if (typeof window !== 'undefined') {
+      const savedFiles = sessionStorage.getItem('howlx-files');
+      return savedFiles ? JSON.parse(savedFiles) : [];
+    }
+    return [];
+  });
+
+  const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(() => {
+    if (typeof window !== 'undefined') {
+      const savedIndex = sessionStorage.getItem('howlx-selected-index');
+      return savedIndex ? JSON.parse(savedIndex) : null;
+    }
+    return null;
+  });
+
+  // Save to sessionStorage whenever files change, keeping only the most recent MAX_STORED_FILES
+  useEffect(() => {
+    if (typeof window !== 'undefined' && files.length > 0) {
+      // Only keep the most recent files
+      const recentFiles = files.slice(-MAX_STORED_FILES);
+      sessionStorage.setItem('howlx-files', JSON.stringify(recentFiles));
+
+      // If selectedFileIndex is out of bounds after trimming, adjust it
+      if (selectedFileIndex !== null && selectedFileIndex >= recentFiles.length) {
+        setSelectedFileIndex(recentFiles.length - 1);
+      }
+    }
+  }, [files, selectedFileIndex]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('howlx-selected-index', JSON.stringify(selectedFileIndex));
+    }
+  }, [selectedFileIndex]);
+
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showRecordModal, setShowRecordModal] = useState(false);
   const [showNewCallModal, setShowNewCallModal] = useState(false);
-
-  // Start empty or with dummy data:
-  const [files, setFiles] = useState<FileData[]>([]);
-  const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(null);
 
   const [leftPanelWidth, setLeftPanelWidth] = useState(253);
   const [rightPanelWidth, setRightPanelWidth] = useState(300);
@@ -50,7 +85,7 @@ export default function MainPage() {
 
       // http://localhost:443/upload
       // Adjust the URL as needed: if backend is on another port or domain
-      const response = await fetch("https://app.howlx.run.place:443/upload", {
+      const response = await fetch("http://localhost:8000/upload", {
         method: "POST",
         body: formData
       });
@@ -61,12 +96,15 @@ export default function MainPage() {
       // The backend already sends JSON shaped like our FileData interface
       const data = await response.json() as FileData;
 
-      // Insert the newly returned FileData at the end of the array
+      // Insert the newly returned FileData, keeping only the most recent MAX_STORED_FILES
       setFiles((prev) => {
         const updated = [...prev, data];
+        const trimmed = updated.length > MAX_STORED_FILES ?
+          updated.slice(-MAX_STORED_FILES) : updated;
+
         // Automatically select the newly added file
-        setSelectedFileIndex(updated.length - 1);
-        return updated;
+        setSelectedFileIndex(trimmed.length - 1);
+        return trimmed;
       });
     } catch (error) {
       console.error("Error uploading file:", error);
