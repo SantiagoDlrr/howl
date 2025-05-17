@@ -110,7 +110,7 @@ const ClientsPage = () => {
                 >
                     {panelWidth > 0 && (
                         <div className="flex flex-row justify-end pr-6">
-                            <button id="company-close-column" onClick={handleCloseColumn} className="text-gray-400 hover:text-gray-500">
+                            <button id="client-close-column" onClick={handleCloseColumn} className="text-gray-400 hover:text-gray-500">
                                 <X className="w-5 h-5" />
                             </button>
                         </div>

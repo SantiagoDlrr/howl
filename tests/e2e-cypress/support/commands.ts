@@ -6,6 +6,8 @@ declare global {
         signup(): Chainable<void>;
         maybeSignup(): Chainable<void>;
         createCompany(key: string): Chainable<void>;
+        createClient(key: string): Chainable<void>;
+        removeClient(key: string): Chainable<void>;
       }
     }
 }
@@ -21,7 +23,6 @@ Cypress.Commands.add('signup', () => {
         cy.get('button[type="submit"]').click();
       });
       cy.wait(5000);
-      // cy.url().should('include', '/auth?mode=login', { timeout: 10000 });
 });
 
 Cypress.Commands.add('login', () => {
@@ -46,7 +47,6 @@ Cypress.Commands.add('maybeSignup', () => {
 });
 
 Cypress.Commands.add('createCompany', (key: string) => {
-  
     cy.visit('/clients');
     cy.fixture('clients/companies').then((companies) => {
         const company = companies[key];
@@ -67,4 +67,53 @@ Cypress.Commands.add('createCompany', (key: string) => {
           }
         })
     })
+});
+
+Cypress.Commands.add('createClient', (key: string) => {
+  cy.visit('/clients');
+  cy.get('[data-cy="company-table"]', { timeout: 5000 }).should('be.visible');
+  cy.createCompany('newCompany').then(() => {
+    cy.get('#toggle-2').click();
+    cy.get('[data-cy="client-table"]', { timeout: 5000 }).should('be.visible');
+  });
+  cy.fixture('clients/clients').then((clients) => {
+      const client = clients[key];
+      cy.get('[data-cy="client-table-element"] tbody').then($tableBody => {
+        const clientExists = $tableBody.text().includes(client.firstname);
+        console.log("client exists", clientExists);
+        // const contains = cy.contains(client.name);
+        if (!clientExists) {
+          cy.get('#new-client-btn').click();
+          cy.wait(1000);
+          cy.get('[data-cy="client-modal"]', { timeout: 5000 }).should('be.visible');
+          cy.get('[data-cy="client-firstname"]').type(client.firstname);
+          cy.get('[data-cy="client-lastname"]').type(client.lastname);
+          cy.get('[data-cy="client-email"]').type(client.email);
+          cy.get('[data-cy="client-company"]').select(client.company);
+          cy.get('#save-client-btn').click();
+        }
+      })
+  })
+});
+
+Cypress.Commands.add('removeClient', (key: string) => {
+  cy.visit('/clients');
+  cy.get('[data-cy="company-table"]', { timeout: 5000 }).should('be.visible');
+  cy.get('#toggle-2').click();
+  cy.get('[data-cy="client-table"]', { timeout: 5000 }).should('be.visible');
+  
+  cy.fixture('clients/clients').then((clients) => {
+      const client = clients[key];
+      cy.get('[data-cy="client-table-element"] tbody').then($tableBody => {
+        const clientExists = $tableBody.text().includes(client.firstname);
+        console.log("client exists", clientExists);
+        // const contains = cy.contains(client.name);
+        if (clientExists) {
+          cy.get('[data-cy="searchbar"]').clear().type(client.firstname);
+          cy.get('[data-cy="client-table"]', { timeout: 5000 }).should('be.visible');
+          cy.get('[data-cy="client-0"]').click();
+          cy.get('#first-btn').click();
+        }
+      })
+  })
 });

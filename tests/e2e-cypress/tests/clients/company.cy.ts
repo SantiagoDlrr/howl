@@ -1,5 +1,5 @@
 
-describe("Company tests", () => {
+describe("Company CRUD tests", () => {
     beforeEach(() => {
         cy.login();
         cy.visit("/clients");
