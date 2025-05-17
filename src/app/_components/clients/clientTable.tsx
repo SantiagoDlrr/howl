@@ -84,7 +84,7 @@ const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId, openModal
         return (
             <div className="bg-bg h-screen px-20 w-full">
                 <div className="flex justify-center items-center h-full">
-                    <p className="text-lg">No hay empresas registradas</p>
+                    <p className="text-lg">No hay clientes registrados</p>
                 </div>
             </div>
         )
