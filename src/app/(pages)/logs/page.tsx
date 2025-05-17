@@ -5,11 +5,12 @@ import CallLogsTable from "howl/app/_components/logs/callLogsTable";
 
 const LogCalls = async () => {
     const session = await auth();
-    if (!session?.user) {
+    /*if (!session?.user) {
         return (
             <RestrictedAccess />
         )
     }
+    */
     return (
         <div className="h flex flex-col justify-center items-center pt-20">
             <CallStatsDashboard />

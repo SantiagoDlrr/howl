@@ -1,0 +1,101 @@
+{
+  "callLogs": [
+    {
+      "id": 1,
+      "callDate": "2023-01-01",
+      "client": "Cliente A",
+      "clientCompany": "Empresa A",
+      "consultant_id": 101,
+      "category": "Ventas",
+      "rating": "5",
+      "time": "10",
+      "summary": "Resumen 1"
+    },
+    {
+      "id": 2,
+      "callDate": "2023-01-02",
+      "client": "Cliente B",
+      "clientCompany": "Empresa B",
+      "consultant_id": 101,
+      "category": "Soporte",
+      "rating": "4",
+      "time": "15",
+      "summary": "Resumen 2"
+    },
+    {
+      "id": 3,
+      "callDate": "2023-01-03",
+      "client": "Cliente C",
+      "clientCompany": "Empresa C",
+      "consultant_id": 102,
+      "category": "Ventas",
+      "rating": "3",
+      "time": "20",
+      "summary": "Resumen 3"
+    },
+    {
+      "id": 4,
+      "callDate": "2023-01-04",
+      "client": "Cliente D",
+      "clientCompany": "Empresa D",
+      "consultant_id": 103,
+      "category": "Soporte",
+      "rating": "5",
+      "time": "5",
+      "summary": "Resumen 4"
+    },
+    {
+      "id": 5,
+      "callDate": "2023-01-05",
+      "client": "Cliente E",
+      "clientCompany": "Empresa E",
+      "consultant_id": 201,
+      "category": "Ventas",
+      "rating": "4",
+      "time": "12",
+      "summary": "Resumen 5"
+    }
+  ],
+  "consultants": [
+    {
+      "id": 101,
+      "name": "Consultor 1"
+    },
+    {
+      "id": 102,
+      "name": "Consultor 2"
+    },
+    {
+      "id": 103,
+      "name": "Consultor 3"
+    },
+    {
+      "id": 201,
+      "name": "Supervisor 1"
+    },
+    {
+      "id": 301,
+      "name": "Administrador 1"
+    }
+  ],
+  "supervision": {
+    "201": [101, 102]
+  },
+  "roles": {
+    "consultant": {
+      "userId": "user123",
+      "consultantId": "101",
+      "role": "consultant"
+    },
+    "supervisor": {
+      "userId": "user456",
+      "consultantId": "201",
+      "role": "supervisor"
+    },
+    "administrator": {
+      "userId": "user789",
+      "consultantId": "301",
+      "role": "administrator"
+    }
+  }
+}
