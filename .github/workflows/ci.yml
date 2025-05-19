@@ -24,6 +24,7 @@ jobs:
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
+      GEMINI_API_KEY:  ${{ secrets.GEMINI_API_KEY }}
 
     steps:
     - name: Checkout
@@ -36,7 +37,7 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies
-      run: npm install
+      run: npm install --include=optional sharp
 
     - name: Run lint
       run: npm run lint
@@ -78,6 +79,7 @@ jobs:
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
+      GEMINI_API_KEY:  ${{ secrets.GEMINI_API_KEY }}
 
 
     steps:

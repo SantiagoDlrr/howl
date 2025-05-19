@@ -22,5 +22,11 @@ export const routes = [
         label: "Clientes",
         href: "/clients",
         isSelected: false
+    },
+    {
+        id: 4,
+        label: "Role Management",
+        href: "/roles",
+        isSelected: false
     }
 ];
