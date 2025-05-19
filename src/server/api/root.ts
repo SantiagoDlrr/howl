@@ -9,6 +9,8 @@ import { smartInsightRouter } from "@/app/smartRecom/routers/smartInsights";
 import { chatTestRouter } from "@/app/smartRecom/routers/chatTest";
 import { clientInsightRouter } from "@/app/smartRecom/routers/clientInsight";
 import { clientResolverRouter } from "@/app/smartRecom/routers/clientResolver";
+import { callRouter } from "./routers/calls";
+import { userRouter } from "./routers/user";
 
 /**
  * This is the primary router for your server.
@@ -24,8 +26,9 @@ export const appRouter = createTRPCRouter({
   smartInsight: smartInsightRouter,
   chatTest: chatTestRouter,
   clientInsight: clientInsightRouter,
-  clientResolver: clientResolverRouter
-
+  clientResolver: clientResolverRouter,
+  calls: callRouter,
+  user: userRouter,
 
 });
 

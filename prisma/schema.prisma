@@ -97,24 +97,26 @@ model call_emotions {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model calls {
-  id                 Int             @id(map: "call_pkey") @default(autoincrement())
-  context            String?
-  satisfaction       Int?
-  duration           Int
-  summary            String?
-  date               DateTime        @db.Date
-  transcript         String?
-  main_ideas         String[]
-  type               String?         @db.VarChar(50)
-  consultant_id      Int?
-  client_id          Int?
-  feedback           String?
-  sentiment_analysis String?
-  risk_words         String?
-  output             String?
-  call_emotions      call_emotions[]
-  client             client?         @relation(fields: [client_id], references: [id], onUpdate: NoAction, map: "call_client_id_fkey")
-  consultant         consultant?     @relation(fields: [consultant_id], references: [id], onUpdate: NoAction, map: "call_consultant_id_fkey")
+  id                  Int             @id(map: "call_pkey") @default(autoincrement())
+  name                String?         
+  context             String?
+  satisfaction        Int?
+  duration            Int
+  summary             String?
+  date                DateTime        @db.Date
+  transcript          String?
+  main_ideas          String[]
+  type                String?         @db.VarChar(50)
+  consultant_id       Int
+  client_id           Int
+  feedback            String?
+  sentiment_analysis  String?
+  risk_words          String[]
+  output              String?
+  diarized_transcript Json?           @db.Json
+  call_emotions       call_emotions[]
+  client              client?         @relation(fields: [client_id], references: [id], onUpdate: NoAction, map: "call_client_id_fkey")
+  consultant          consultant?     @relation(fields: [consultant_id], references: [id], onUpdate: NoAction, map: "call_consultant_id_fkey")
 }
 
 model client {
