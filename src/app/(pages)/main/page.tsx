@@ -85,10 +85,11 @@ export default function MainPage() {
 
       // http://localhost:443/upload
       // Adjust the URL as needed: if backend is on another port or domain
-      const response = await fetch("http://localhost:8000/upload", {
+      const response = await fetch("https://app.howlx.run.place:443/upload", {
         method: "POST",
         body: formData
       });
+      console.log("Response from server:", response);
       if (!response.ok) {
         throw new Error(`Failed to upload file: ${response.status} ${response.statusText}`);
       }
