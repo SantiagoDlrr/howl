@@ -55,7 +55,7 @@ describe("Client CRUD tests", () => {
             cy.get('[data-cy="client-email"]').clear().type(client.email);
             cy.get('[data-cy="client-company"]').select(client.company);
             cy.get('#second-btn').click();
-            cy.get('#client-close-column').click();
+            cy.get('#close-column').click();
 
             // Verify that the client data has been updated
             cy.get('[data-cy="client-table"]', { timeout: 5000 }).should('be.visible');

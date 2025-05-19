@@ -55,7 +55,7 @@ describe("Company CRUD tests", () => {
             cy.get('[data-cy="company-city"]').clear().type(company.city);
             cy.get('[data-cy="company-street"]').clear().type(company.street);
             cy.get('#second-btn').click();
-            cy.get('#company-close-column').click();
+            cy.get('#close-column').click();
 
             // Verify that the company data has been updated
             cy.get('[data-cy="company-table"]', { timeout: 5000 }).should('be.visible');
