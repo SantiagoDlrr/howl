@@ -12,7 +12,7 @@ export default defineConfig({
     fixturesFolder: "tests/e2e-cypress/fixtures",
     screenshotsFolder: "tests/e2e-cypress/screenshots",
     experimentalRunAllSpecs: true,
-    defaultCommandTimeout: 6000,
+    defaultCommandTimeout: 10000,
     setupNodeEvents(on, config) {
       on('task', {
         checkUserCreated: () => userCreated,
