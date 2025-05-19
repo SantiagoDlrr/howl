@@ -38,6 +38,7 @@ const ClientColumn = ({ id, editing, setEditing }: ClientColumnProps) => {
     });
 
     const { data: companies, isLoading: loadingCompanies } = api.company.getAll.useQuery();
+    
     const [selectedCompany, setSelectedCompany] = useState<number>(-1);
     const [input, setInput] = useState<ClientInput>(defaultClient);
     useEffect(() => {

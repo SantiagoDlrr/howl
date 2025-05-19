@@ -9,6 +9,7 @@ const SearchBar = ({searchTerm, setSearchTerm, setCurrentPage, classname} : Sear
     return (
         <div className={`relative flex-grow ${classname && ` ${classname}`}`}>
           <input
+            data-cy="searchbar"
             type="text"
             placeholder="Buscar..."
             value={searchTerm}

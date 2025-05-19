@@ -1,0 +1,26 @@
+{
+    "newClient": {
+        "firstname": "Juan",
+        "lastname": "Pérez",
+        "email": "juan@tec.mx",
+        "company": "New Company"
+    },
+    "editedClient": {
+        "firstname": "Jose",
+        "lastname": "Chavez",
+        "email": "jose@tec.mx",
+        "company": "New Company"
+    },
+    "searchClient": {
+        "firstname": "Maria",
+        "lastname": "Chavez",
+        "email": "maria@tec.mx",
+        "company": "New Company"
+    },
+    "deletedClient": {
+        "firstname": "Elisa",
+        "lastname": "Pérez",
+        "email": "elisa@tec.mx",
+        "company": "New Company"
+    }
+}

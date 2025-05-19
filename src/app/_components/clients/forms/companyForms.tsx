@@ -13,10 +13,10 @@ const CompanyForms = ({ input, isEditing, handleAddressFieldChange }: CompanyFor
                 Dirección
             </div>
             <div className="flex flex-col gap-3">
-                <Field label="País" value={input.address.country} isEditing={isEditing} onChange={(val: string) => handleAddressFieldChange("country", val)} />
-                <Field label="Estado" value={input.address.state} isEditing={isEditing} onChange={(val: string) => handleAddressFieldChange("state", val)} />
-                <Field label="Ciudad" value={input.address.city} isEditing={isEditing} onChange={(val: string) => handleAddressFieldChange("city", val)} />
-                <Field label="Calle" value={input.address.street} isEditing={isEditing} onChange={(val: string) => handleAddressFieldChange("street", val)} />
+                <Field data-cy="company-country" label="País" value={input.address.country} isEditing={isEditing} onChange={(val: string) => handleAddressFieldChange("country", val)} />
+                <Field data-cy="company-state" label="Estado" value={input.address.state} isEditing={isEditing} onChange={(val: string) => handleAddressFieldChange("state", val)} />
+                <Field data-cy="company-city" label="Ciudad" value={input.address.city} isEditing={isEditing} onChange={(val: string) => handleAddressFieldChange("city", val)} />
+                <Field data-cy="company-street" label="Calle" value={input.address.street} isEditing={isEditing} onChange={(val: string) => handleAddressFieldChange("street", val)} />
             </div>
         </div>
     )

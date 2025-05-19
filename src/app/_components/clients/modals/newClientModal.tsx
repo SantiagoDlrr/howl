@@ -66,7 +66,7 @@ const NewClientModal = ({ isOpen, onClose, setColumnId, setShow }: NewClientModa
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose}>
+        <Modal data-cy="client-modal" isOpen={isOpen} onClose={onClose}>
             {isLoading ? (
                 <Spinner />
             ) : (
@@ -92,7 +92,7 @@ const NewClientModal = ({ isOpen, onClose, setColumnId, setShow }: NewClientModa
                             <button onClick={onClose} className="flex-1 w-full bg-bg-dark text-text px-3 py-1 rounded hover:bg-bg-extradark transition-colors">
                                 Cancelar
                             </button>
-                            <button className="flex-1 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
+                            <button id="save-client-btn" className="flex-1 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
                                 Guardar
                             </button>
                         </div>

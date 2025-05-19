@@ -64,18 +64,9 @@ const CompanyTable = ({ onClick, onSeeClients, openModal, editCompany }: Company
         )
     }
 
-    if (!companies || companies.length === 0) {
-        return (
-            <div className="bg-bg h-screen px-20 w-full">
-                <div className="flex justify-center items-center h-full">
-                    <p className="text-lg">No hay empresas registradas</p>
-                </div>
-            </div>
-        )
-    }
 
     return (
-        <div className="bg-bg h-screen pt-4 pb-24 px-20 w-full">
+        <div data-cy="company-table" className="bg-bg h-screen pt-4 pb-24 px-20 w-full">
 
             <div className="text-xl font-semibold pb-5">
                 {"Empresas"}
@@ -83,7 +74,7 @@ const CompanyTable = ({ onClick, onSeeClients, openModal, editCompany }: Company
 
             <div className="flex flex-row items-center pb-6 gap-2">
                 <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} setCurrentPage={setCurrentPage} />
-                <button onClick={openModal} className="flex flex-row items-center gap-2 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
+                <button id="new-company-btn" onClick={openModal} className="flex flex-row items-center gap-2 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
                     <GoPlus className="text-xl" />
                     <div>
                         Nueva Empresa
@@ -93,7 +84,7 @@ const CompanyTable = ({ onClick, onSeeClients, openModal, editCompany }: Company
 
             <div className="overflow-x-auto rounded border border-black w-full">
 
-                <table className="w-full border-collapse text-sm">
+                <table data-cy="company-table-element" className="w-full border-collapse text-sm">
                     <thead>
                         <tr className="bg-gray-100 border-b">
                             <th className="p-3 text-left">Empresa</th>
@@ -105,6 +96,7 @@ const CompanyTable = ({ onClick, onSeeClients, openModal, editCompany }: Company
                     <tbody>
                         {currentCompanies.map((company, index) => (
                             <tr
+                                data-cy={`company-${index}`}
                                 key={index}
                                 onClick={() => openCompanyHandler(company.id)}
                                 className="border-b hover:bg-gray-50 transition-colors"
@@ -121,6 +113,7 @@ const CompanyTable = ({ onClick, onSeeClients, openModal, editCompany }: Company
                                         Ver clientes
                                     </button>
                                     <button
+                                        data-cy={`edit-company-${index}`}
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             editCompanyHandler(company.id)

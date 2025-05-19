@@ -20,6 +20,7 @@ describe('Auth Page', () => {
         cy.get('button[type="submit"]').click();
         cy.contains('Contraseña vacía').should('exist');
       });
+      
     
   });
     

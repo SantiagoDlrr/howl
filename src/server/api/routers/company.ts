@@ -25,7 +25,7 @@ export const companyRouter = createTRPCRouter({
 
     getAll: protectedProcedure
     .query(async ({ctx}) => {
-        return ctx.db.company.findMany({
+        const companies = ctx.db.company.findMany({
             include: {
                 address: true,
                 _count: {
@@ -35,7 +35,10 @@ export const companyRouter = createTRPCRouter({
                 }
             },
             
-        });
+        })
+        console.log("RESULT", companies);
+        
+        return companies;
     }),
 
     getById: protectedProcedure
