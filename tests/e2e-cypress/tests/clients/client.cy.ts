@@ -16,7 +16,7 @@ describe("Client CRUD tests", () => {
     //    * - Writes new client data
     //    * - Confirms success dialog message
     //   */
-      it('should verify a new client is created through the new client modal', () => {
+      it('US26T1 - should verify a new client is created through the new client modal', () => {
         cy.fixture('clients/clients').then((clients) => {
           const client = clients.newClient;
                 // Create clienC
@@ -42,7 +42,7 @@ describe("Client CRUD tests", () => {
     //    * - Confirms the success dialog message
     //    * - Confirms the client data has been updated
     //   */
-      it ('should verify that the data of a client can be modified', () => {
+      it ('US26T2 - should verify that the data of a client can be modified', () => {
         // Open edit panel
         cy.createClient('newClient').then(() => {
           cy.get('#edit-client-0').click();
@@ -79,7 +79,7 @@ describe("Client CRUD tests", () => {
     //    * - Confirms the client is found (appears in the table)
     //    * - Confirms the client data matches the created client
     //   */
-      it ('should verify that a client can be searched', () => {
+      it ('US26T3 - should verify that a client can be searched', () => {
         cy.createClient('searchClient').then(() => {
           cy.fixture('clients/clients').then((clients) => {
             const client = clients.searchClient;
@@ -104,7 +104,7 @@ describe("Client CRUD tests", () => {
     //    * - Confirms the success dialog message
     //    * - Confirms the client is not found (does not appear in the table)
     //   */ 
-      it ('should verify that a client can be deleted', () => {
+      it ('US26T4 - should verify that a client can be deleted', () => {
         cy.createClient('deletedClient').then(() => {
           cy.fixture('clients/clients').then((clients) => {
             const client = clients.deletedClient;

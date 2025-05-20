@@ -12,7 +12,7 @@ describe("Company CRUD tests", () => {
        * - Writes new company data
        * - Confirms success dialog message
       */
-      it('should verify a new company is created through the new company modal', () => {
+      it('US16T1 - should verify a new company is created through the new company modal', () => {
         cy.fixture('clients/companies').then((companies) => {
           const company = companies.newCompany;
                 // Create company
@@ -42,7 +42,7 @@ describe("Company CRUD tests", () => {
        * - Confirms the success dialog message
        * - Confirms the company data has been updated
       */
-      it ('should verify that the data of a company can be modified', () => {
+      it ('US16T2 - should verify that the data of a company can be modified', () => {
         // Open edit panel
         cy.createCompany('newCompany').then(() => {
           cy.get('[data-cy="edit-company-0"]').click();
@@ -76,7 +76,7 @@ describe("Company CRUD tests", () => {
        * - Confirms the company is found (appears in the table)
        * - Confirms the company data matches the created company
       */
-      it ('should verify that a company can be searched', () => {
+      it ('US16T3 - should verify that a company can be searched', () => {
         cy.createCompany('searchCompany').then(() => {
           cy.fixture('clients/companies').then((companies) => {
             const company = companies.searchCompany;
@@ -101,7 +101,7 @@ describe("Company CRUD tests", () => {
        * - Confirms the success dialog message
        * - Confirms the company is not found (does not appear in the table)
       */ 
-      it ('should verify that a company can be deleted', () => {
+      it ('US16T4 - should verify that a company can be deleted', () => {
         cy.createCompany('deletedCompany').then(() => {
           cy.fixture('clients/companies').then((companies) => {
             const company = companies.deletedCompany;
