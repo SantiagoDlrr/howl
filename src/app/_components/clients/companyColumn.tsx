@@ -117,10 +117,10 @@ const CompanyColumn = ({ id, editing, setEditing }: CompanyColumnProps) => {
                 Cliente desde {company.client_since.toLocaleDateString()}
             </div>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3 pb-10">
+            <form data-cy="company-column" onSubmit={handleSubmit} className="flex flex-col gap-3 pb-10">
                 {editing && (
                     <div className="flex flex-col gap-3">
-                        <Field strong label="Nombre" required value={input.name} isEditing={editing} onChange={(val: string) => handleNameFieldChange(val)} />
+                        <Field data-cy="company-name" strong label="Nombre" required value={input.name} isEditing={editing} onChange={(val: string) => handleNameFieldChange(val)} />
                     </div>
                 )}
 

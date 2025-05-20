@@ -13,7 +13,7 @@ const ToggleButton = ({ id, selected, setSelected, large, label }: Props) => {
     }
 
     return (
-        <button onClick={handleClick} className={`${selected && "bg-bg-extradark"} ${large && "p-1"} rounded-md px-2 flex-1 text-left`}>
+        <button id={`toggle-${id}`} onClick={handleClick} className={`${selected && "bg-bg-extradark"} ${large && "p-1"} rounded-md px-2 flex-1 text-left`}>
             {label}
         </button>
     )

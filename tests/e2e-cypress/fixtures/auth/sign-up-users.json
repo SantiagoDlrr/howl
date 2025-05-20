@@ -4,9 +4,9 @@
     "email": "alice@example.com",
     "password": "Abcde123#"
   },
-  "invalidUser": {
-    "name": "",
-    "email": "bademail",
-    "password": "123"
+  "loginUser": {
+    "name": "Admin",
+    "email": "admin@tec.mx",
+    "password": "123456#A"
   }
 }

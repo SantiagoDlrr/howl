@@ -80,46 +80,43 @@ const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId, openModal
         )
     }
 
-    if (!clients || clients.length === 0 || !companies) {
-        return (
-            <div className="bg-bg h-screen px-20 w-full">
-                <div className="flex justify-center items-center h-full">
-                    <p className="text-lg">No hay empresas registradas</p>
-                </div>
-            </div>
-        )
-    }
-
     return (
-        <div className="bg-bg h-screen pt-4 pb-24 px-20 w-full">
+        <div data-cy="client-table" data-testid="clients-card" className="bg-bg h-screen pt-4 pb-24 px-20 w-full">
             <div className="text-xl font-semibold pb-5">
                 {company?.name ? `Clientes de ${company?.name}` : 'Clientes'}
             </div>
 
             <div className="w-full flex flex-row gap-3 mb-6">
                 <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} setCurrentPage={setCurrentPage} />
-                <select
-                    value={companySelection}
-                    onChange={(e) => {
-                        setCompanySelection(e.target.value);
-                        setCurrentPage(1);
-                    }}
-                    className="border rounded px-2 py-1"
-                >
-                    <option value="">Todas las empresas</option>
-                    {companies.map(company => (
-                        <option key={company.id} value={company.name}>{company.name}</option>
-                    ))}
-                </select>
+                {companies ? (
+                    <select
+                        value={companySelection}
+                        onChange={(e) => {
+                            setCompanySelection(e.target.value);
+                            setCurrentPage(1);
+                        }}
+                        className="border rounded px-2 py-1"
+                    >
+                        <option value="">Todas las empresas</option>
+                        {companies.map(company => (
+                            <option key={company.id} value={company.name}>{company.name}</option>
+                        ))}
+                    </select>
+                ) : (
+                    <div className="border rounded px-2 py-1">
+                        Aún no hay empresas
+                    </div>
+                )}
+
                 <button
                     onClick={resetFilters}
                     className="bg-[#F9FBFF] hover:bg-gray-300 rounded px-2 border border-black"
                 >
                     Restablecer
                 </button>
-                <button onClick={openModal} className="flex flex-row items-center gap-2 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
+                <button id="new-client-btn" onClick={openModal} className="flex flex-row items-center gap-2 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
                     <GoPlus className="text-xl" />
-                    <div>
+                    <div data-testid="new-client-button">
                         Nuevo Cliente
                     </div>
                 </button>
@@ -128,7 +125,7 @@ const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId, openModal
 
             <div className="overflow-x-auto rounded border border-black w-full">
 
-                <table className="w-full border-collapse text-sm">
+                <table data-cy="client-table-element" className="w-full border-collapse text-sm">
                     <thead>
                         <tr className="bg-gray-100 border-b">
                             <th className="p-3 text-left">Empresa</th>
@@ -140,6 +137,7 @@ const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId, openModal
                     <tbody>
                         {currentClients.map((client, index) => (
                             <tr
+                                data-cy={`client-${index}`}
                                 key={index}
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -158,7 +156,9 @@ const ClientTable = ({ onClick, onSeeCompany, companyId, setCompanyId, openModal
                                     <button onClick={() => onSeeCompany(client.company_id ?? 0)} className="bg-bg-dark text-text px-3 py-1 rounded hover:bg-bg-extradark transition-colors">
                                         Ver Empresa
                                     </button>
-                                    <button onClick={(e) => {
+                                    <button 
+                                    id={`edit-client-${index}`}
+                                    onClick={(e) => {
                                         e.stopPropagation();
                                         editClientHandler(client.id)
                                     }}

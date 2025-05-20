@@ -48,9 +48,26 @@ jobs:
   e2e-tests:
     name: E2E tests
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: testdb
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd="pg_isready -U test"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+          
     env:
       AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      # DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DATABASE_URL: postgresql://test:test@localhost:5433/testdb
       AUTH_MICROSOFT_ENTRA_ID_ID: ${{ secrets.AUTH_MICROSOFT_ENTRA_ID_ID }}
       AUTH_MICROSOFT_ENTRA_ID_SECRET: ${{ secrets.AUTH_MICROSOFT_ENTRA_ID_SECRET }}
       AUTH_MICROSOFT_ENTRA_ID_ISSUER: ${{ secrets.AUTH_MICROSOFT_ENTRA_ID_ISSUER }}
@@ -76,7 +93,13 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies
-      run: npm install 
+      run: npm install
+      
+    - name: Generate Prisma client (if using Prisma)
+      run: npx prisma generate
+
+    - name: Push schema to test DB
+      run: npx prisma db push
 
     - name: Run Cypress tests
       run: npx start-server-and-test dev http://localhost:3000 'cypress run'

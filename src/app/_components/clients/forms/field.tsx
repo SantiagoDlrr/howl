@@ -19,7 +19,7 @@ interface FieldProps {
 // Prioridad e impacto 
 // 
 
-const Field = ({ label, value, isEditing, strong, required, onChange }: FieldProps) => {
+const Field = ({ label, value, isEditing, strong, required, onChange, ...props }: FieldProps) => {
     const handleInputChange = (e: string) => {
         if (onChange) {
             onChange(e);
@@ -36,6 +36,7 @@ const Field = ({ label, value, isEditing, strong, required, onChange }: FieldPro
                     type="text"
                     required={required}
                     defaultValue={value ?? ""}
+                    {...props}
                     onChange={(e) => {
                        handleInputChange(e.target.value);
                     }}

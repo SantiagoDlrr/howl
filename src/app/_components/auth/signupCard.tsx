@@ -20,7 +20,7 @@ const SignUpCard = () => {
     const signupMutation = api.signup.signup.useMutation({
         onSuccess: () => {
             toast.success("Registro exitoso");
-            router.push("/main");
+            router.push("/auth?mode=login");
         },
         onError: (error) => {
             setError(error.message);

@@ -66,20 +66,20 @@ const NewCompanyModal = ({ isOpen, onClose, setColumnId, setShow }: NewCompanyMo
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose}>
+        <Modal data-cy="company-modal" isOpen={isOpen} onClose={onClose}>
             <div className="text-xl font-semibold mb-4">
                 Nueva Empresa
             </div>
             <form onSubmit={handleSubmit} className="px-2 pt-4 pb-5">
-                <div className="flex flex-col gap-3">
-                    <Field strong label="Nombre" required value={input.name} isEditing={true} onChange={(val: string) => handleNameFieldChange(val)} />
+                <div className="flex flex-col gap-3 pb-6">
+                    <Field data-cy="company-name" strong label="Nombre *" required value={input.name} isEditing={true} onChange={(val: string) => handleNameFieldChange(val)} />
                 </div>
                 <CompanyForms input={input} isEditing={true} handleAddressFieldChange={handleAddressFieldChange} />
                 <div className="flex flex-row gap-4 pt-8">
                     <button onClick={onClose} className="flex-1 w-full bg-bg-dark text-text px-3 py-1 rounded hover:bg-bg-extradark transition-colors">
                         Cancelar
                     </button>
-                    <button type="submit" className="flex-1 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
+                    <button id="save-company-btn" type="submit" className="flex-1 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors">
                         Guardar
                     </button>
                 </div>
