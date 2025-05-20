@@ -34,7 +34,7 @@ Cypress.Commands.add('login', () => {
         cy.get('button[type="submit"]').click();
       });
       cy.url().should('include', '/main', { timeout: 35000 });
-});
+}); 
 
 Cypress.Commands.add('maybeSignup', () => {
     cy.task('checkUserCreated').then((created) => {
