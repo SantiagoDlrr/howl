@@ -6,7 +6,7 @@ import { useState } from "react";
 // ESTA MAL ESTO DEBERÍA IMPORTAR DEL MODEL QUE YA HICE
 interface ClientInsight {
   clientName: string;
-  lastContact: string;
+  lastContact: Date;
   summary: string;
   keyEmotions: string[];
   commonTopics: string[];
@@ -14,8 +14,8 @@ interface ClientInsight {
   reports: {
     id: string;
     name: string;
-    date: string;
-    duration: string;
+    date: Date;
+    duration: number;
     report: {
       sentiment: string;
       rating: number;
@@ -34,7 +34,8 @@ interface ClientInsight {
 export default function EnhancedClientInsight({ clientInsight }: { clientInsight: ClientInsight }) {
   const [selectedReport, setSelectedReport] = useState<ClientInsight['reports'][number] | null>(null);
   const [showReportModal, setShowReportModal] = useState(false);
-
+  // console.log(clientInsight);
+  // console.log(clientInsight.reports.length);
   // If no client insight data is available yet
   if (!clientInsight) {
     return (
@@ -67,7 +68,8 @@ export default function EnhancedClientInsight({ clientInsight }: { clientInsight
 
   // Get sentiment color
   const getSentimentColor = (sentiment: string) => {
-    switch(sentiment.toLowerCase()) {
+    if (!sentiment) return 'text-gray-500';
+    switch (sentiment.toLowerCase()) {
       case 'positivo':
       case 'positive':
         return 'text-green-600';
@@ -102,7 +104,7 @@ export default function EnhancedClientInsight({ clientInsight }: { clientInsight
             {clientInsight.clientName}
           </h2>
           <span className="text-sm text-indigo-600">
-            Último contacto: {formatDate(clientInsight.lastContact)}
+            Último contacto: {formatDate(clientInsight.lastContact.toISOString())}
           </span>
         </div>
       </div>
@@ -113,7 +115,7 @@ export default function EnhancedClientInsight({ clientInsight }: { clientInsight
         <div className="mb-6">
           <h3 className="text-md font-medium text-gray-700 mb-2">Resumen</h3>
           <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-md border border-gray-200">
-            {clientInsight.summary}
+             {clientInsight.summary}
           </p>
         </div>
 
@@ -124,8 +126,8 @@ export default function EnhancedClientInsight({ clientInsight }: { clientInsight
             <h3 className="text-md font-medium text-gray-700 mb-2">Emociones Principales</h3>
             <div className="flex flex-wrap gap-2">
               {clientInsight.keyEmotions.map((emotion, index) => (
-                <span 
-                  key={index} 
+                <span
+                  key={index}
                   className="px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium"
                 >
                   {emotion}
@@ -139,8 +141,8 @@ export default function EnhancedClientInsight({ clientInsight }: { clientInsight
             <h3 className="text-md font-medium text-gray-700 mb-2">Temas Comunes</h3>
             <div className="flex flex-wrap gap-2">
               {clientInsight.commonTopics.map((topic, index) => (
-                <span 
-                  key={index} 
+                <span
+                  key={index}
                   className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium"
                 >
                   {topic}
@@ -160,7 +162,7 @@ export default function EnhancedClientInsight({ clientInsight }: { clientInsight
                 if (paragraph.startsWith('**') && paragraph.endsWith('**')) {
                   return <h4 key={idx} className="font-semibold text-green-800 mt-3">{paragraph.replace(/\*\*/g, '')}</h4>;
                 }
-                
+
                 // List items
                 if (paragraph.includes('*   ')) {
                   const items = paragraph.split('*   ').filter(Boolean);
@@ -172,7 +174,7 @@ export default function EnhancedClientInsight({ clientInsight }: { clientInsight
                     </ul>
                   );
                 }
-                
+
                 // Regular paragraph
                 return <p key={idx} className="text-sm">{paragraph}</p>;
               })}
@@ -185,7 +187,7 @@ export default function EnhancedClientInsight({ clientInsight }: { clientInsight
           <h3 className="text-md font-medium text-gray-700 mb-2">Reportes ({clientInsight.reports.length})</h3>
           <div className="space-y-2">
             {clientInsight.reports.map((report) => (
-              <div 
+              <div
                 key={report.id}
                 onClick={() => handleReportClick(report)}
                 className="flex items-center justify-between p-3 border rounded-md cursor-pointer hover:bg-gray-50 transition-colors"
@@ -199,7 +201,7 @@ export default function EnhancedClientInsight({ clientInsight }: { clientInsight
                   <div>
                     <p className="text-sm font-medium text-gray-800">{report.name}</p>
                     <p className="text-xs text-gray-500">
-                      {formatDate(report.date)} • {report.duration}
+                      {formatDate(report.date.toISOString())} • {report.duration}
                     </p>
                   </div>
                 </div>
@@ -235,7 +237,7 @@ export default function EnhancedClientInsight({ clientInsight }: { clientInsight
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
                     <p className="text-sm font-medium text-gray-500">Fecha</p>
-                    <p className="text-sm">{formatDate(selectedReport.date)}</p>
+                    <p className="text-sm">{formatDate(selectedReport.date.toISOString())}</p>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-500">Duración</p>

@@ -1,19 +1,28 @@
 import Fuse from "fuse.js";
 import { askAI } from "./aiService";
 import { mockClients } from "../data/mockClientDB";
+import { api } from "@/trpc/react";
+import { client } from "@prisma/client";
 
-let lastSuggestedClient: { id: string; name: string } | null = null;
+let lastSuggestedClient: { id: number; name: string } | null = null;
 
-const fuse = new Fuse(mockClients, {
-  keys: ["name"],
-  threshold: 0.4,
-});
+
 
 /**
  * Controlador principal del chat IA para identificar clientes y responder según el flujo natural.
  */
-export async function chatClientController(message: string): Promise<string> {
+export async function chatClientController(message: string, clients: client[]): Promise<string> {
   const cleanedMessage = message.trim().toLowerCase();
+
+  const clientsForFuse = clients.map(client => ({
+    id: client.id,
+    name: `${client.firstname} ${client.lastname}`
+  }));
+
+  const fuse = new Fuse(clientsForFuse, {
+    keys: ["name"],
+    threshold: 0.4,
+  });
 
   // Paso 1: Si estamos esperando confirmación del usuario
   if (lastSuggestedClient) {
@@ -47,14 +56,18 @@ export async function chatClientController(message: string): Promise<string> {
   }
 
   // Paso 2: IA interpreta a quién se refiere el mensaje
-  const namesList = mockClients.map((c) => c.name).join(", ");
+  // const clientNames = mockClients.map((c) => c.name).join(", ");
+
+  const clientNames = clients?.map((c) => (c.firstname + " " + c.lastname)).join(", ");
   const inferredName = await askAI({
     systemPrompt: "Eres un asistente que identifica a qué cliente se refiere un mensaje.",
-    context: `Nombres disponibles: ${namesList}`,
+    context: `Nombres disponibles: ${clientNames}`,
     question: `¿A qué nombre completo se refiere este mensaje?: "${message}". Si no puedes estar seguro, devuelve null.`,
   });
 
+  // console.log("Inferred name:", inferredName);
   const match = fuse.search(inferredName)?.[0]?.item;
+  // console.log("Match:", match);
 
   if (!match) {
     return "No pude identificar a ningún cliente con base en ese mensaje. ¿Puedes reformularlo?";
