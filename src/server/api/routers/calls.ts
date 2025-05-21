@@ -2,6 +2,59 @@ import { callSchema } from "@/app/utils/schemas/callSchema";
 import { createTRPCRouter, protectedProcedure } from "howl/server/api/trpc";
 
 export const callRouter = createTRPCRouter({
+  
+  getAll: protectedProcedure
+  .query(async ({ ctx }) => {
+    const calls = await ctx.db.calls.findMany({
+      include: {
+        client: {
+          select: {
+            id: true,
+            firstname: true,
+            lastname: true,
+          }
+        }
+      }
+    });
+
+    return calls;
+  }),
+
+  getByConsultantId: protectedProcedure
+  .query(async ({ ctx }) => {
+    const user = await ctx.db.user.findUnique({
+      where: {
+        id: ctx.session.user.id,
+      },
+      select: {
+        consultant: {
+          select: {
+            id: true,
+          }
+        }
+      }
+    });
+    const id = user?.consultant ? user.consultant[0]?.id : undefined;
+    if (!id) {
+      return [];
+    }
+    const calls = await ctx.db.calls.findMany({
+      where: {
+        consultant_id: id,
+      },
+      include: {
+        client: {
+          select: {
+            id: true,
+            firstname: true,
+            lastname: true,
+          }
+        }
+      }
+    });
+    return calls;
+  }),
+
   createCall: protectedProcedure
   .input(callSchema)
   .mutation(async ({ ctx, input }) => {
