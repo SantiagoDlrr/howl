@@ -1,11 +1,12 @@
 // src/smartFeatures/services/clientInsightService.ts
 import { FileData, ClientInsightResponse } from '../models/types';
-import { buildClientContext } from './contextBuilder';
+import { buildClientContext } from './openR+oldstuff/contextBuilder';
 import { askAI } from './aiService';
 import { mockClients, mockCompanies } from "../data/mockClientDB";
 import { summarizeMultipleReports } from "./aiService"; // nuevo import
 
 
+/*
 export async function getClientReports(clientId: string): Promise<FileData[]> {
   const client = mockClients.find(c => c.id === clientId);
   return client ? client.reports : [];
@@ -14,7 +15,7 @@ export async function getClientReports(clientId: string): Promise<FileData[]> {
 export async function getCompanyReports(companyId: string): Promise<FileData[]> {
   const clientsInCompany = mockClients.filter(c => c.companyId === companyId);
   return clientsInCompany.flatMap(c => c.reports);
-}
+}*/
 
 
 
@@ -48,7 +49,7 @@ export async function generateClientInsight(calls: FileData[]): Promise<ClientIn
   return {
     clientName: calls[0]?.client_name || "Cliente Desconocido",
     lastContact: lastCall.date,
-    summary: combinedSummaries,
+    summary: await summarizeMultipleReports(combinedSummaries),
     keyEmotions: [...new Set(calls.flatMap(c => c.report.emotions))].slice(0, 5),
     commonTopics: [...new Set(calls.flatMap(c => c.report.keyTopics))].slice(0, 5),
     recommendation,

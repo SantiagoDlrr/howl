@@ -5,7 +5,6 @@ import { createCallerFactory, createTRPCRouter } from "howl/server/api/trpc";
 import { feedbackRouter } from "./routers/feedback";
 import { companyRouter } from "./routers/company";
 import { clientRouter } from "./routers/companyClient";
-import { smartInsightRouter } from "@/app/smartRecom/routers/smartInsights";
 import { chatTestRouter } from "@/app/smartRecom/routers/chatTest";
 import { clientInsightRouter } from "@/app/smartRecom/routers/clientInsight";
 import { clientResolverRouter } from "@/app/smartRecom/routers/clientResolver";
@@ -23,7 +22,6 @@ export const appRouter = createTRPCRouter({
   feedback: feedbackRouter,
   company: companyRouter,
   companyClient: clientRouter,
-  smartInsight: smartInsightRouter,
   chatTest: chatTestRouter,
   clientInsight: clientInsightRouter,
   clientResolver: clientResolverRouter,
