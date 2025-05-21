@@ -70,6 +70,9 @@ declare global {
 }
 
 describe('US10: Historial de llamadas (Simplificado)', () => {
+  beforeEach(() => {
+    cy.login();
+  });
   // Ejecutar login antes de todas las pruebas
     context('AC1 & AC2: Como consultor, ver solo mis llamadas', () => {
       beforeEach(() => {
