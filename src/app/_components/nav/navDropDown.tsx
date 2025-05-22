@@ -4,11 +4,35 @@ import type { Session } from "next-auth";
 import Image from "next/image";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { getUserRole } from "@/app/utils/services/userService";
+import type { UserRoleData } from "@/app/utils/services/userService";
 
 const NavDropdown = ({ session }: { session: Session }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [userRole, setUserRole] = useState<UserRoleData | null>(null);
+    const [isLoadingRole, setIsLoadingRole] = useState(true);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
+
+    // Obtener el rol del usuario al cargar el componente
+    useEffect(() => {
+        const fetchUserRole = async () => {
+            try {
+                setIsLoadingRole(true);
+                const role = await getUserRole();
+                setUserRole(role);
+            } catch (error) {
+                console.error('Error al obtener rol del usuario:', error);
+                setUserRole(null);
+            } finally {
+                setIsLoadingRole(false);
+            }
+        };
+
+        if (session?.user) {
+            fetchUserRole();
+        }
+    }, [session]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -20,6 +44,14 @@ const NavDropdown = ({ session }: { session: Session }) => {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+
+    // Verificar si el usuario es administrador
+    const isAdmin = userRole?.role === 'administrator';
+
+    const handleNavigation = (path: string) => {
+        setIsOpen(false);
+        router.push(path);
+    };
 
     return (
         <div ref={dropdownRef} className="relative inline-block z-50">
@@ -43,12 +75,46 @@ const NavDropdown = ({ session }: { session: Session }) => {
             >
                 <ul className="py-2">
                     <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                        <button onClick={() => router.push("/profile")} className="w-full text-left">
+                        <button 
+                            onClick={() => handleNavigation("/profile")} 
+                            className="w-full text-left"
+                        >
                             Ver perfil
                         </button>
                     </li>
+                    
+                    {/* Mostrar opciones de administrador solo si el usuario es admin */}
+                    {!isLoadingRole && isAdmin && (
+                        <>
+                            <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                                <button 
+                                    onClick={() => handleNavigation("/roles")} 
+                                    className="w-full text-left"
+                                >
+                                    Gestión de Roles
+                                </button>
+                            </li>
+                            <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                                <button 
+                                    onClick={() => handleNavigation("/clients")} 
+                                    className="w-full text-left"
+                                >
+                                    Clientes
+                                </button>
+                            </li>
+                        </>
+                    )}
+                    
+                    {/* Separador visual si hay opciones de admin */}
+                    {!isLoadingRole && isAdmin && (
+                        <li className="border-t border-gray-200 my-1"></li>
+                    )}
+                    
                     <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                        <button onClick={() => signOut()} className="w-full text-left">
+                        <button 
+                            onClick={() => signOut()} 
+                            className="w-full text-left"
+                        >
                             Sign Out
                         </button>
                     </li>

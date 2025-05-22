@@ -147,15 +147,15 @@ const UserManagementTable: React.FC = () => {
   };
 
   if (loading) {
-    return <Spinner />;
+    return <Spinner data-testid="loading-spinner" />;
   }
 
   if (error) {
-    return <div className="p-4 bg-red-100 text-red-700 rounded">{error}</div>;
+    return <div className="p-4 bg-red-100 text-red-700 rounded" data-testid="error-message">{error}</div>;
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-testid="role-management-container">
       <h1 className="text-2xl font-bold">Gestión de Usuarios</h1>
       
       {/* Barra de búsqueda */}
@@ -166,6 +166,7 @@ const UserManagementTable: React.FC = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full px-4 py-2 border rounded-md"
+          data-testid="user-search-input"
         />
         <span className="absolute right-3 top-2.5 text-gray-400">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -176,7 +177,7 @@ const UserManagementTable: React.FC = () => {
       
       {/* Tabla de usuarios */}
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200">
+        <table className="min-w-full bg-white border border-gray-200" data-testid="users-table">
           <thead className="bg-gray-100">
             <tr>
               <th className="py-2 px-4 border-b text-left">Nombre</th>
@@ -187,11 +188,11 @@ const UserManagementTable: React.FC = () => {
           </thead>
           <tbody>
             {filteredUsers.map((user) => (
-              <tr key={user.id} className="hover:bg-gray-50">
-                <td className="py-2 px-4 border-b">
+              <tr key={user.id} className="hover:bg-gray-50" data-testid={`user-row-${user.id}`}>
+                <td className="py-2 px-4 border-b" data-testid={`user-name-${user.id}`}>
                   {user.firstName} {user.lastName}
                 </td>
-                <td className="py-2 px-4 border-b">{user.email}</td>
+                <td className="py-2 px-4 border-b" data-testid={`user-email-${user.id}`}>{user.email}</td>
                 <td className="py-2 px-4 border-b">
                   <select
                     value={user.accessLevel}
@@ -202,6 +203,7 @@ const UserManagementTable: React.FC = () => {
                     )}
                     disabled={saving}
                     className="px-2 py-1 border rounded-md"
+                    data-testid={`access-level-select-${user.id}`}
                   >
                     <option value="unassigned">No Asignado</option>
                     <option value="consultant">Consultor</option>
@@ -227,6 +229,7 @@ const UserManagementTable: React.FC = () => {
                         setModalOpen(true);
                       }}
                       className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors"
+                      data-testid={`manage-supervised-btn-${user.id}`}
                     >
                       Gestionar Supervisados
                     </button>
@@ -239,7 +242,7 @@ const UserManagementTable: React.FC = () => {
       </div>
       
       {filteredUsers.length === 0 && (
-        <div className="p-4 text-center text-gray-500">
+        <div className="p-4 text-center text-gray-500" data-testid="no-results-message">
           No se encontraron usuarios que coincidan con la búsqueda
         </div>
       )}

@@ -10,6 +10,7 @@ const LogCalls = async () => {
             <RestrictedAccess />
         )
     }
+    
     return (
         <div className="h flex flex-col justify-center items-center pt-20">
             <CallStatsDashboard />

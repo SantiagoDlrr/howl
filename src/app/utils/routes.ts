@@ -16,17 +16,5 @@ export const routes = [
         label: "Logs",
         href: "/logs",
         isSelected: false
-    },
-    {
-        id: 3,
-        label: "Clientes",
-        href: "/clients",
-        isSelected: false
-    },
-    {
-        id: 4,
-        label: "Role Management",
-        href: "/roles",
-        isSelected: false
     }
 ];
