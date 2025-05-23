@@ -1,4 +1,4 @@
-import { FileData, ClientInsightResponse } from '../models/types';
+import type { FileData, ClientInsightResponse } from '../models/types';
 import { askAI } from './aiService';
 
 // System prompts as constants
@@ -22,10 +22,15 @@ const EMOTION_PROMPT = `Eres un experto en análisis emocional. Tu tarea es dete
 async function parseJsonArray(response: string): Promise<string[]> {
   try {
     const cleanResponse = response.replace(/```json\s*|```/g, '').trim();
-    const parsed = JSON.parse(cleanResponse);
-    return Array.isArray(parsed)
-      ? (parsed[0]?.tema ? parsed.map((t: any) => t.tema) : parsed)
-      : [];
+    const parsed: unknown = JSON.parse(cleanResponse);
+
+    if (Array.isArray(parsed)) {
+      if (typeof parsed[0] === 'object' && parsed[0] !== null && 'tema' in parsed[0]) {
+        return parsed.map((t: { tema: string }) => t.tema);
+      }
+      return parsed as string[];
+    }
+    return [];
   } catch (e) {
     console.error("Error parsing JSON from AI:", e);
     return [];
@@ -34,7 +39,7 @@ async function parseJsonArray(response: string): Promise<string[]> {
 
 // Summarize multiple reports
 export async function summarizeMultipleReports(reports: string): Promise<string> {
-  return await askAI({
+  return askAI({
     systemPrompt: SUMMARY_PROMPT,
     context: reports,
     question: `Genera un resumen narrativo en lenguaje natural que combine los puntos clave de todos los reportes anteriores. Este resumen será mostrado a un agente humano para entender el contexto emocional y temático del cliente.`,
@@ -47,17 +52,14 @@ export async function generateClientInsight(calls: FileData[]): Promise<ClientIn
     throw new Error("No calls found for this client");
   }
 
-  // Sort and get the most recent call clearly
   const lastCall = calls.reduce((latest, call) =>
     new Date(call.date) > new Date(latest.date) ? call : latest
   );
 
-  // Combine summaries clearly
   const combinedSummaries = calls
     .map((c, idx) => `Reporte ${idx + 1} (${c.name}):\n${c.report.summary}`)
     .join("\n\n");
 
-  // Parallelize AI requests
   const [summary, recommendation, topicAnalysis, emotionAnalysis] = await Promise.all([
     summarizeMultipleReports(combinedSummaries),
     askAI({
