@@ -35,14 +35,3 @@ export async function askAI({ systemPrompt, context, question }: AIInput): Promi
 }
 
 
-export async function summarizeMultipleReports(reports: string): Promise<string> {
-  const summaries = reports;
-
-  const response = await askAI({
-    systemPrompt: "Eres un analista de soporte al cliente. Tu trabajo es escribir un resumen narrativo breve y claro de dos párrafos, basado en varios reportes de llamadas de un mismo agente.",
-    context: summaries,
-    question: `Genera un resumen narrativo en lenguaje natural que combine los puntos clave de todos los reportes anteriores. Este resumen será mostrado a un agente humano para entender el contexto emocional y temático del cliente.`,
-  });
-
-  return response;
-}
