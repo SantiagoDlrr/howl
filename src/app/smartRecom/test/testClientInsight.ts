@@ -1,5 +1,5 @@
 // test/testClientInsight.ts
-import { generateClientInsight } from "../services/clientInsightService";
+/*import { generateClientInsight } from "../services/clientInsightService";
 import { FileData } from '../models/types';
 
 const mockCalls: FileData[] = [
@@ -43,3 +43,4 @@ const mockCalls: FileData[] = [
   const insight = await generateClientInsight(mockCalls);
   console.log(JSON.stringify(insight, null, 2));
 })();
+*/
