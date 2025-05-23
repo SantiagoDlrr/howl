@@ -3,9 +3,10 @@
 export interface FileData {
     id: number;
     name: string;
-    date: string;
+    date: Date;
     type: string;
-    duration: string;
+    duration: number;
+    client_name: string;
   
     report: {
       feedback: string;
@@ -30,7 +31,7 @@ export interface FileData {
   
   export interface ClientInsightResponse {
     clientName: string;
-    lastContact: string;
+    lastContact: Date;
     summary: string;
     keyEmotions: string[];
     commonTopics: string[];

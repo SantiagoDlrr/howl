@@ -88,11 +88,11 @@ const Recording = ({ onUpload, setUploading }: Props) => {
             };
 
             mediaRecorder.onstop = () => {
-                const blob = new Blob(chunksRef.current, { type: "video/webm" });
+                const blob = new Blob(chunksRef.current, { type: "video/wav" });
                 setDownloadURL(URL.createObjectURL(blob));
 
-                const file = new File([blob], "recording.webm", {
-                    type: "video/webm",
+                const file = new File([blob], "recording.wav", {
+                    type: "video/wav",
                     lastModified: Date.now()
                 });
 

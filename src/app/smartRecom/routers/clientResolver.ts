@@ -12,8 +12,9 @@ export const clientResolverRouter = createTRPCRouter({
 
   conversationalResolve: publicProcedure
     .input(z.object({ message: z.string() }))
-    .mutation(async ({ input }) => {
-      const response = await chatClientController(input.message);
+    .mutation(async ({ input, ctx }) => {
+      const clients = await ctx.db.client.findMany({});
+      const response = await chatClientController(input.message, clients);
       return { response };
     }),
 });

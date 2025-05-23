@@ -1,14 +1,15 @@
 // test/testClientInsight.ts
-import { generateClientInsight } from "../services/clientInsightService";
+/*import { generateClientInsight } from "../services/clientInsightService";
 import { FileData } from '../models/types';
 
 const mockCalls: FileData[] = [
   {
+    client_name: 'Juan Pérez',
     id: 1,
     name: 'angel_call_1.mp3',
-    date: '2025-05-12',
+    date: new Date('2025-05-12'),
     type: 'audio',
-    duration: '5:34',
+    duration: 322,
     report: {
       feedback: 'Cliente confundido por cambios de tarifa.',
       keyTopics: ['tarifa', 'cambio de plan'],
@@ -20,11 +21,12 @@ const mockCalls: FileData[] = [
     },
   },
   {
+    client_name: 'Juan Pérez',
     id: 2,
     name: 'angel_call_2.mp3',
-    date: '2025-05-14',
+    date: new Date('2025-05-14'),
     type: 'audio',
-    duration: '7:12',
+    duration: 612,
     report: {
       feedback: 'Cliente más tranquilo pero aún molesto.',
       keyTopics: ['atención al cliente', 'seguimiento'],
@@ -41,3 +43,4 @@ const mockCalls: FileData[] = [
   const insight = await generateClientInsight(mockCalls);
   console.log(JSON.stringify(insight, null, 2));
 })();
+*/

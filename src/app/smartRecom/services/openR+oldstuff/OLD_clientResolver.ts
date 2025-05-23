@@ -1,6 +1,6 @@
 // src/app/smartRecom/services/clientResolver.ts
-import { askAI } from "./aiService";
-import { ClientEntity, mockClients, mockCompanies } from "../data/mockClientDB"; // Asegúrate de tener este archivo con mocks
+import { askAI } from "../aiService";
+import { ClientEntity, mockClients, mockCompanies } from "../../data/mockClientDB"; // Asegúrate de tener este archivo con mocks
 import Fuse from "fuse.js"
 
 

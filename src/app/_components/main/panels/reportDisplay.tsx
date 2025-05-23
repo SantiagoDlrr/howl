@@ -111,6 +111,8 @@ export const ReportDisplay: React.FC<Props> = ({ report, file, transcript, title
 
     // const satisfaction = report?.rating ?? 1
     const clientId = getClientId();
+    const parsedDate = new Date(file.date);
+    const date = !isNaN(parsedDate.getTime()) ? parsedDate : new Date();
     
     const satisfaction = 10;
     const parsedInput = {
@@ -118,7 +120,7 @@ export const ReportDisplay: React.FC<Props> = ({ report, file, transcript, title
       satisfaction: satisfaction,
       duration: parseInt(String(file.duration), 10) || 0,
       summary: report.summary,
-      date: new Date(file.date),
+      date: date,
       // transcript: file.transcript,
       main_ideas: report.keyTopics,
       type: reportType,
