@@ -1,7 +1,7 @@
 // types/ClientInsight.ts
 export interface ClientInsight {
     clientName: string;
-    lastContact: string;
+    lastContact: Date;
     summary: string;
     keyEmotions: string[];
     commonTopics: string[];
@@ -9,8 +9,8 @@ export interface ClientInsight {
     reports: {
       id: string;
       name: string;
-      date: string;
-      duration: string;
+      date: Date;
+      duration: number;
       report: {
         sentiment: string;
         rating: number;

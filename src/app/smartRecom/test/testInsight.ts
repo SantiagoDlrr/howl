@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+/*import type { NextApiRequest, NextApiResponse } from 'next';
 import { appRouter } from '@/server/api/root';
 import { createTRPCContext } from '@/server/api/trpc';
 
@@ -23,4 +23,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } catch (err) {
     res.status(500).json({ error: (err as Error).message });
   }
-}
+}*/
