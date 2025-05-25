@@ -38,6 +38,7 @@ export const callRouter = createTRPCRouter({
     if (!id) {
       return [];
     }
+    
     const calls = await ctx.db.calls.findMany({
       where: {
         consultant_id: id,
