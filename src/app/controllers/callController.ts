@@ -44,7 +44,11 @@ class CallsController {
                   }
                 }
               }
-            }
+            },
+            orderBy: {
+              date: "desc",
+            },
+            take: 15,
           });
 
         return calls;
@@ -65,6 +69,16 @@ class CallsController {
               id: consultant_id,
             }
           }
+        },
+        include: {
+          client: {
+            select: {
+              id: true,
+              firstname: true,
+              lastname: true,
+              company: true,
+            }
+          },
         }
       })
   

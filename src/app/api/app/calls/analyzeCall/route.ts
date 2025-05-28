@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import SessionController from "@/app/controllers/sessionController";
 import CallsController from "@/app/controllers/callController";
 import { callSchema } from "@/app/utils/schemas/callSchema";
-import fs from 'fs';
 import https from 'https';
 import axios from "axios";
 
@@ -85,7 +84,7 @@ export async function POST(req: Request) {
     const finalData = validation.data;
 
     const savedCall = await callsController.createCall(finalData);
-
+    console.log("Call saved successfully:", savedCall);
 
     return NextResponse.json(savedCall, { status: 200 });
   } catch (err) {
