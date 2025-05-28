@@ -1,22 +1,18 @@
-// pages/testFM/page.tsx
 'use client'
 
 import { api } from "@/trpc/react";
 import { useState } from "react";
 
 export default function SmartFeedbackPage() {
-  // Hook embebido temporalmente para prototipado
-  const [interval, setInterval] = useState<"day" | "week" | "month">("day");
-  const consultantId = 1;
+  const [interval, setInterval] = useState<"dia" | "semana" | "mes">("dia");
+  const consultantId = 27; // puedes cambiarlo luego por el ID dinámico del usuario logueado
 
   const feedbackQuery = api.feedbackManager.getCallsByInterval.useQuery(
     { consultantId, interval },
-    {
-      // keepPreviousData: true,
-    }
+    { enabled: !!consultantId } // solo si hay ID
   );
 
-  const fetchFeedback = (newInterval: "day" | "week" | "month") => {
+  const fetchFeedback = (newInterval: "dia" | "semana" | "mes") => {
     setInterval(newInterval);
   };
 
@@ -32,9 +28,12 @@ export default function SmartFeedbackPage() {
           <p className="text-sm text-gray-500">Cargando llamadas...</p>
         ) : reports.length > 0 ? (
           <ul className="text-sm">
-            {reports.map((report, idx) => (
-              <li key={typeof report === 'object' && report.id ? report.id : idx}>
-                Reporte ID: {typeof report === 'object' && report.id ? report.id : String(report)}
+            {reports.map((report) => (
+              <li key={report.id} className="mb-1">
+                <div><strong>ID:</strong> {report.id}</div>
+                <div><strong>Nombre:</strong> {report.name}</div>
+                <div><strong>Fecha:</strong> {new Date(report.date).toLocaleDateString("es-MX")}</div>
+                <div><strong>Satisfacción:</strong> {report.satisfaction}</div>
               </li>
             ))}
           </ul>
@@ -47,9 +46,9 @@ export default function SmartFeedbackPage() {
       <div className="w-2/5 p-4">
         <h2 className="text-lg font-semibold mb-2">Selecciona intervalo</h2>
         <div className="flex gap-2 mb-4">
-          <button onClick={() => fetchFeedback("day")} className="px-4 py-2 bg-blue-600 text-white rounded">Hoy</button>
-          <button onClick={() => fetchFeedback("week")} className="px-4 py-2 bg-blue-600 text-white rounded">Esta semana</button>
-          <button onClick={() => fetchFeedback("month")} className="px-4 py-2 bg-blue-600 text-white rounded">Este mes</button>
+          <button onClick={() => fetchFeedback("dia")} className="px-4 py-2 bg-blue-600 text-white rounded">Hoy</button>
+          <button onClick={() => fetchFeedback("semana")} className="px-4 py-2 bg-blue-600 text-white rounded">Esta semana</button>
+          <button onClick={() => fetchFeedback("mes")} className="px-4 py-2 bg-blue-600 text-white rounded">Este mes</button>
         </div>
       </div>
     </div>
