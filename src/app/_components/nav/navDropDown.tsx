@@ -112,7 +112,7 @@ const NavDropdown = ({ session }: { session: Session }) => {
                     
                     <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                         <button 
-                            onClick={() => signOut()} 
+                            onClick={() => signOut({ callbackUrl: '/auth' })} 
                             className="w-full text-left"
                         >
                             Sign Out
