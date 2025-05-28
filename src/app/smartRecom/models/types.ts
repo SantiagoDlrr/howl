@@ -38,3 +38,12 @@ export interface FileData {
     recommendation: string;
     reports: FileData[];
   }
+
+  export interface Call {
+  id: number;
+  name: string;
+  date: Date;
+  duration: number;
+  satisfaction: number;
+  summary: string;
+}
