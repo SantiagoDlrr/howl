@@ -15,7 +15,6 @@ interface ProfileHeaderProps {
 export function ProfileHeader({ user }: ProfileHeaderProps) {
   return (
     <div className="bg-gradient-to-r from-indigo-600 to-purple-600 h-56 relative">
-      {/* … tu SVG de fondo … */}
       <div className="flex items-center h-full px-8">
         <div className="flex items-center space-x-6">
           <div className="relative ring-4 ring-white/30 rounded-full shadow-lg">

@@ -3,7 +3,7 @@
 import { useSession, signOut } from "next-auth/react";
 import { redirect } from "next/navigation";
 
-// Si usas el sub-folder components:
+
 import { Avatar } from "src/app/(pages)/profile/avatar.tsx";
 import { ProfileHeader } from "src/app/(pages)/profile/profileHeader.tsx";
 import { PersonalInfo } from "src/app/(pages)/profile/personalInfo.tsx";
@@ -24,7 +24,7 @@ export default function ProfilePage() {
     return <div>Ocurrió un error, recarga la página.</div>;
   }
 
-  // A estas alturas TS sabe que session.user existe
+  
   const user = {
     id:      session.user.id,                      
     name:    session.user.name  ?? "Sin Nombre",   
