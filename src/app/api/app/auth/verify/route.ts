@@ -14,6 +14,7 @@ export async function POST(req: Request) {
     
     return NextResponse.json({ valid: true, user: decoded });
   } catch (error) {
+    console.log("Token verification error:", error);
     return NextResponse.json({ valid: false, error: "Invalid or expired token" }, { status: 401 });
   }
 }

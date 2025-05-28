@@ -33,9 +33,9 @@ export const ReportDisplay: React.FC<Props> = ({ report, file, transcript, title
 
   const [selectedClient, setSelectedClient] = useState<string>('');
   const [selectedCompany, setSelectedCompany] = useState<string>('');
-  const { data: clients, isLoading: isLoading } = api.companyClient.getAll.useQuery();
-  const { data: companies, isLoading: isLoadingCompanies } = api.company.getAll.useQuery();
-  const { data: consultant_id, isLoading: isLoadingConsultant } = api.user.getConsultantId.useQuery();
+  const { data: clients } = api.companyClient.getAll.useQuery();
+  const { data: companies } = api.company.getAll.useQuery();
+  const { data: consultant_id } = api.user.getConsultantId.useQuery();
   const [filteredClients, setFilteredClients] = useState(clients);
 
   const [saved, setSaved] = useState(false);

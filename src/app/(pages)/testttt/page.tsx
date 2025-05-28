@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { api } from "@/trpc/react";
 import EnhancedClientInsight from "@/app/_components/sr/EnhancedClientInsight";
-import { ClientInsight } from "@/app/utils/types/ClientInsight";
+import type { ClientInsight } from "@/app/utils/types/ClientInsight";
 
 
 export default function SmartRecommendationsPage() {

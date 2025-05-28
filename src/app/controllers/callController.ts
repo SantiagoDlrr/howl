@@ -1,7 +1,7 @@
-import { SessionData } from "@/app/utils/types/sessionData";
+import type { SessionData } from "@/app/utils/types/sessionData";
 import { db } from "@/server/db";
 import z from "zod";
-import { callSchema } from "../utils/schemas/callSchema";
+import type { callSchema } from "../utils/schemas/callSchema";
 
 type CallInput = z.infer<typeof callSchema>;
 

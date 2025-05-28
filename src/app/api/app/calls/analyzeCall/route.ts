@@ -3,7 +3,7 @@ import SessionController from "@/app/controllers/sessionController";
 import CallsController from "@/app/controllers/callController";
 import { callSchema } from "@/app/utils/schemas/callSchema";
 import https from 'https';
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export async function POST(req: Request) {
   const sessionController = SessionController.getInstance();
@@ -48,8 +48,8 @@ export async function POST(req: Request) {
       );
     
       reportData = axiosResponse.data;
-    } catch (error: any) {
-      const errText = error.response?.data || error.message;
+    } catch (error: unknown) {
+      const errText = error instanceof AxiosError ? error.response?.data || error.message : 'Unknown error';
       console.error("Failed to upload to HowlX:", errText);
       return NextResponse.json({ error: "Upload to HowlX failed", details: errText }, { status: 500 });
     }

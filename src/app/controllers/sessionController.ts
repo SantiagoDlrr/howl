@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import { SessionData } from "@/app/utils/types/sessionData";
+import type { SessionData } from "@/app/utils/types/sessionData";
 import { db } from "@/server/db";
 
 class SessionController {
