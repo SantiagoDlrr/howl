@@ -17,6 +17,7 @@ interface CompanyProps {
 const CompanyTable = ({ onClick, onSeeClients, openModal, editCompany }: CompanyProps) => {
 
     const { data: companies, isLoading } = api.company.getAll.useQuery();
+    
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const logsPerPage = 8;

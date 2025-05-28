@@ -1,5 +1,5 @@
 // src/smartFeatures/services/contextBuilder.ts
-import { FileData } from '../../models/types';
+import type { FileData } from '../../models/types';
 
 export function buildClientContext(calls: FileData[]): string {
   const emotions = calls.flatMap(c => c.report.emotions);
