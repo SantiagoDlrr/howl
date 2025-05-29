@@ -12,6 +12,7 @@ export interface CallLogEntry {
     context?: string;
     summary?: string;
     feedback?: string;
+    tittle?: string;
   }
   
   export type SortDirection = 'newest' | 'oldest';

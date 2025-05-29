@@ -67,6 +67,7 @@ export async function GET(request: Request) {
       SELECT 
         c.id,
         c.date as "callDate", 
+        c.name as "tittle",
         cl.firstname as "clientFirstName",
         cl.lastname as "clientLastName",
         cl.firstname || ' ' || cl.lastname as client,

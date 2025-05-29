@@ -13,6 +13,7 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
         <thead className="bg-gray-100">
           <tr>
             <th className="py-2 px-4 border-b text-left">Fecha</th>
+            <th className="py-2 px-4 border-b text-left">Titulo</th>
             <th className="py-2 px-4 border-b text-left">Cliente</th>
             <th className="py-2 px-4 border-b text-left">Empresa</th>
             <th className="py-2 px-4 border-b text-left">Categoría</th>
@@ -26,6 +27,9 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
             <tr key={log.id} className="hover:bg-gray-50">
               <td className="py-2 px-4 border-b">
                 {new Date(log.callDate).toLocaleDateString()}
+              </td>
+              <td className="py-2 px-4 border-b">
+                {log.tittle || 'Sin título'}
               </td>
               <td className="py-2 px-4 border-b">
                 {log.clientFirstName && log.clientLastName
