@@ -53,6 +53,54 @@ class SessionController {
 
         return id ? id.id : null;
     }
+
+    async getUserDetails(sessionData: SessionData) {
+
+        const consultantId = await this.getConsultantId(sessionData);
+        var callCount = 0;
+        var role = "user";
+
+        if (consultantId) {
+            callCount = await db.calls.count({
+                where: {
+                    consultant_id: consultantId,
+                },
+            });
+
+            // Check if it is supervisor
+            const isSupervisor = await db.supervision.findFirst({
+                where: {
+                    supervisor_id: consultantId,
+                },
+            });
+            if (isSupervisor) {
+                role = "supervisor";
+            }
+
+            // Check if it is admin
+            const isAdmin = await db.administration.findFirst({
+                where: {
+                    administrator_id: consultantId,
+                },
+            });
+            if (isAdmin) {
+                role = "administrator";
+            }
+            
+        } else {
+            callCount = 0;
+        }
+
+        const user = {
+            id: sessionData.id,
+            email: sessionData.email,
+            name: sessionData.name || "User",
+            callCount: callCount,
+            role: role,
+        };
+
+        return user;
+    }
 }
 
 export default SessionController;

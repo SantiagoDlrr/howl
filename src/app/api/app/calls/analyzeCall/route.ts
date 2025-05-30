@@ -40,11 +40,12 @@ export async function POST(req: Request) {
     let reportData;
     try {
       const axiosResponse = await axios.post(
-        "https://app.howlx.run.place:443/upload",
+        "https://howlx.adriangaona.dev/upload",
+        // "https://app.howlx.run.place:443/upload",
         forwardFormData,
-        {
-          httpsAgent,
-        }
+        // {
+        //   httpsAgent,
+        // }
       );
     
       reportData = axiosResponse.data;

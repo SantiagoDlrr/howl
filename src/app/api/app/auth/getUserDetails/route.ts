@@ -1,18 +1,15 @@
-import { NextResponse } from "next/server";
 import SessionController from "@/app/controllers/sessionController";
-import CallsController from "@/app/controllers/callController";
+import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
-    
     const sessionController = SessionController.getInstance();
-    const callsController = CallsController.getInstance();
     const sessionResponse = await sessionController.getSession(req);
-    
+
     if (sessionResponse.status === 200) {
         const sessionData = await sessionResponse.json();
-        const calls = await callsController.getCalls(sessionData)
-        // console.log("Calls fetched successfully:", calls);
-        return NextResponse.json(calls);
+        const userData = await sessionController.getUserDetails(sessionData);
+        console.log("User details fetched successfully:", userData);
+        return NextResponse.json(userData);
     }
 
     return NextResponse.json(
