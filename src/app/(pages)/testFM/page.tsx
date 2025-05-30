@@ -1,6 +1,7 @@
 'use client';
+
 import { api } from "@/trpc/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SentimentGauge } from "@/app/smartRecom/components/charts/SentimentGauge";
 import { SatisfactionHistogram } from "@/app/smartRecom/components/charts/SatisfactionHistogram";
 import { SatisfactionScoreBar } from "@/app/smartRecom/components/charts/SatisfactionPhaseBar";
@@ -23,14 +24,33 @@ function formatMinutes(value: number): string {
 
 export default function SmartFeedbackPage() {
   const [interval, setInterval] = useState<"dia" | "semana" | "mes">("dia");
+  const [aiSummary, setAiSummary] = useState<string | null>(null);
   const consultantId = 77;
 
-  const metricsQuery = api.feedbackManager.getFeedbackMetrics.useQuery(
+  const { data: metrics } = api.feedbackManager.getFeedbackMetrics.useQuery(
     { consultantId, interval },
     { enabled: !!consultantId }
   );
 
-  const metrics = metricsQuery.data;
+  const summaryMutation = api.feedbackManager.generateAISummary.useMutation();
+
+  useEffect(() => {
+    if (!metrics) return;
+
+    console.log("Llamando a la IA con interval:", interval);
+
+    summaryMutation.mutate(
+      { metrics, interval },
+      {
+        onSuccess: (res) => {
+          setAiSummary(res.summary);
+        },
+        onError: (err) => {
+          console.error("❌ Error generando resumen con IA:", err);
+        },
+      }
+    );
+  }, [metrics?.current.total_calls, interval]);
 
   return (
     <div className="flex w-full pt-16 h-[calc(100vh-4rem)]">
@@ -109,10 +129,7 @@ export default function SmartFeedbackPage() {
           </div>
         )}
 
-        {metrics?.topClients && (
-          <TopClientsTable data={metrics.topClients} />
-        )}
-
+        {metrics?.topClients && <TopClientsTable data={metrics.topClients} />}
       </div>
 
       {/* RIGHT PANEL */}
@@ -123,6 +140,13 @@ export default function SmartFeedbackPage() {
           <button onClick={() => setInterval("semana")} className="px-4 py-2 bg-blue-600 text-white rounded">Esta semana</button>
           <button onClick={() => setInterval("mes")} className="px-4 py-2 bg-blue-600 text-white rounded">Este mes</button>
         </div>
+
+        {aiSummary && (
+          <div className="border-t pt-4 mt-6">
+            <h2 className="text-lg font-semibold text-gray-800">🧠 AI generated summary</h2>
+            <p className="text-sm text-gray-600 whitespace-pre-wrap">{aiSummary}</p>
+          </div>
+        )}
       </div>
     </div>
   );
