@@ -16,5 +16,11 @@ export const routes = [
         label: "Logs",
         href: "/logs",
         isSelected: false
+    },
+    {
+        id: 3,
+        label: "AI Tools",
+        href: "/SCD",
+        isSelected: false
     }
 ];
