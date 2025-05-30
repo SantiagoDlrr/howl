@@ -57,8 +57,8 @@ class SessionController {
     async getUserDetails(sessionData: SessionData) {
 
         const consultantId = await this.getConsultantId(sessionData);
-        var callCount = 0;
-        var role = "user";
+        let callCount = 0;
+        let role = "user";
 
         if (consultantId) {
             callCount = await db.calls.count({
