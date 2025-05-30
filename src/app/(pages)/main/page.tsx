@@ -85,7 +85,7 @@ export default function MainPage() {
 
       // http://localhost:443/upload
       // Adjust the URL as needed: if backend is on another port or domain
-      const response = await fetch("https://app.howlx.run.place:443/upload", {
+      const response = await fetch("https://howlx.adriangaona.dev/upload", {
         method: "POST",
         body: formData
       });
