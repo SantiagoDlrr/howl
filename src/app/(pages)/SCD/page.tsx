@@ -37,18 +37,18 @@ const SCD = () => {
 
         <button 
           className={`px-6 py-3 rounded-lg font-medium transition-colors
-            ${activePanel === 'deep-analysis' 
+            ${activePanel === 'QA' 
               ? 'bg-red-500 text-white' 
               : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
             }`}
-          onClick={() => setActivePanel('deep-analysis')}
+          onClick={() => setActivePanel('QA')}
         >
-          Deep Analysis Panel
+          Q & A
         </button>
 
       </div>
 
-      {activePanel === 'deep-analysis' && <DAContainer />}
+      {activePanel === 'QA' && <DAContainer />}
       
       {activePanel === 'SmartRecommendations' && (
         <div className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm">
