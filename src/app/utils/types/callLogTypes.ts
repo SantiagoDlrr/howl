@@ -12,6 +12,13 @@ export interface CallLogEntry {
     context?: string;
     summary?: string;
     feedback?: string;
+    tittle?: string;
+
+    keyTopics?: string[]; 
+    emotions?: string[];//
+    sentiment?: string; 
+    output?: string; 
+    riskWords?: string[];
   }
   
   export type SortDirection = 'newest' | 'oldest';

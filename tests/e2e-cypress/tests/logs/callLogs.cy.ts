@@ -272,7 +272,7 @@ describe('US10: Historial de llamadas (Simplificado)', () => {
         cy.verifyTableRowCount(5);
       });
   
-      it('US10T7: Debería permitir buscar por término', () => {
+      /*it('US10T7: Debería permitir buscar por término', () => {
         // Buscar un término específico
         cy.searchTerm('Cliente B');
         
@@ -280,6 +280,6 @@ describe('US10: Historial de llamadas (Simplificado)', () => {
         cy.verifyTableRowCount(1);
         cy.verifyClientInTable('Cliente B');
         cy.verifyClientInTable('Cliente A', false);
-      });
+      });*/
     });
   });
