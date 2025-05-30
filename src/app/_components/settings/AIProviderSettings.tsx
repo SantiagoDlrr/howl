@@ -1,6 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronUp, Settings, Save, TestTube, RefreshCw, AlertCircle, CheckCircle, Info } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  ChevronDown,
+  ChevronUp,
+  Settings,
+  Save,
+  TestTube,
+  RefreshCw,
+  AlertCircle,
+  CheckCircle,
+  Info
+} from 'lucide-react';
 
+/* ---------- Tipos ---------- */
 interface ProviderInfo {
   info: string;
   models: string[];
@@ -10,7 +21,7 @@ interface ProviderInfo {
   defaultBaseUrl?: string;
 }
 
-interface Settings {
+interface AppSettings {
   ai_provider: string;
   api_key: string;
   base_url: string;
@@ -20,8 +31,15 @@ interface Settings {
   max_tokens: number;
 }
 
+interface TestProviderResponse {
+  success: boolean;
+  supports_audio?: boolean;
+  error?: string;
+}
+
+/* ---------- Componente ---------- */
 const AIProviderSettings: React.FC = () => {
-  const [settings, setSettings] = useState<Settings>({
+  const [settings, setSettings] = useState<AppSettings>({
     ai_provider: 'google',
     api_key: '',
     base_url: '',
@@ -32,115 +50,115 @@ const AIProviderSettings: React.FC = () => {
   });
 
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const [status, setStatus] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+  const [status, setStatus] = useState<
+    { message: string; type: 'success' | 'error' | 'info' } | null
+  >(null);
   const [isTestLoading, setIsTestLoading] = useState(false);
   const [isSaveLoading, setIsSaveLoading] = useState(false);
 
-  const API_BASE = typeof window !== 'undefined' ? window.location.origin : '';
-
+  /* ---------- Información de proveedores ---------- */
   const providerInfo: Record<string, ProviderInfo> = {
     google: {
-      info: "Google Gemini models. Get API key from Google AI Studio.",
-      models: ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-1.0-pro"],
+      info: 'Google Gemini models. Get API key from Google AI Studio.',
+      models: ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-1.0-pro'],
       supportsAudio: true,
       needsApiKey: true,
       needsBaseUrl: false
     },
     openai: {
-      info: "OpenAI models including GPT-4 and GPT-3.5. Get API key from OpenAI platform.",
-      models: ["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo", "gpt-4o"],
+      info: 'OpenAI models including GPT-4 and GPT-3.5. Get API key from OpenAI platform.',
+      models: ['gpt-4', 'gpt-4-turbo', 'gpt-3.5-turbo', 'gpt-4o'],
       supportsAudio: true,
       needsApiKey: true,
       needsBaseUrl: false
     },
     claude: {
-      info: "Anthropic Claude models. Get API key from Anthropic Console. Note: No audio transcription support.",
-      models: ["claude-3-opus-20240229", "claude-3-sonnet-20240229", "claude-3-haiku-20240307"],
+      info: 'Anthropic Claude models. Get API key from Anthropic Console. Note: No audio transcription support.',
+      models: [
+        'claude-3-opus-20240229',
+        'claude-3-sonnet-20240229',
+        'claude-3-haiku-20240307'
+      ],
       supportsAudio: false,
       needsApiKey: true,
       needsBaseUrl: false
     },
     ollama: {
-      info: "Local Ollama installation. Make sure Ollama is running on your machine. No API key needed.",
-      models: ["llama2", "llama3", "codellama", "mistral", "neural-chat"],
+      info: 'Local Ollama installation. Make sure Ollama is running on your machine. No API key needed.',
+      models: ['llama2', 'llama3', 'codellama', 'mistral', 'neural-chat'],
       supportsAudio: false,
       needsApiKey: false,
       needsBaseUrl: true,
-      defaultBaseUrl: "http://localhost:11434"
+      defaultBaseUrl: 'http://localhost:11434'
     },
     lm_studio: {
-      info: "LM Studio local server. Make sure LM Studio server is running. API key optional.",
-      models: ["Custom models from LM Studio"],
+      info: 'LM Studio local server. Make sure LM Studio server is running. API key optional.',
+      models: ['Custom models from LM Studio'],
       supportsAudio: false,
       needsApiKey: false,
       needsBaseUrl: true,
-      defaultBaseUrl: "http://localhost:1234/v1"
+      defaultBaseUrl: 'http://localhost:1234/v1'
     },
     custom: {
-      info: "Custom OpenAI-compatible API endpoint. Provide your own base URL and credentials.",
-      models: ["Depends on your custom API"],
+      info: 'Custom OpenAI-compatible API endpoint. Provide your own base URL and credentials.',
+      models: ['Depends on your custom API'],
       supportsAudio: false,
       needsApiKey: true,
       needsBaseUrl: true,
-      defaultBaseUrl: "https://your-custom-api.com/v1"
+      defaultBaseUrl: 'https://your-custom-api.com/v1'
     }
   };
 
-  useEffect(() => {
-    loadCurrentSettings();
-  }, []);
-
-  useEffect(() => {
-    updateFormFields();
-  }, [settings.ai_provider]);
-
-  const loadCurrentSettings = async () => {
+  /* ---------- Funciones memoizadas ---------- */
+  const loadCurrentSettings = useCallback(async () => {
     try {
       const response = await fetch(`https://howlx.adriangaona.dev/settings`);
       if (!response.ok) throw new Error('Failed to load settings');
-      
-      const loadedSettings = await response.json();
-      setSettings({
-        ai_provider: loadedSettings.ai_provider || 'google',
-        api_key: loadedSettings.api_key || '',
-        base_url: loadedSettings.base_url || '',
-        llm_model: loadedSettings.llm_model || 'gemini-1.5-flash',
-        transcription_engine: loadedSettings.transcription_engine || 'ai_provider',
-        temperature: loadedSettings.temperature || 0.1,
-        max_tokens: loadedSettings.max_tokens || 4000
-      });
-      
+
+      const loaded = (await response.json()) as Partial<AppSettings>;
+      setSettings(prev => ({ ...prev, ...loaded }));
       showStatus('Settings loaded successfully', 'success');
-    } catch (error) {
-      console.error('Error loading settings:', error);
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : 'Unknown error loading settings';
+      console.error('Error loading settings:', message);
       showStatus('Failed to load current settings', 'error');
     }
-  };
+  }, []);
 
-  const updateFormFields = () => {
+  const updateFormFields = useCallback(() => {
     const info = providerInfo[settings.ai_provider];
-    
-    if (info) {
-      if (!info.needsApiKey) {
-        setSettings(prev => ({ ...prev, api_key: 'not-needed' }));
-      }
-      
-      if (info.needsBaseUrl && info.defaultBaseUrl && !settings.base_url) {
-        setSettings(prev => ({ ...prev, base_url: info.defaultBaseUrl || '' }));
-      }
-      
-      if (info.models && info.models.length > 0 && 
-          info.models[0] !== "Custom models from LM Studio" && 
-          info.models[0] !== "Depends on your custom API" &&
-          !settings.llm_model) {
-        setSettings(prev => ({ ...prev, llm_model: info.models[0] || 'gemini-1.5-flash' }));
-      }
-    }
-  };
+    if (!info) return;
 
-  const showStatus = (message: string, type: 'success' | 'error' | 'info') => {
+    setSettings(prev => ({
+      ...prev,
+      api_key: !info.needsApiKey ? 'not-needed' : prev.api_key,
+      base_url: info.needsBaseUrl && !prev.base_url ? info.defaultBaseUrl ?? '' : prev.base_url,
+      llm_model:
+        info.models?.[0] &&
+        info.models[0] !== 'Custom models from LM Studio' &&
+        info.models[0] !== 'Depends on your custom API' &&
+        !prev.llm_model
+          ? info.models[0]
+          : prev.llm_model
+    }));
+  }, [settings.ai_provider, providerInfo]);
+
+  /* ---------- Efectos ---------- */
+  useEffect(() => {
+    loadCurrentSettings();
+  }, [loadCurrentSettings]);
+
+  useEffect(() => {
+    updateFormFields();
+  }, [updateFormFields]);
+
+  /* ---------- Funciones ---------- */
+  const showStatus = (
+    message: string,
+    type: 'success' | 'error' | 'info'
+  ) => {
     setStatus({ message, type });
-    
     if (type === 'success') {
       setTimeout(() => setStatus(null), 5000);
     }
@@ -151,16 +169,15 @@ const AIProviderSettings: React.FC = () => {
       showStatus('Please fill in provider and model name', 'error');
       return;
     }
-    
     if (providerInfo[settings.ai_provider]?.needsApiKey && !settings.api_key) {
       showStatus('API key is required for this provider', 'error');
       return;
     }
-    
+
     try {
       setIsTestLoading(true);
       showStatus('Testing connection...', 'info');
-      
+
       const response = await fetch(`https://howlx.adriangaona.dev/test_provider`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -171,19 +188,22 @@ const AIProviderSettings: React.FC = () => {
           base_url: settings.base_url || null
         })
       });
-      
       if (!response.ok) throw new Error('Test request failed');
-      
-      const result = await response.json();
-      
+
+      const result: TestProviderResponse = await response.json();
+
       if (result.success) {
-        showStatus(`✅ Connection successful! Audio support: ${result.supports_audio ? 'Yes' : 'No'}`, 'success');
+        showStatus(
+          `✅ Connection successful! Audio support: ${result.supports_audio ? 'Yes' : 'No'}`,
+          'success'
+        );
       } else {
         showStatus(`❌ Connection failed: ${result.error}`, 'error');
       }
-    } catch (error: any) {
-      console.error('Test error:', error);
-      showStatus(`❌ Test failed: ${error.message}`, 'error');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Test error:', message);
+      showStatus(`❌ Test failed: ${message}`, 'error');
     } finally {
       setIsTestLoading(false);
     }
@@ -194,38 +214,36 @@ const AIProviderSettings: React.FC = () => {
       showStatus('Please fill in all required fields', 'error');
       return;
     }
-    
     if (providerInfo[settings.ai_provider]?.needsApiKey && !settings.api_key) {
       showStatus('API key is required for this provider', 'error');
       return;
     }
-    
+
     try {
       setIsSaveLoading(true);
       showStatus('Saving settings...', 'info');
-      
+
       const response = await fetch(`https://howlx.adriangaona.dev/settings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings)
       });
-      
       if (!response.ok) throw new Error('Failed to save settings');
-      
+
       showStatus('✅ Settings saved successfully!', 'success');
-      
       setTimeout(() => {
         showStatus('Settings saved. You can now test the connection.', 'info');
       }, 2000);
-    } catch (error: any) {
-      console.error('Save error:', error);
-      showStatus(`❌ Failed to save settings: ${error.message}`, 'error');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Save error:', message);
+      showStatus(`❌ Failed to save settings: ${message}`, 'error');
     } finally {
       setIsSaveLoading(false);
     }
   };
 
-  const handleInputChange = (field: keyof Settings, value: string | number) => {
+  const handleInputChange = (field: keyof AppSettings, value: string | number) => {
     setSettings(prev => ({ ...prev, [field]: value }));
   };
 
@@ -240,155 +258,161 @@ const AIProviderSettings: React.FC = () => {
     }
   };
 
-  const currentProviderInfo = providerInfo[settings.ai_provider];
+  const currentProviderInfo: ProviderInfo | null = providerInfo[settings.ai_provider] || null;
 
+  /* ---------- JSX ---------- */
   return (
-    <div className="min-h-screen  p-5" onKeyDown={handleKeyDown}>
+    <div className="min-h-screen p-5" onKeyDown={handleKeyDown}>
       <div className="max-w-4xl mx-auto bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
         <h1 className="text-center text-4xl font-light mb-8 bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">
           🤖 AI Provider Settings
         </h1>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-6">
-          {/* AI Provider Settings */}
-          <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-            <h3 className="text-xl font-semibold mb-5 pb-2 border-b-2 border-purple-600 text-gray-700">
-              🔌 AI Provider
-            </h3>
-
-            <div className="space-y-5">
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-600">
-                  Provider
-                </label>
-                <select
-                  value={settings.ai_provider}
-                  onChange={(e) => handleInputChange('ai_provider', e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-lg focus:border-purple-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-100 transition-all"
-                  required
-                >
-                  <option value="google">Google Gemini</option>
-                  <option value="openai">OpenAI</option>
-                  <option value="claude">Anthropic Claude</option>
-                  <option value="ollama">Ollama (Local)</option>
-                  <option value="lm_studio">LM Studio (Local)</option>
-                  <option value="custom">Custom API</option>
-                </select>
-
-                {currentProviderInfo && (
-                  <div className="mt-3 p-4 bg-gray-50 rounded-lg text-sm text-gray-600">
-                    <strong> {currentProviderInfo.info}</strong><br />
-                     Audio Support: {currentProviderInfo.supportsAudio ? '✅ Yes' : '❌ No'}<br />
-                     API Key Required: {currentProviderInfo.needsApiKey ? '✅ Yes' : '❌ No'}<br />
-                     Custom URL: {currentProviderInfo.needsBaseUrl ? '✅ Yes' : '❌ No'}
-                  </div>
-                )}
-              </div>
-
-              {currentProviderInfo?.needsApiKey && (
-                <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-600">
-                    API Key
-                  </label>
-                  <input
-                    type="password"
-                    value={settings.api_key}
-                    onChange={(e) => handleInputChange('api_key', e.target.value)}
-                    placeholder="Enter your API key"
-                    className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-lg focus:border-purple-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-100 transition-all"
-                  />
-                </div>
-              )}
-
-              {currentProviderInfo?.needsBaseUrl && (
-                <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-600">
-                    Base URL
-                  </label>
-                  <input
-                    type="url"
-                    value={settings.base_url}
-                    onChange={(e) => handleInputChange('base_url', e.target.value)}
-                    placeholder={currentProviderInfo.defaultBaseUrl || 'http://localhost:11434'}
-                    className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-lg focus:border-purple-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-100 transition-all"
-                  />
-                </div>
-              )}
-            </div>
+        {/* Selección del Proveedor */}
+        <div className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+          <div className="flex items-center mb-4">
+            <Settings className="w-5 h-5 text-blue-600 mr-2" />
+            <h2 className="text-xl font-semibold text-gray-800">AI Provider</h2>
           </div>
+          
+          <select
+            value={settings.ai_provider}
+            onChange={(e) => handleInputChange('ai_provider', e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-lg bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+          >
+            <option value="google">Google Gemini</option>
+            <option value="openai">OpenAI</option>
+            <option value="claude">Anthropic Claude</option>
+            <option value="ollama">Ollama (Local)</option>
+            <option value="lm_studio">LM Studio</option>
+            <option value="custom">Custom API</option>
+          </select>
 
-          {/* Model Settings */}
-          <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-            <h3 className="text-xl font-semibold mb-5 pb-2 border-b-2 border-purple-600 text-gray-700">
-              🧠 Model Configuration
-            </h3>
+          {currentProviderInfo && (
+            <div className="mt-4 p-4 bg-blue-100 rounded-lg">
+              <div className="flex items-start">
+                <Info className="w-5 h-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-blue-800 text-sm">{currentProviderInfo?.info}</p>
+                  <div className="mt-2 text-xs text-blue-600">
+                    <span className="font-medium">Audio Support:</span> {currentProviderInfo?.supportsAudio ? '✅' : '❌'}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
 
-            <div className="space-y-5">
+        {/* Configuración del Modelo */}
+        <div className="mb-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+          <h2 className="text-xl font-semibold mb-4 text-gray-800">Model Configuration</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* API Key */}
+            {currentProviderInfo?.needsApiKey && (
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-600">
-                  Model Name
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  API Key *
                 </label>
+                <input
+                  type="password"
+                  value={settings.api_key}
+                  onChange={(e) => handleInputChange('api_key', e.target.value)}
+                  placeholder="Enter your API key"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                />
+              </div>
+            )}
+
+            {/* Base URL */}
+            {currentProviderInfo?.needsBaseUrl && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Base URL *
+                </label>
+                <input
+                  type="url"
+                  value={settings.base_url}
+                  onChange={(e) => handleInputChange('base_url', e.target.value)}
+                  placeholder={currentProviderInfo?.defaultBaseUrl || "Enter base URL"}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                />
+              </div>
+            )}
+
+            {/* Model */}
+            <div className={currentProviderInfo?.needsBaseUrl && currentProviderInfo?.needsApiKey ? 'md:col-span-2' : ''}>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Model *
+              </label>
+              {currentProviderInfo && currentProviderInfo.models.length > 1 && 
+               !currentProviderInfo.models[0].startsWith('Custom') && 
+               !currentProviderInfo.models[0].startsWith('Depends') ? (
+                <select
+                  value={settings.llm_model}
+                  onChange={(e) => handleInputChange('llm_model', e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                >
+                  {currentProviderInfo?.models.map((model) => (
+                    <option key={model} value={model}>{model}</option>
+                  ))}
+                </select>
+              ) : (
                 <input
                   type="text"
                   value={settings.llm_model}
                   onChange={(e) => handleInputChange('llm_model', e.target.value)}
-                  placeholder="gemini-1.5-flash"
-                  className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-lg focus:border-purple-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-100 transition-all"
-                  required
+                  placeholder="Enter model name"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                 />
-              </div>
+              )}
+            </div>
+          </div>
+        </div>
 
+        {/* Configuración Avanzada */}
+        <div className="mb-8 p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200">
+          <div 
+            className="flex items-center justify-between cursor-pointer"
+            onClick={() => setShowAdvanced(!showAdvanced)}
+          >
+            <h2 className="text-xl font-semibold text-gray-800">Advanced Settings</h2>
+            {showAdvanced ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+          </div>
+
+          {showAdvanced && (
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-600">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Transcription Engine
                 </label>
                 <select
                   value={settings.transcription_engine}
                   onChange={(e) => handleInputChange('transcription_engine', e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-lg focus:border-purple-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-100 transition-all"
+                  className="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                 >
-                  <option value="ai_provider">Use AI Provider</option>
-                  <option value="whisperx">WhisperX (Local)</option>
+                  <option value="ai_provider">AI Provider</option>
+                  <option value="whisper">OpenAI Whisper</option>
                 </select>
               </div>
-            </div>
-          </div>
-        </div>
 
-        {/* Advanced Settings */}
-        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100 mb-6">
-          <button
-            type="button"
-            onClick={() => setShowAdvanced(!showAdvanced)}
-            className="w-full flex items-center justify-between p-3 border-b border-gray-200 hover:bg-gray-50 transition-colors"
-          >
-            <span className="flex items-center gap-2 text-purple-600 font-medium">
-              <Settings className="w-5 h-5" />
-              Advanced Settings
-            </span>
-            {showAdvanced ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-          </button>
-
-          {showAdvanced && (
-            <div className="grid md:grid-cols-2 gap-6 mt-6">
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-600">
-                  Temperature (0.0 - 2.0)
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Temperature ({settings.temperature})
                 </label>
                 <input
-                  type="number"
-                  value={settings.temperature}
-                  onChange={(e) => handleInputChange('temperature', parseFloat(e.target.value))}
+                  type="range"
                   min="0"
                   max="2"
                   step="0.1"
-                  title="Controls randomness: 0.0 = deterministic, 1.0 = creative"
-                  className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-lg focus:border-purple-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-100 transition-all"
+                  value={settings.temperature}
+                  onChange={(e) => handleInputChange('temperature', parseFloat(e.target.value))}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
 
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-600">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Max Tokens
                 </label>
                 <input
@@ -396,65 +420,63 @@ const AIProviderSettings: React.FC = () => {
                   value={settings.max_tokens}
                   onChange={(e) => handleInputChange('max_tokens', parseInt(e.target.value))}
                   min="100"
-                  max="8000"
-                  title="Maximum response length in tokens"
-                  className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-lg focus:border-purple-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-100 transition-all"
+                  max="32000"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
           )}
         </div>
 
-        {/* Status Message */}
+        {/* Mensaje de Estado */}
         {status && (
-          <div className={`p-4 rounded-lg mb-6 flex items-center gap-3 ${
-            status.type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' :
-            status.type === 'error' ? 'bg-red-100 text-red-800 border border-red-200' :
-            'bg-blue-100 text-blue-800 border border-blue-200'
+          <div className={`mb-6 p-4 rounded-lg flex items-center ${
+            status.type === 'success' ? 'bg-green-100 text-green-800' :
+            status.type === 'error' ? 'bg-red-100 text-red-800' :
+            'bg-blue-100 text-blue-800'
           }`}>
-            {status.type === 'success' && <CheckCircle className="w-5 h-5" />}
-            {status.type === 'error' && <AlertCircle className="w-5 h-5" />}
-            {status.type === 'info' && <Info className="w-5 h-5" />}
-            <span className="font-medium">{status.message}</span>
+            {status.type === 'success' && <CheckCircle className="w-5 h-5 mr-2" />}
+            {status.type === 'error' && <AlertCircle className="w-5 h-5 mr-2" />}
+            {status.type === 'info' && <Info className="w-5 h-5 mr-2" />}
+            <span>{status.message}</span>
           </div>
         )}
 
-        {/* Action Buttons */}
-        <div className="flex flex-wrap gap-4 justify-center">
+        {/* Botones de Acción */}
+        <div className="flex flex-col sm:flex-row gap-4">
           <button
-            type="button"
             onClick={testProvider}
             disabled={isTestLoading}
-            className="px-6 py-3 bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-full font-semibold uppercase tracking-wide text-sm hover:shadow-lg transform hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <TestTube className="w-5 h-5" />
-            Test Connection
-            {isTestLoading && (
-              <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin ml-2" />
+            {isTestLoading ? (
+              <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+            ) : (
+              <TestTube className="w-5 h-5 mr-2" />
             )}
+            {isTestLoading ? 'Testing...' : 'Test Connection'}
           </button>
 
           <button
-            type="button"
             onClick={saveSettings}
             disabled={isSaveLoading}
-            className="px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-800 text-white rounded-full font-semibold uppercase tracking-wide text-sm hover:shadow-lg transform hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Save className="w-5 h-5" />
-            Save Settings
-            {isSaveLoading && (
-              <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin ml-2" />
+            {isSaveLoading ? (
+              <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+            ) : (
+              <Save className="w-5 h-5 mr-2" />
             )}
+            {isSaveLoading ? 'Saving...' : 'Save Settings'}
           </button>
+        </div>
 
-          <button
-            type="button"
-            onClick={loadCurrentSettings}
-            className="px-6 py-3 bg-white text-purple-600 border-2 border-purple-600 rounded-full font-semibold uppercase tracking-wide text-sm hover:bg-purple-600 hover:text-white hover:shadow-lg transform hover:-translate-y-0.5 transition-all flex items-center gap-2"
-          >
-            <RefreshCw className="w-5 h-5" />
-            Reset to Current
-          </button>
+        {/* Shortcuts Info */}
+        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+          <p className="text-sm text-gray-600 text-center">
+            💡 Keyboard shortcuts: <kbd className="px-2 py-1 bg-gray-200 rounded text-xs">Ctrl+S</kbd> to save, 
+            <kbd className="px-2 py-1 bg-gray-200 rounded text-xs ml-2">Ctrl+T</kbd> to test
+          </p>
         </div>
       </div>
     </div>
