@@ -17,11 +17,22 @@ export const feedbackManagerRouter = createTRPCRouter({
         input.interval
       );
 
-      const splitDate = new Date();
-      if (input.interval === "semana") splitDate.setDate(splitDate.getDate() - 7);
-      else if (input.interval === "mes") splitDate.setDate(splitDate.getDate() - 30);
-      else splitDate.setDate(splitDate.getDate() - 1);
+      const today = new Date();
+      const currentStart = new Date(today);
+      const previousStart = new Date(today);
 
-      return generateFeedbackMetrics(calls, splitDate);
+      if (input.interval === "semana") {
+        currentStart.setDate(currentStart.getDate() - 7);
+        previousStart.setDate(previousStart.getDate() - 14);
+      } else if (input.interval === "mes") {
+        currentStart.setDate(currentStart.getDate() - 30);
+        previousStart.setDate(previousStart.getDate() - 60);
+      } else {
+        currentStart.setHours(0, 0, 0, 0);
+        previousStart.setDate(previousStart.getDate() - 1);
+        previousStart.setHours(0, 0, 0, 0);
+      }
+
+      return generateFeedbackMetrics(calls, currentStart, previousStart);
     }),
 });

@@ -1,7 +1,6 @@
-// 2. feedbackManagerService.ts
+// smartFeatures/services/feedbackMetricsService.ts
 import { query } from "@/lib/database";
 import { Call, FeedbackMetrics } from "../models/types";
-
 
 export async function getCallsByRangeSP(
   consultantId: number,
@@ -22,12 +21,27 @@ export async function getCallsByRangeSP(
     summary: row.summary,
     client_id: row.client_id,
     type: row.type,
+    sentiment_analysis: row.sentiment_analysis,
   }));
+}
+
+function countSentiments(calls: Call[]): Record<"positive" | "neutral" | "negative", number> {
+  return calls.reduce(
+    (acc, c) => {
+      const key = (c.sentiment_analysis || "neutral").toLowerCase();
+      if (key === "positive" || key === "neutral" || key === "negative") {
+        acc[key]++;
+      }
+      return acc;
+    },
+    { positive: 0, neutral: 0, negative: 0 }
+  );
 }
 
 export function generateFeedbackMetrics(
   calls: Call[],
-  splitDate: Date
+  currentStart: Date,
+  previousStart: Date
 ): FeedbackMetrics {
   const group = (calls: Call[]) => {
     const total_calls = calls.length;
@@ -43,45 +57,8 @@ export function generateFeedbackMetrics(
     return { total_calls, avg_duration, avg_satisfaction, total_duration, calls_by_type };
   };
 
-  const today = new Date();
-    const currentStart = new Date(today);
-    const previousStart = new Date(today);
-
-    if (splitDate) {
-    // nada, backward compatibility
-    } else {
-    throw new Error("splitDate must be defined");
-    }
-
-    // Definir rangos
-    if (calls.length && calls[0] && calls[0].date instanceof Date) {
-    if (calls.length > 0 && calls.length < 1000) {
-        if (splitDate.getDate() === today.getDate()) {
-        // Para 'día'
-        currentStart.setHours(0, 0, 0, 0);
-        previousStart.setDate(today.getDate() - 1);
-        previousStart.setHours(0, 0, 0, 0);
-        } else if (splitDate.getDate() <= today.getDate() - 7) {
-        // Para 'semana'
-        currentStart.setDate(today.getDate() - 6);
-        previousStart.setDate(today.getDate() - 13);
-        } else if (splitDate.getDate() <= today.getDate() - 30) {
-        // Para 'mes'
-        currentStart.setDate(today.getDate() - 29);
-        previousStart.setDate(today.getDate() - 59);
-        }
-    }
-    }
-
-    const current = calls.filter(c => {
-    const date = new Date(c.date);
-    return date >= currentStart;
-    });
-
-    const previous = calls.filter(c => {
-    const date = new Date(c.date);
-    return date < currentStart && date >= previousStart;
-    });
+  const current = calls.filter(c => new Date(c.date) >= currentStart);
+  const previous = calls.filter(c => new Date(c.date) < currentStart && new Date(c.date) >= previousStart);
 
   const groupCurrent = group(current);
   const groupPrevious = group(previous);
@@ -95,5 +72,6 @@ export function generateFeedbackMetrics(
       avg_duration: groupCurrent.avg_duration - groupPrevious.avg_duration,
       total_duration: groupCurrent.total_duration - groupPrevious.total_duration,
     },
+    sentiments: countSentiments(current),
   };
 }

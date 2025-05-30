@@ -48,6 +48,7 @@ export interface FileData {
   summary: string;
   client_id: number;
   type: string;
+  sentiment_analysis: string;
 }
 
 export interface FeedbackMetrics {
@@ -71,4 +72,6 @@ export interface FeedbackMetrics {
     avg_duration: number;
     total_duration: number;
   };
+
+  sentiments: Record<"positive" | "neutral" | "negative", number>;
 }

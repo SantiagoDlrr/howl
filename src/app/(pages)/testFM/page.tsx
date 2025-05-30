@@ -2,6 +2,7 @@
 'use client';
 import { api } from "@/trpc/react";
 import { useState } from "react";
+import { SentimentGauge } from "@/app/smartRecom/components/charts/SentimentGauge";
 
 export default function SmartFeedbackPage() {
   const [interval, setInterval] = useState<"dia" | "semana" | "mes">("dia");
@@ -31,6 +32,15 @@ export default function SmartFeedbackPage() {
         ) : (
           <p className="text-sm text-gray-500">Esperando datos...</p>
         )}
+      
+      {metrics?.sentiments && (
+        <div className="mt-6">
+          <h3 className="text-md font-semibold mb-2">Distribución de sentimientos</h3>
+          <SentimentGauge sentiments={metrics.sentiments} />
+        </div>
+      )}
+
+      
       </div>
 
       {/* RIGHT PANEL */}
