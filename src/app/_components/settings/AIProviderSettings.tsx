@@ -345,7 +345,9 @@ const AIProviderSettings: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Model *
               </label>
-              {currentProviderInfo && currentProviderInfo.models.length > 1 && 
+              {currentProviderInfo && 
+               currentProviderInfo.models.length > 1 && 
+               currentProviderInfo.models[0] &&
                !currentProviderInfo.models[0].startsWith('Custom') && 
                !currentProviderInfo.models[0].startsWith('Depends') ? (
                 <select
