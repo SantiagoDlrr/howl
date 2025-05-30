@@ -102,6 +102,16 @@ const NavDropdown = ({ session }: { session: Session }) => {
                                     Clientes
                                 </button>
                             </li>
+
+                            <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                                <button 
+                                    onClick={() => handleNavigation("/ai")} 
+                                    className="w-full text-left"
+                                >
+                                    Inteligencia Artificial
+                                </button>
+                            </li>
+
                         </>
                     )}
                     
