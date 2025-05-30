@@ -1,5 +1,17 @@
 import { query } from "@/lib/database";
-import { Call, FeedbackMetrics } from "../models/types";
+import type { Call, FeedbackMetrics } from "../models/types";
+
+type RawCallRow = {
+  id: number;
+  name: string;
+  date: string;
+  duration: number;
+  satisfaction: number;
+  summary: string;
+  client_id: number;
+  type: string;
+  sentiment_analysis: string;
+};
 
 export async function getCallsByRangeSP(
   consultantId: number,
@@ -11,7 +23,7 @@ export async function getCallsByRangeSP(
     [consultantId, formattedDate, interval]
   );
 
-  return result.map((row: any) => ({
+  return (result as RawCallRow[]).map((row) => ({
     id: row.id,
     name: row.name,
     date: new Date(row.date),
