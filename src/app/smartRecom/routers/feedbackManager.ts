@@ -1,7 +1,9 @@
 // 3. routers/feedbackManager.ts
+// smartRecom/routers/feedbackManager.ts
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "howl/server/api/trpc";
 import { getCallsByRangeSP, generateFeedbackMetrics, groupByClient } from "../services/feedbackManagerService";
+import { generateAISummaryFromMetrics } from "../services/aiSummaryService";
 
 export const feedbackManagerRouter = createTRPCRouter({
   getFeedbackMetrics: publicProcedure
@@ -36,5 +38,15 @@ export const feedbackManagerRouter = createTRPCRouter({
       const metrics = generateFeedbackMetrics(calls, currentStart, previousStart);
       metrics.topClients = groupByClient(calls).sort((a, b) => b.total_calls - a.total_calls).slice(0, 5);
       return metrics;
+    }),
+
+  generateAISummary: publicProcedure
+    .input(z.object({
+      metrics: z.any(), // Puedes tipar esto mejor si lo deseas
+      interval: z.enum(["dia", "semana", "mes"]),
+    }))
+    .mutation(async ({ input }) => {
+      const summary = await generateAISummaryFromMetrics(input.metrics, input.interval);
+      return { summary };
     }),
 });
