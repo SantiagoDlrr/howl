@@ -11,6 +11,7 @@ export async function POST(req: Request) {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    // console.log("Token decoded successfully:", decoded);
     
     return NextResponse.json({ valid: true, user: decoded });
   } catch (error) {

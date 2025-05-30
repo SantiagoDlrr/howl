@@ -9,7 +9,7 @@ export async function GET(req: Request) {
 
     if (sessionResponse.status === 200) {
         const clients = await clientsController.getClients();
-        console.log("Clients fetched successfully:", clients);
+        // console.log("Clients fetched successfully:", clients);
         return NextResponse.json(clients);
     }
 
