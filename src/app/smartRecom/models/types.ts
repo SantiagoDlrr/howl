@@ -58,6 +58,8 @@ export interface FeedbackMetrics {
     avg_duration: number;
     total_duration: number;
     calls_by_type: Record<string, number>;
+    ratings: number[]; // ✅ agregar esta línea
+
   };
   previous: {
     total_calls: number;
@@ -74,4 +76,11 @@ export interface FeedbackMetrics {
   };
 
   sentiments: Record<"positive" | "neutral" | "negative", number>;
+
+  topClients: {
+    client_id: number;
+    total_calls: number;
+    avg_duration: number;
+    avg_satisfaction: number;
+  }[];
 }

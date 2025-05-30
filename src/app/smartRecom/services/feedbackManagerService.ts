@@ -1,4 +1,3 @@
-// smartFeatures/services/feedbackMetricsService.ts
 import { query } from "@/lib/database";
 import { Call, FeedbackMetrics } from "../models/types";
 
@@ -22,6 +21,27 @@ export async function getCallsByRangeSP(
     client_id: row.client_id,
     type: row.type,
     sentiment_analysis: row.sentiment_analysis,
+  }));
+}
+
+export function groupByClient(calls: Call[]) {
+  const map = new Map<number, { total_calls: number; avg_duration: number; avg_satisfaction: number }>();
+
+  for (const call of calls) {
+    const clientData = map.get(call.client_id) || { total_calls: 0, avg_duration: 0, avg_satisfaction: 0 };
+
+    clientData.total_calls += 1;
+    clientData.avg_duration += call.duration;
+    clientData.avg_satisfaction += call.satisfaction;
+
+    map.set(call.client_id, clientData);
+  }
+
+  return Array.from(map.entries()).map(([client_id, data]) => ({
+    client_id,
+    total_calls: data.total_calls,
+    avg_duration: data.avg_duration / data.total_calls,
+    avg_satisfaction: data.avg_satisfaction / data.total_calls,
   }));
 }
 
@@ -49,12 +69,13 @@ export function generateFeedbackMetrics(
     const avg_duration = total_calls ? total_duration / total_calls : 0;
     const avg_satisfaction = total_calls ? calls.reduce((sum, c) => sum + c.satisfaction, 0) / total_calls : 0;
 
+    const ratings = calls.map((c) => c.satisfaction);
     const calls_by_type: Record<string, number> = {};
     for (const call of calls) {
       calls_by_type[call.type] = (calls_by_type[call.type] || 0) + 1;
     }
 
-    return { total_calls, avg_duration, avg_satisfaction, total_duration, calls_by_type };
+    return { total_calls, avg_duration, avg_satisfaction, total_duration, calls_by_type, ratings };
   };
 
   const current = calls.filter(c => new Date(c.date) >= currentStart);
@@ -62,6 +83,10 @@ export function generateFeedbackMetrics(
 
   const groupCurrent = group(current);
   const groupPrevious = group(previous);
+
+  const topClients = groupByClient(current)
+    .sort((a, b) => b.total_calls - a.total_calls)
+    .slice(0, 5);
 
   return {
     current: groupCurrent,
@@ -73,5 +98,6 @@ export function generateFeedbackMetrics(
       total_duration: groupCurrent.total_duration - groupPrevious.total_duration,
     },
     sentiments: countSentiments(current),
+    topClients,
   };
 }

@@ -1,7 +1,7 @@
 // 3. routers/feedbackManager.ts
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "howl/server/api/trpc";
-import { getCallsByRangeSP, generateFeedbackMetrics } from "../services/feedbackManagerService";
+import { getCallsByRangeSP, generateFeedbackMetrics, groupByClient } from "../services/feedbackManagerService";
 
 export const feedbackManagerRouter = createTRPCRouter({
   getFeedbackMetrics: publicProcedure
@@ -33,6 +33,8 @@ export const feedbackManagerRouter = createTRPCRouter({
         previousStart.setHours(0, 0, 0, 0);
       }
 
-      return generateFeedbackMetrics(calls, currentStart, previousStart);
+      const metrics = generateFeedbackMetrics(calls, currentStart, previousStart);
+      metrics.topClients = groupByClient(calls).sort((a, b) => b.total_calls - a.total_calls).slice(0, 5);
+      return metrics;
     }),
 });
