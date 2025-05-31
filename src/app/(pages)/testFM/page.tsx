@@ -1,3 +1,4 @@
+// testFM/page.tsx
 'use client';
 
 import { api } from "@/trpc/react";
@@ -37,8 +38,6 @@ export default function SmartFeedbackPage() {
   useEffect(() => {
     if (!metrics) return;
 
-    console.log("Llamando a la IA con interval:", interval);
-
     summaryMutation.mutate(
       { metrics, interval },
       {
@@ -51,6 +50,9 @@ export default function SmartFeedbackPage() {
       }
     );
   }, [metrics?.current.total_calls, interval]);
+
+  console.log("🔍 Top Clients:", metrics?.topClients);
+
 
   return (
     <div className="flex w-full pt-16 h-[calc(100vh-4rem)]">
@@ -129,7 +131,9 @@ export default function SmartFeedbackPage() {
           </div>
         )}
 
+        
         {metrics?.topClients && <TopClientsTable data={metrics.topClients} />}
+        
       </div>
 
       {/* RIGHT PANEL */}
