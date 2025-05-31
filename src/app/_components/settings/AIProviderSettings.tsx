@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   ChevronDown,
   ChevronUp,
@@ -56,8 +56,8 @@ const AIProviderSettings: React.FC = () => {
   const [isTestLoading, setIsTestLoading] = useState(false);
   const [isSaveLoading, setIsSaveLoading] = useState(false);
 
-  /* ---------- Información de proveedores ---------- */
-  const providerInfo: Record<string, ProviderInfo> = {
+  /* ---------- Información de proveedores (MEMOIZED para evitar loop infinito) ---------- */
+  const providerInfo: Record<string, ProviderInfo> = useMemo(() => ({
     google: {
       info: 'Google Gemini models. Get API key from Google AI Studio.',
       models: ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-1.0-pro'],
@@ -107,7 +107,7 @@ const AIProviderSettings: React.FC = () => {
       needsBaseUrl: true,
       defaultBaseUrl: 'https://your-custom-api.com/v1'
     }
-  };
+  }), []);
 
   /* ---------- Funciones memoizadas ---------- */
   const loadCurrentSettings = useCallback(async () => {
@@ -447,6 +447,7 @@ const AIProviderSettings: React.FC = () => {
         {/* Botones de Acción */}
         <div className="flex flex-col sm:flex-row gap-4">
           <button
+            type="button"
             onClick={testProvider}
             disabled={isTestLoading}
             className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
@@ -460,6 +461,7 @@ const AIProviderSettings: React.FC = () => {
           </button>
 
           <button
+            type="button"
             onClick={saveSettings}
             disabled={isSaveLoading}
             className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
