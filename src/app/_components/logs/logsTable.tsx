@@ -22,6 +22,7 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
   };
 
   return (
+
     <>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200">
@@ -35,6 +36,7 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
               <th className="py-2 px-4 border-b text-left">Calificación</th>
               <th className="py-2 px-4 border-b text-left">Duración (min)</th>
               <th className="py-2 px-4 border-b text-left">Acciones</th>
+
             </tr>
           </thead>
           <tbody>
