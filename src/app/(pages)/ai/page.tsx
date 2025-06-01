@@ -90,12 +90,12 @@ export default function AI() {
   return (
     <div className="container mx-auto py-8 px-4">
       {/* Indicador de rol (opcional) */}
-      <div className="bg-blue-50 p-3 rounded-md mb-4">
+      {/* <div className="bg-blue-50 p-3 rounded-md mb-4">
         <span className="font-semibold">Rol actual:</span> Administrador
         <span className="ml-2 text-gray-500">
           (Tienes acceso completo para gestionar configuraciones de AI)
         </span>
-      </div>
+      </div> */}
       
       {/* Contenido principal */}
       <div className="mb-6">

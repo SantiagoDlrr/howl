@@ -476,12 +476,12 @@ const AIProviderSettings: React.FC = () => {
         </div>
 
         {/* Shortcuts Info */}
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+        {/* <div className="mt-6 p-4 bg-gray-50 rounded-lg">
           <p className="text-sm text-gray-600 text-center">
             💡 Keyboard shortcuts: <kbd className="px-2 py-1 bg-gray-200 rounded text-xs">Ctrl+S</kbd> to save, 
             <kbd className="px-2 py-1 bg-gray-200 rounded text-xs ml-2">Ctrl+T</kbd> to test
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );
