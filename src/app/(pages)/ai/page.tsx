@@ -89,22 +89,16 @@ export default function AI() {
   // Mostrar la página de configuración AI
   return (
     <div className="container mx-auto py-8 px-4">
-      {/* Indicador de rol (opcional) */}
-      <div className="bg-blue-50 p-3 rounded-md mb-4">
-        <span className="font-semibold">Rol actual:</span> Administrador
-        <span className="ml-2 text-gray-500">
-          (Tienes acceso completo para gestionar configuraciones de AI)
-        </span>
-      </div>
+
       
       {/* Contenido principal */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-8 text-center">System Settings</h1>
+        <h1 className="text-3xl font-bold mb-8 text-center"></h1>
         <AIProviderSettings />
       </div>
 
       {/* Botón de navegación adicional si lo necesitas */}
-      <div className="flex justify-center mt-8">
+      {/* <div className="flex justify-center mt-8">
         <button 
           type="button"
           onClick={(e) => {
@@ -125,7 +119,7 @@ export default function AI() {
         >
           Atrás
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }
