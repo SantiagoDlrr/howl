@@ -89,7 +89,17 @@ export default function AI() {
   // Mostrar la página de configuración AI
   return (
     <div className="container mx-auto py-8 px-4">
+<<<<<<< HEAD
 
+=======
+      {/* Indicador de rol (opcional) */}
+      {/* <div className="bg-blue-50 p-3 rounded-md mb-4">
+        <span className="font-semibold">Rol actual:</span> Administrador
+        <span className="ml-2 text-gray-500">
+          (Tienes acceso completo para gestionar configuraciones de AI)
+        </span>
+      </div> */}
+>>>>>>> 3280a8be04f66f52d45c51378ec709394ad9a5f1
       
       {/* Contenido principal */}
       <div className="mb-6">

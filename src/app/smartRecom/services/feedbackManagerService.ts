@@ -1,25 +1,39 @@
+// services/feedbackManagerService.ts
 import { query } from "@/lib/database";
-import type { Call, FeedbackMetrics } from "../models/types";
+import type { FeedbackMetrics } from "../models/types";
 
 type RawCallRow = {
   id: number;
   name: string;
-  date: string;
+  date: Date;
   duration: number;
   satisfaction: number;
   summary: string;
   client_id: number;
   type: string;
   sentiment_analysis: string;
+  first_name: string;    // <-- nuevo
+  last_name: string;     // <-- nuevo
+  email: string;         // <-- nuevo
+};
+
+export type ClientDetails = {
+  client_id: number;
+  total_calls: number;
+  avg_duration: number;
+  avg_satisfaction: number;
+  first_name: string;
+  last_name: string;
+  email: string;
 };
 
 export async function getCallsByRangeSP(
   consultantId: number,
   formattedDate: string,
   interval: "dia" | "semana" | "mes"
-): Promise<Call[]> {
+): Promise<RawCallRow[]> {
   const result = await query(
-    `SELECT * FROM get_calls_by_range_v2($1, $2::date, $3)`,
+    `SELECT * FROM get_calls_by_range_v3($1, $2::date, $3)`,
     [consultantId, formattedDate, interval]
   );
 
@@ -33,31 +47,46 @@ export async function getCallsByRangeSP(
     client_id: row.client_id,
     type: row.type,
     sentiment_analysis: row.sentiment_analysis,
+    first_name: row.first_name,
+    last_name: row.last_name,
+    email: row.email,
   }));
 }
 
-export function groupByClient(calls: Call[]) {
-  const map = new Map<number, { total_calls: number; avg_duration: number; avg_satisfaction: number }>();
+export function groupByClient(calls: RawCallRow[], currentStart: Date): ClientDetails[] {
+  const map = new Map<number, ClientDetails>();
 
   for (const call of calls) {
-    const clientData = map.get(call.client_id) || { total_calls: 0, avg_duration: 0, avg_satisfaction: 0 };
+    if (new Date(call.date) < currentStart) continue;
 
-    clientData.total_calls += 1;
-    clientData.avg_duration += call.duration;
-    clientData.avg_satisfaction += call.satisfaction;
+    const existing = map.get(call.client_id);
 
-    map.set(call.client_id, clientData);
+    if (!existing) {
+      map.set(call.client_id, {
+        client_id: call.client_id,
+        total_calls: 1,
+        avg_duration: call.duration,
+        avg_satisfaction: call.satisfaction,
+        first_name: call.first_name,
+        last_name: call.last_name,
+        email: call.email,
+      });
+    } else {
+      existing.total_calls += 1;
+      existing.avg_duration += call.duration;
+      existing.avg_satisfaction += call.satisfaction;
+    }
   }
 
-  return Array.from(map.entries()).map(([client_id, data]) => ({
-    client_id,
-    total_calls: data.total_calls,
-    avg_duration: data.avg_duration / data.total_calls,
-    avg_satisfaction: data.avg_satisfaction / data.total_calls,
+  return Array.from(map.values()).map((c) => ({
+    ...c,
+    avg_duration: c.avg_duration / c.total_calls,
+    avg_satisfaction: c.avg_satisfaction / c.total_calls,
   }));
 }
 
-function countSentiments(calls: Call[]): Record<"positive" | "neutral" | "negative", number> {
+
+function countSentiments(calls: RawCallRow[]): Record<"positive" | "neutral" | "negative", number> {
   return calls.reduce(
     (acc, c) => {
       const key = (c.sentiment_analysis || "neutral").toLowerCase();
@@ -71,11 +100,11 @@ function countSentiments(calls: Call[]): Record<"positive" | "neutral" | "negati
 }
 
 export function generateFeedbackMetrics(
-  calls: Call[],
+  calls: RawCallRow[],
   currentStart: Date,
   previousStart: Date
 ): FeedbackMetrics {
-  const group = (calls: Call[]) => {
+  const group = (calls: RawCallRow[]) => {
     const total_calls = calls.length;
     const total_duration = calls.reduce((sum, c) => sum + c.duration, 0);
     const avg_duration = total_calls ? total_duration / total_calls : 0;
@@ -96,7 +125,7 @@ export function generateFeedbackMetrics(
   const groupCurrent = group(current);
   const groupPrevious = group(previous);
 
-  const topClients = groupByClient(current)
+  const topClients = groupByClient(calls, currentStart)
     .sort((a, b) => b.total_calls - a.total_calls)
     .slice(0, 5);
 

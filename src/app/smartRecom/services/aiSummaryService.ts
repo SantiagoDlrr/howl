@@ -1,5 +1,3 @@
-// services/aiSummaryService.ts
-// Service for metric analysis 
 // smartFeatures/services/aiSummaryService.ts
 
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -10,6 +8,16 @@ export async function generateAISummaryFromMetrics(metrics: FeedbackMetrics, int
   const { current, previous, deltas, sentiments, topClients } = metrics;
 
   console.log("🧪 Generando summary con métricas:", { metrics, interval });
+
+  // Verifica si no hay datos reales
+  if (
+    current.total_calls === 0 &&
+    current.total_duration === 0 &&
+    current.avg_duration === 0 &&
+    current.avg_satisfaction === 0
+  ) {
+    return "No hay datos suficientes en este intervalo para generar un resumen. Intenta con otro periodo.";
+  }
 
   const context = `
 --- MÉTRICAS ACTUALES ---
@@ -32,12 +40,31 @@ Diferencia en promedio de duración: ${formatMinDelta(deltas.avg_duration)}
 Diferencia en promedio de satisfacción: ${deltas.avg_satisfaction.toFixed(1)}
 
 Top 5 clientes:
-${topClients.map(c => `- ${c.client_id}: ${c.total_calls} llamadas, duración ${formatMin(c.avg_duration)}, satisfacción ${c.avg_satisfaction.toFixed(1)}`).join("\n")}
+Top 5 clientes:
+${topClients.map(c => 
+  `- ${c.first_name} ${c.last_name} (${c.email}): ${c.total_calls} llamadas, duración ${formatMin(c.avg_duration)}, satisfacción ${c.avg_satisfaction}`
+).join("\n")}
+
 `;
 
-  const question = `Con base en estas métricas de desempeño del intervalo '${interval}', genera un breve resumen para el agente. Sé claro, directo y útil. Menciona los avances positivos y las áreas a mejorar.`;
+  const systemPrompt = `Eres un coach digital experto en atención al cliente. Tu trabajo es analizar métricas de desempeño y generar un resumen claro, útil y profesional para el agente.
 
-  const systemPrompt = `Eres un coach digital experto en atención al cliente. Ayudas a los agentes a mejorar su rendimiento con base en métricas semanales o diarias.`;
+Tu resumen debe incluir:
+- Comparaciones entre el periodo actual y el anterior.
+- Avances positivos, retrocesos y tendencias.
+- Observaciones sobre clientes, emociones y temas frecuentes.
+- Datos destacados o atípicos (por ejemplo: muchas llamadas nuevas, un pico inusual de satisfacción, caída en duración, etc).
+
+Si las métricas actuales son 0 (sin llamadas), menciona que no hay datos suficientes para este intervalo y sugiere intentar con otro periodo.`;
+
+  const question = `Con base en estas métricas del intervalo '${interval}', genera un resumen de desempeño. Usa frases como:
+
+- "Tu satisfacción promedio subió de X a Y, ¡buen trabajo!"
+- "Sin embargo, tu duración promedio aumentó de A a B minutos."
+- "El X% de las llamadas fueron con clientes nuevos."
+- "El tema más recurrente fue 'problemas con envíos', que no apareció la semana pasada."
+
+Evita repetir los datos literalmente, tu objetivo es interpretarlos y destacar lo más importante para el agente. Sé claro, concreto y evita relleno innecesario.`;
 
   const summary = await askAI({ systemPrompt, context, question });
   return summary.trim();
