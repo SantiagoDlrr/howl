@@ -24,6 +24,9 @@ const sortBy = (
 };
 
 export function TopClientsTable({ data }: { data: ClientMetrics[] }) {
+  const [sortKey, setSortKey] = useState<SortableKey>("total_calls");
+  const [asc, setAsc] = useState(false);
+
   if (!data || data.length === 0) {
     return (
       <div className="mt-8">
@@ -32,9 +35,6 @@ export function TopClientsTable({ data }: { data: ClientMetrics[] }) {
       </div>
     );
   }
-
-  const [sortKey, setSortKey] = useState<SortableKey>("total_calls");
-  const [asc, setAsc] = useState(false);
 
   const handleSort = (key: SortableKey) => {
     if (key === sortKey) {
