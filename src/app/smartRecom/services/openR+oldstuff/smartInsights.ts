@@ -2,7 +2,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "howl/server/api/trpc";
 import { generateClientInsight } from "howl/app/smartRecom/services/clientInsightService";
-import { FileData } from "howl/app/smartRecom/models/types";
+import type { FileData } from "howl/app/smartRecom/models/types";
 
 // TEMP: mock data
 const mockClientCalls: Record<string, FileData[]> = {

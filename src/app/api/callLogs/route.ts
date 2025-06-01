@@ -67,6 +67,11 @@ export async function GET(request: Request) {
       SELECT 
         c.id,
         c.date as "callDate", 
+        c.name as "tittle",
+        c.main_ideas as "keyTopics",
+        c.sentiment_analysis as "sentiment",
+        c.output,
+        c.risk_words,
         cl.firstname as "clientFirstName",
         cl.lastname as "clientLastName",
         cl.firstname || ' ' || cl.lastname as client,

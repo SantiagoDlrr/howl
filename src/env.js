@@ -20,6 +20,7 @@ export const env = createEnv({
     DATABASE_URL: z.string().url(),
     OPENAI_API_KEY: z.string(),
     GEMINI_API_KEY: z.string(),
+    JWT_SECRET: z.string().optional(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -56,6 +57,7 @@ export const env = createEnv({
     //NEXT_PUBLIC_GEMINI_API_KEY: process.env.NEXT_PUBLIC_GEMINI_API_KEY,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+    JWT_SECRET: process.env.JWT_SECRET,
 
   },
   /**

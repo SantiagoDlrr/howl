@@ -19,14 +19,8 @@ export const routes = [
     },
     {
         id: 3,
-        label: "Clientes",
-        href: "/clients",
-        isSelected: false
-    },
-    {
-        id: 4,
-        label: "Role Management",
-        href: "/roles",
+        label: "AI Tools",
+        href: "/SCD",
         isSelected: false
     }
 ];
