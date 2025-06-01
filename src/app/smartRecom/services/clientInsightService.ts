@@ -1,3 +1,4 @@
+//smartRecom/services/clientInsightService.ts
 import type { FileData, ClientInsightResponse } from '../models/types';
 import { askAI } from './aiService';
 

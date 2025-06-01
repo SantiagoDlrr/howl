@@ -11,6 +11,7 @@ import { clientResolverRouter } from "@/app/smartRecom/routers/clientResolver";
 import { callRouter } from "./routers/calls";
 import { userRouter } from "./routers/user";
 import { consultantRouter } from "./routers/consultant";
+import { feedbackManagerRouter } from "@/app/smartRecom/routers/feedbackManager";
 
 /**
  * This is the primary router for your server.
@@ -29,7 +30,7 @@ export const appRouter = createTRPCRouter({
   calls: callRouter,
   user: userRouter,
   consultant: consultantRouter,
-
+  feedbackManager: feedbackManagerRouter, 
 });
 
 // export type definition of API
