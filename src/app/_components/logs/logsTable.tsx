@@ -44,7 +44,7 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
                   {log.rating}
                 </span>
               </td>
-              <td className="py-2 px-4 border-b">{log.time}</td>
+              <td className="py-2 px-4 border-b">2:16</td>
               <td className="py-2 px-4 border-b">
                 <button
                   className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors"
