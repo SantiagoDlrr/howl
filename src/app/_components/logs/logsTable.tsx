@@ -63,7 +63,7 @@ const LogsTable: React.FC<LogsTableProps> = ({ logs }) => {
                     {log.rating}
                   </span>
                 </td>
-                <td className="py-2 px-4 border-b">log.time</td>
+                <td className="py-2 px-4 border-b">{log.time}</td>
                 <td className="py-2 px-4 border-b">
                   <button
                     onClick={() => handleViewDetails(log)}
