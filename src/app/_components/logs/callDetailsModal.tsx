@@ -33,7 +33,7 @@ const CallDetailsModal: React.FC<CallDetailsModalProps> = ({ isOpen, onClose, ca
             </h2>
             <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
               <span>Fecha: {new Date(callLog.callDate).toLocaleDateString()}</span>
-              <span>Duración: 2:16 min</span>
+              <span>Duración: callLog.time min</span>
               <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
                 callLog.rating === 'Positive' ? 'bg-green-100 text-green-800' :
                 callLog.rating === 'Mid' ? 'bg-blue-100 text-blue-800' :
