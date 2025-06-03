@@ -19,6 +19,8 @@ export const feedbackManagerRouter = createTRPCRouter({
         input.interval
       );
 
+      console.log("Calls recibidas del SP:", calls);
+
       const today = new Date();
       const currentStart = new Date(today);
       const previousStart = new Date(today);
@@ -35,9 +37,9 @@ export const feedbackManagerRouter = createTRPCRouter({
         previousStart.setHours(0, 0, 0, 0);
       }
 
-      const metrics = generateFeedbackMetrics(calls, currentStart, previousStart);
-      metrics.topClients = groupByClient(calls).sort((a, b) => b.total_calls - a.total_calls).slice(0, 5);
-      return metrics;
+
+      // here also 
+      return generateFeedbackMetrics(calls, currentStart, previousStart);;
     }),
 
   generateAISummary: publicProcedure

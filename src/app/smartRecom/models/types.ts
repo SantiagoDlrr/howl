@@ -77,10 +77,17 @@ export interface FeedbackMetrics {
 
   sentiments: Record<"positive" | "neutral" | "negative", number>;
 
-  topClients: {
-    client_id: number;
-    total_calls: number;
-    avg_duration: number;
-    avg_satisfaction: number;
-  }[];
+  topClients: ClientMetrics[]
 }
+
+export interface ClientMetrics {
+  client_id: number;
+  total_calls: number;
+  avg_duration: number;
+  avg_satisfaction: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+}
+
+
