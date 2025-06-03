@@ -20,6 +20,30 @@ import TranscriptSection from '../transcriptSection';
 import { api } from '@/trpc/react';
 import toast from 'react-hot-toast';
 
+// Type definitions
+interface Client {
+  id: number;
+  firstname: string;
+  lastname: string;
+  company?: {
+    name: string;
+  };
+}
+
+interface Company {
+  id: number;
+  name: string;
+}
+
+interface CreateCallSuccessResponse {
+  result: Promise<{ name: string }>;
+  message: string;
+}
+
+interface CreateCallError {
+  message: string;
+}
+
 interface Props {
   report: Report;
   file: FileData;
@@ -41,16 +65,16 @@ export const ReportDisplay: React.FC<Props> = ({ report, file, transcript, title
   const { data: clients } = api.companyClient.getAll.useQuery();
   const { data: companies } = api.company.getAll.useQuery();
   const { data: consultant_id } = api.user.getConsultantId.useQuery();
-  const [filteredClients, setFilteredClients] = useState(clients);
+  const [filteredClients, setFilteredClients] = useState<Client[] | undefined>(clients);
 
   const [saved, setSaved] = useState(false);
 
   const createCall = api.calls.createCall.useMutation({
-    onSuccess: async (data) => {
+    onSuccess: async (data: CreateCallSuccessResponse) => {
       setSaved(true);
       toast.success(`Llamada ${(await data.result).name} ${data.message}`);
     },
-    onError: (error) => {
+    onError: (error: CreateCallError) => {
       setSaved(false);
       toast.error(`Error creando llamada: ${error.message}`);
     },
@@ -58,7 +82,7 @@ export const ReportDisplay: React.FC<Props> = ({ report, file, transcript, title
 
   useEffect(() => {
     if (clients) {
-      const filtered = clients.filter(client => {
+      const filtered = clients.filter((client: Client) => {
         if (selectedCompany) {
           return client.company?.name === selectedCompany;
         }
@@ -90,11 +114,10 @@ export const ReportDisplay: React.FC<Props> = ({ report, file, transcript, title
 
   const getClientId = () => {
     if (clients) {
-      const client = clients.find(client => {
+      const client = clients.find((client: Client) => {
         const fullName = `${client.firstname} ${client.lastname}`;
         return fullName === selectedClient;
-      }
-      );
+      });
       return client ? client.id : -1;
     }
 
@@ -266,7 +289,7 @@ export const ReportDisplay: React.FC<Props> = ({ report, file, transcript, title
                   className="border rounded px-2 py-1"
                 >
                   <option value="">Seleccionar empresa</option>
-                  {companies.map(company => (
+                  {companies.map((company: Company) => (
                     <option key={company.id} value={company.name}>{company.name}</option>
                   ))}
                 </select>
@@ -290,7 +313,7 @@ export const ReportDisplay: React.FC<Props> = ({ report, file, transcript, title
                   className="border rounded px-2 py-1"
                 >
                   <option value="">Seleccionar cliente</option>
-                  {filteredClients.map(client => (
+                  {filteredClients.map((client: Client) => (
                     <option key={client.id} value={client.firstname + " " + client.lastname}>{client.firstname + " " + client.lastname}</option>
                   ))}
                 </select>
