@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react';
-import html2pdf from 'html2pdf.js';
+
 import {
   FileText,
   MessageSquare,
@@ -148,6 +148,9 @@ export const ReportDisplay: React.FC<Props> = ({ report, file, transcript, title
     setIsDownloading(true);
     
     try {
+      // Dynamically import html2pdf to avoid SSR issues
+      const html2pdf = (await import('html2pdf.js')).default;
+      
       const element = contentRef.current;
       
       // Clone and prepare content
