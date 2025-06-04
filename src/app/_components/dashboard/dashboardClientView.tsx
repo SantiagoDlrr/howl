@@ -11,7 +11,7 @@ export default function DashboardClientView() {
   
 
   return (
-    <div className="container mx-auto p-4 pt-24">
+    <div className="container mx-auto p-4 ">
       <div className="bg-gray-100 flex gap-2 justify-end items-center rounded-md p-1 mb-6 mx-auto" style={{ width: 500 }}>
         <ToggleButton
           id={1}
