@@ -46,7 +46,7 @@ const SCD = () => {
                     Agent Companion
                   </span>
                 </div>
-                <h3 className="text-xl font-bold mb-2">ClientInsight</h3>
+                <h3 className="text-xl font-bold mb-2">Client Insight</h3>
                 <p className="text-sm text-gray-200 leading-relaxed">
                   Personalized customer context built from previous interactions, emotional tone, and key topics—empowering agents with a single AI-powered briefing per client.
                 </p>
