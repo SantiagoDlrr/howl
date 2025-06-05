@@ -1,4 +1,4 @@
-// nav/navDropDown.tsx (keeping original functionality, just matching purple theme)
+// nav/navDropDown.tsx
 "use client";
 import { useState, useRef, useEffect } from "react";
 import type { Session } from "next-auth";
@@ -8,7 +8,13 @@ import { useRouter } from "next/navigation";
 import { getUserRole } from "@/app/utils/services/userService";
 import type { UserRoleData } from "@/app/utils/services/userService";
 
-const NavDropdown = ({ session }: { session: Session }) => {
+interface NavDropdownProps {
+    session: Session;
+    isLandingPage?: boolean;
+    isScrolled?: boolean;
+}
+
+const NavDropdown = ({ session, isLandingPage = false, isScrolled = false }: NavDropdownProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const [userRole, setUserRole] = useState<UserRoleData | null>(null);
     const [isLoadingRole, setIsLoadingRole] = useState(true);
@@ -52,14 +58,54 @@ const NavDropdown = ({ session }: { session: Session }) => {
         router.push(path);
     };
 
+    // Estilos dinámicos para el botón
+    const getButtonClasses = () => {
+        const baseClasses = "flex items-center gap-3 px-5 py-3 rounded-full border transition-all duration-300 hover:scale-105";
+        
+        if (isLandingPage && !isScrolled) {
+            return `${baseClasses} bg-[#B351FF]/10 backdrop-blur-md border-[#B351FF]/20 text-white hover:bg-[#B351FF]/20`;
+        } else {
+            return `${baseClasses} bg-gray-100 border-gray-200 text-gray-700 hover:bg-[#B351FF]/10 hover:text-[#B351FF]`;
+        }
+    };
+
+    // Estilos dinámicos para el menú desplegable
+    const getDropdownClasses = () => {
+        const baseClasses = "absolute right-0 mt-3 w-56 border rounded-2xl shadow-2xl transition-all duration-300 ease-out";
+        
+        if (isLandingPage && !isScrolled) {
+            return `${baseClasses} bg-[#B351FF]/20 backdrop-blur-xl border-[#B351FF]/30`;
+        } else {
+            return `${baseClasses} bg-white border-gray-200`;
+        }
+    };
+
+    // Estilos dinámicos para los botones del menú
+    const getMenuButtonClasses = (isSignOut = false) => {        const baseClasses = "w-full text-left px-4 py-3 rounded-xl transition-all duration-200 flex items-center gap-3";
+        
+        if (isLandingPage && !isScrolled) {
+            if (isSignOut) {
+                return `${baseClasses} text-red-200 hover:bg-red-400/20`;
+            } else {
+                return `${baseClasses} text-white hover:bg-white/20`;
+            }
+        } else {
+            if (isSignOut) {
+                return `${baseClasses} text-red-600 hover:bg-red-50`;
+            } else {
+                return `${baseClasses} text-gray-700 hover:bg-purple-50`;
+            }
+        }
+    };
+
     return (
         <div ref={dropdownRef} className="relative inline-block z-50">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-3 px-4 py-2 bg-gray-100 rounded-full border border-gray-200 text-gray-700 hover:bg-[#B351FF]/10 hover:text-[#B351FF] transition-all duration-300 hover:scale-105"
+                className={getButtonClasses()}
             >
                 {session.user?.image && (
-                    <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-[#B351FF]/30">
+                    <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-[#B351FF]/30 transition-all duration-300">
                         <Image 
                             src={session.user.image} 
                             alt="User Image" 
@@ -83,7 +129,7 @@ const NavDropdown = ({ session }: { session: Session }) => {
             </button>
 
             <div
-                className={`absolute right-0 mt-3 w-56 bg-white border border-gray-200 rounded-2xl shadow-2xl transition-all duration-300 ease-out ${
+                className={`${getDropdownClasses()} ${
                     isOpen 
                         ? "opacity-100 scale-100 translate-y-0" 
                         : "opacity-0 scale-95 translate-y-[-10px] pointer-events-none"
@@ -92,7 +138,7 @@ const NavDropdown = ({ session }: { session: Session }) => {
                 <div className="p-2">
                     <button 
                         onClick={() => handleNavigation("/profile")} 
-                        className="w-full text-left px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-xl transition-all duration-200 flex items-center gap-3 group"
+                        className={getMenuButtonClasses()}
                     >
                         <div className="w-8 h-8 bg-gradient-to-br from-[#B351FF] to-[#9d44e8] rounded-lg flex items-center justify-center">
                             <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -104,11 +150,13 @@ const NavDropdown = ({ session }: { session: Session }) => {
                     
                     {!isLoadingRole && isAdmin && (
                         <>
-                            <div className="h-px bg-gray-200 mx-2 my-2"></div>
+                            <div className={`h-px mx-2 my-2 ${
+                                isLandingPage && !isScrolled ? 'bg-white/30' : 'bg-gray-200'
+                            }`}></div>
                             
                             <button 
                                 onClick={() => handleNavigation("/roles")} 
-                                className="w-full text-left px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-xl transition-all duration-200 flex items-center gap-3"
+                                className={getMenuButtonClasses()}
                             >
                                 <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-lg flex items-center justify-center">
                                     <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -120,7 +168,7 @@ const NavDropdown = ({ session }: { session: Session }) => {
                             
                             <button 
                                 onClick={() => handleNavigation("/clients")} 
-                                className="w-full text-left px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-xl transition-all duration-200 flex items-center gap-3"
+                                className={getMenuButtonClasses()}
                             >
                                 <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg flex items-center justify-center">
                                     <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -132,7 +180,7 @@ const NavDropdown = ({ session }: { session: Session }) => {
 
                             <button 
                                 onClick={() => handleNavigation("/ai")} 
-                                className="w-full text-left px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-xl transition-all duration-200 flex items-center gap-3"
+                                className={getMenuButtonClasses()}
                             >
                                 <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-red-500 rounded-lg flex items-center justify-center">
                                     <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -144,11 +192,13 @@ const NavDropdown = ({ session }: { session: Session }) => {
                         </>
                     )}
                     
-                    <div className="h-px bg-gray-200 mx-2 my-2"></div>
+                    <div className={`h-px mx-2 my-2 ${
+                        isLandingPage && !isScrolled ? 'bg-white/30' : 'bg-gray-200'
+                    }`}></div>
                     
                     <button 
                         onClick={() => signOut({ callbackUrl: '/auth' })} 
-                        className="w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200 flex items-center gap-3"
+                        className={getMenuButtonClasses(true)}
                     >
                         <div className="w-8 h-8 bg-gradient-to-br from-red-400 to-red-600 rounded-lg flex items-center justify-center">
                             <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,3 +214,4 @@ const NavDropdown = ({ session }: { session: Session }) => {
 };
 
 export default NavDropdown;
+

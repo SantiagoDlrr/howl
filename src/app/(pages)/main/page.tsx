@@ -176,7 +176,7 @@ export default function MainPage() {
 
 
   return (
-    <div className="h-screen flex justify-center items-stretch pt-16 bg-gray-50 overflow-hidden">
+    <div className="h-screen flex justify-center items-stretch bg-gray-50 overflow-hidden">
       {/* Historial de llamadas */}
       <ResizablePanel
         width={leftPanelWidth}
