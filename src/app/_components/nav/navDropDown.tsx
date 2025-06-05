@@ -1,4 +1,4 @@
-// nav/navDropDown.tsx (keeping original functionality, just matching purple theme)
+// nav/navDropDown.tsx
 "use client";
 import { useState, useRef, useEffect } from "react";
 import type { Session } from "next-auth";
@@ -56,7 +56,7 @@ const NavDropdown = ({ session }: { session: Session }) => {
         <div ref={dropdownRef} className="relative inline-block z-50">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-3 px-4 py-2 bg-gray-100 rounded-full border border-gray-200 text-gray-700 hover:bg-[#B351FF]/10 hover:text-[#B351FF] transition-all duration-300 hover:scale-105"
+                className="flex items-center gap-3 px-5 py-3 bg-gray-100 rounded-full border border-gray-200 text-gray-700 hover:bg-[#B351FF]/10 hover:text-[#B351FF] transition-all duration-300 hover:scale-105"
             >
                 {session.user?.image && (
                     <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-[#B351FF]/30">
