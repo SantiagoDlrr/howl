@@ -1,7 +1,8 @@
+// ragResponsePannel.tsx
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Copy, ChevronDown, ChevronUp, MessageSquare, Clock, CheckCircle } from 'lucide-react';
+import { Copy, ChevronDown, ChevronUp, MessageSquare, Clock, CheckCircle, Sparkles, AlertCircle, Brain } from 'lucide-react';
 
 interface Source {
   call_id: string;
@@ -30,17 +31,15 @@ interface RagResponsePanelProps {
 }
 
 const RagResponsePanel = ({ responseData, isLoading, error }: RagResponsePanelProps) => {
-  const [expandedSources, setExpandedSources] = useState<Set<number>>(new Set([0])); // First source expanded by default
+  const [expandedSources, setExpandedSources] = useState<Set<number>>(new Set([0]));
   const [copiedStates, setCopiedStates] = useState<Set<string>>(new Set());
 
-  // Parse markdown-like formatting
   const formatMarkdownText = (text: string) => {
     if (!text) return null;
 
     return text.split('\n').map((line, lineIndex) => {
       if (!line.trim()) return <br key={lineIndex} />;
 
-      // Handle **bold text**
       const parts = line.split(/(\*\*.*?\*\*)/g);
       const formattedLine = parts.map((part, partIndex) => {
         if (part.startsWith('**') && part.endsWith('**')) {
@@ -100,48 +99,54 @@ const RagResponsePanel = ({ responseData, isLoading, error }: RagResponsePanelPr
   };
 
   const getRelevanceColor = (score: number) => {
-    if (score >= 0.8) return 'bg-emerald-100 text-emerald-800 border-emerald-200';
-    if (score >= 0.6) return 'bg-blue-100 text-blue-800 border-blue-200';
-    if (score >= 0.4) return 'bg-amber-100 text-amber-800 border-amber-200';
-    return 'bg-red-100 text-red-800 border-red-200';
+    if (score >= 0.8) return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+    if (score >= 0.6) return 'bg-blue-50 text-blue-700 border-blue-200';
+    if (score >= 0.4) return 'bg-amber-50 text-amber-700 border-amber-200';
+    return 'bg-red-50 text-red-700 border-red-200';
   };
 
   const renderEmptyState = () => (
     <div className="flex flex-col items-center justify-center h-full text-center p-8">
-      <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl mb-6">
-        <MessageSquare className="w-8 h-8 text-blue-600" />
+      <div className="flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-100 to-purple-200 rounded-3xl mb-6">
+        <Brain className="w-10 h-10 text-[#B351FF]" />
       </div>
-      <h3 className="text-lg font-semibold text-gray-900 mb-2">Ready for your question</h3>
-      <p className="text-gray-500 max-w-sm">
+      <h3 className="text-xl font-semibold text-gray-900 mb-3">Ready for Analysis</h3>
+      <p className="text-gray-500 max-w-sm leading-relaxed">
         Submit a question with call IDs to get AI-powered insights from your call transcripts.
       </p>
+      <div className="mt-6 flex items-center gap-2 text-sm text-[#B351FF]">
+        <Sparkles className="w-4 h-4" />
+        <span>Powered by Advanced AI</span>
+      </div>
     </div>
   );
 
   const renderLoading = () => (
     <div className="flex flex-col items-center justify-center p-12">
-      <div className="relative">
-        <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+      <div className="relative mb-6">
+        <div className="w-16 h-16 border-4 border-purple-200 border-t-[#B351FF] rounded-full animate-spin"></div>
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-6 h-6 bg-blue-600 rounded-full animate-pulse"></div>
+          <div className="w-8 h-8 bg-[#B351FF] rounded-full animate-pulse"></div>
         </div>
       </div>
-      <div className="mt-6 text-center">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Analyzing transcripts...</h3>
-        <p className="text-gray-500">This may take a few moments</p>
+      <div className="text-center">
+        <h3 className="text-xl font-semibold text-gray-900 mb-3">Analyzing Transcripts</h3>
+        <p className="text-gray-500 mb-4">Our AI is processing your call data...</p>
+        <div className="flex items-center justify-center gap-2 text-sm text-[#B351FF]">
+          <Sparkles className="w-4 h-4 animate-pulse" />
+          <span>This may take a few moments</span>
+        </div>
       </div>
     </div>
   );
 
   const renderError = () => (
     <div className="p-6">
-      <div className="bg-red-50 border border-red-200 rounded-xl p-6">
+      <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-6">
         <div className="flex items-start">
           <div className="flex-shrink-0">
-            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
+            <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+              <AlertCircle className="w-6 h-6 text-red-600" />
             </div>
           </div>
           <div className="ml-4">
@@ -160,15 +165,15 @@ const RagResponsePanel = ({ responseData, isLoading, error }: RagResponsePanelPr
     return (
       <div className="p-6 space-y-6">
         {/* Answer Section */}
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
+        <div className="bg-gradient-to-br from-[#B351FF]/5 to-purple-100/30 border-2 border-[#B351FF]/20 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-semibold text-blue-900 flex items-center">
-              <CheckCircle className="w-5 h-5 mr-2" />
-              Analysis Result
+            <h3 className="text-xl font-semibold text-[#B351FF] flex items-center gap-2">
+              <Sparkles className="w-5 h-5" />
+              AI Analysis Result
             </h3>
             <button
               onClick={() => copyToClipboard(responseData.answer, 'answer')}
-              className="flex items-center space-x-2 px-3 py-1.5 text-sm text-blue-700 hover:text-blue-900 hover:bg-blue-100 rounded-lg transition-colors"
+              className="flex items-center space-x-2 px-3 py-2 text-sm text-[#B351FF] hover:text-[#9d44e8] hover:bg-purple-50 rounded-lg transition-all duration-200"
             >
               {copiedStates.has('answer') ? (
                 <CheckCircle className="w-4 h-4" />
@@ -186,8 +191,8 @@ const RagResponsePanel = ({ responseData, isLoading, error }: RagResponsePanelPr
         {/* Sources Section */}
         {responseData.sources && responseData.sources.length > 0 && (
           <div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-              <MessageSquare className="w-5 h-5 mr-2" />
+            <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-[#B351FF]" />
               Source Evidence ({responseData.sources.length})
             </h3>
             
@@ -197,20 +202,20 @@ const RagResponsePanel = ({ responseData, isLoading, error }: RagResponsePanelPr
                 const isExpanded = expandedSources.has(index);
                 
                 return (
-                  <div key={index} className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
+                  <div key={index} className="border-2 border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-all duration-200">
                     {/* Source Header */}
                     <div 
-                      className="p-4 bg-gray-50 border-b border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors"
+                      className="p-4 bg-gradient-to-r from-gray-50 to-purple-50/30 border-b border-gray-200 cursor-pointer hover:from-purple-50/50 hover:to-purple-100/50 transition-all duration-200"
                       onClick={() => toggleSource(index)}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                          <div className="flex items-center space-x-2">
-                            <div className="w-8 h-8 bg-purple-100 text-purple-700 rounded-lg flex items-center justify-center text-sm font-semibold">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-gradient-to-br from-[#B351FF] to-[#9d44e8] text-white rounded-xl flex items-center justify-center text-sm font-bold shadow-lg">
                               {index + 1}
                             </div>
                             <div>
-                              <h4 className="font-semibold text-gray-900">Call {source.call_id}</h4>
+                              <h4 className="font-semibold text-gray-900 text-lg">Call {source.call_id}</h4>
                               {source.start_segment !== undefined && source.end_segment !== undefined && (
                                 <p className="text-sm text-gray-500">
                                   Segments {source.start_segment + 1}-{source.end_segment + 1}
@@ -221,7 +226,7 @@ const RagResponsePanel = ({ responseData, isLoading, error }: RagResponsePanelPr
                         </div>
                         
                         <div className="flex items-center space-x-3">
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getRelevanceColor(source.score)}`}>
+                          <span className={`px-3 py-1.5 rounded-full text-xs font-semibold border ${getRelevanceColor(source.score)}`}>
                             {(source.score * 100).toFixed(1)}% relevance
                           </span>
                           {isExpanded ? (
@@ -235,12 +240,12 @@ const RagResponsePanel = ({ responseData, isLoading, error }: RagResponsePanelPr
 
                     {/* Source Content */}
                     {isExpanded && (
-                      <div className="p-4">
-                        <div className="flex items-center justify-between mb-3">
-                          <span className="text-sm font-medium text-gray-700">Transcript Excerpt</span>
+                      <div className="p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <span className="text-sm font-semibold text-gray-700">Transcript Excerpt</span>
                           <button
                             onClick={() => copyToClipboard(sourceText, `source-${index}`)}
-                            className="flex items-center space-x-1 px-2 py-1 text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
+                            className="flex items-center space-x-2 px-3 py-1.5 text-xs text-gray-600 hover:text-[#B351FF] hover:bg-purple-50 rounded-lg transition-all duration-200"
                           >
                             {copiedStates.has(`source-${index}`) ? (
                               <CheckCircle className="w-3 h-3" />
@@ -251,7 +256,7 @@ const RagResponsePanel = ({ responseData, isLoading, error }: RagResponsePanelPr
                           </button>
                         </div>
                         
-                        <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-700 leading-relaxed border-l-4 border-purple-400">
+                        <div className="bg-gradient-to-r from-purple-50 to-purple-100/50 rounded-xl p-4 text-sm text-gray-700 leading-relaxed border-l-4 border-[#B351FF]">
                           {formatMarkdownText(sourceText)}
                         </div>
                       </div>
@@ -267,16 +272,19 @@ const RagResponsePanel = ({ responseData, isLoading, error }: RagResponsePanelPr
   };
 
   return (
-    <div className="flex-1 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden flex flex-col">
+    <div className="flex-1 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 overflow-hidden flex flex-col">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
+      <div className="px-6 py-5 bg-gradient-to-r from-[#B351FF] to-[#9d44e8] text-white">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-800 flex items-center">
-            <MessageSquare className="w-5 h-5 mr-2 text-blue-600" />
-            Analysis Results
-          </h2>
+          <div className="flex items-center gap-3">
+            <Brain className="w-6 h-6" />
+            <div>
+              <h2 className="text-xl font-semibold">Analysis Results</h2>
+              <p className="text-purple-100 text-sm">AI-powered insights from your calls</p>
+            </div>
+          </div>
           {responseData && (
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
+            <div className="flex items-center space-x-2 text-sm text-purple-100">
               <Clock className="w-4 h-4" />
               <span>Just now</span>
             </div>
