@@ -150,7 +150,11 @@ export default function SmartFeedbackPage() {
 
         {/* Sentiment Gauge - Full Width Row */}
         <div className="mb-8">
-          <SentimentGauge sentiments={metrics?.sentiments || {}} />
+          <SentimentGauge sentiments={{
+            positive: metrics?.sentiments?.positive ?? 0,
+            neutral: metrics?.sentiments?.neutral ?? 0,
+            negative: metrics?.sentiments?.negative ?? 0
+          }} />
         </div>
 
         {/* Top Clients Table - Full Width */}

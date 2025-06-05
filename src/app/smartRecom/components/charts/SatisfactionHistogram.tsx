@@ -1,4 +1,6 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid } from "recharts";
+import type { TooltipProps } from 'recharts';
+
 
 interface Props {
   ratings: number[];
@@ -6,7 +8,7 @@ interface Props {
 
 export function SatisfactionHistogram({ ratings }: Props) {
   // Create histogram buckets (can be customized for different ranges)
-  const createHistogramData = (data: number[], buckets: number = 5) => {
+  const createHistogramData = (data: number[], buckets = 5) => {
     const min = Math.min(...data);
     const max = Math.max(...data);
     const bucketSize = (max - min) / buckets;
@@ -57,20 +59,21 @@ export function SatisfactionHistogram({ ratings }: Props) {
     '#6B46C1', // Darker outline for rating 5
   ];
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+
+const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
     if (active && payload && payload.length) {
-      const data = payload[0].payload;
+      const data = payload[0]?.payload;
       return (
         <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
           <p className="text-sm font-medium text-gray-800">{data.range}</p>
-          <p className="text-sm text-purple-600 font-semibold">{`Cantidad: ${payload[0].value}`}</p>
+          <p className="text-sm text-purple-600 font-semibold">{`Cantidad: ${payload[0]?.value}`}</p>
           <p className="text-xs text-gray-500">{`${data.percentage}% del total`}</p>
         </div>
       );
     }
     return null;
   };
-
+  
   const totalRatings = ratings.length;
   const averageRating = totalRatings > 0 ? (ratings.reduce((a, b) => a + b, 0) / totalRatings).toFixed(2) : 0;
 
