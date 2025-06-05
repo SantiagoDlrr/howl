@@ -57,7 +57,7 @@ Tu resumen debe incluir:
 
 Si las métricas actuales son 0 (sin llamadas), menciona que no hay datos suficientes para este intervalo y sugiere intentar con otro periodo.`;
 
-  const question = `Con base en estas métricas del intervalo '${interval}', genera un resumen de desempeño. Usa frases como:
+  const question = `Con base en estas métricas del intervalo '${interval}', genera un resumen de desempeño extensivo. Usa frases como:
 
 - "Tu satisfacción promedio subió de X a Y, ¡buen trabajo!"
 - "Sin embargo, tu duración promedio aumentó de A a B minutos."
