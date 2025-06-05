@@ -1,4 +1,3 @@
-// Updated routes with icons
 import { LayoutDashboard, Phone, FileText, Brain } from "lucide-react";
 
 export const routes = [
@@ -36,6 +35,7 @@ export const routes = [
 import React from 'react';
 import Image from 'next/image';
 import logo from 'howl/../public/images/logo.png';
+import logoDark from 'howl/../public/images/logo-dark.png';
 
 interface LogoElementProps {
     isLandingPage?: boolean;
@@ -57,10 +57,28 @@ const LogoElement = ({ isLandingPage = false, isScrolled = false }: LogoElementP
         return "bg-[#B351FF]/10 border-[#B351FF]/20"; // Purple accent for normal state
     };
 
+    const getLogoSrc = () => {
+        if (isLandingPage && !isScrolled) {
+            return logoDark; // Use dark logo when transparent on landing page
+        }
+        return logo; // Use regular logo for normal state
+    };
+
+    const getLogoClasses = () => {
+        if (isLandingPage && !isScrolled) {
+            return 'w-7 h-7 object-contain transition-all duration-300'; // Dark logo
+        }
+        return 'w-10 h-10 object-contain transition-all duration-300'; // Regular logo
+    };
+
     return (
         <div className="flex flex-row items-center gap-3">
             <div className={`flex items-center justify-center w-12 h-12 rounded-full border transition-all duration-300 ${getLogoContainerColor()}`}>
-                <Image src={logo} alt={'Howl logo'} className='w-7 h-7' />
+                <Image 
+                    src={getLogoSrc()} 
+                    alt={'Howl logo'} 
+                    className={getLogoClasses()} 
+                />
             </div>
             <h1 className={`font-medium text-xl transition-all duration-300 ${getTextColor()}`}>
                 HowlX
