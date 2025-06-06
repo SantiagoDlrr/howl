@@ -123,11 +123,12 @@ const RagResponsePanel = ({ responseData, isLoading, error }: RagResponsePanelPr
 
   const renderLoading = () => (
     <div className="flex flex-col items-center justify-center p-12">
-      <div className="relative mb-6">
-        <div className="w-16 h-16 border-4 border-purple-200 border-t-[#B351FF] rounded-full animate-spin"></div>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-8 h-8 bg-[#B351FF] rounded-full animate-pulse"></div>
-        </div>
+      <div className="mb-6">
+        <img 
+          src="/images/loading.gif" 
+          alt="Analyzing transcripts..." 
+          className="w-20 h-20 mx-auto" // Adjusted size for consistency
+        />
       </div>
       <div className="text-center">
         <h3 className="text-xl font-semibold text-gray-900 mb-3">Analyzing Transcripts</h3>

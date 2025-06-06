@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState } from "react";
 import { api } from "@/trpc/react";
@@ -204,13 +204,20 @@ export default function SmartRecommendationsPage() {
           {/* Enhanced Client Insight Loading */}
           {insightMutation.isPending && (
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 p-8 flex flex-col items-center justify-center">
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-3 h-3 bg-[#B351FF] rounded-full animate-bounce" />
-                <div className="w-3 h-3 bg-[#B351FF] rounded-full animate-bounce delay-100" />
-                <div className="w-3 h-3 bg-[#B351FF] rounded-full animate-bounce delay-200" />
+              <div className="mb-6"> {/* Changed this div */}
+                <img 
+                  src="/images/loading.gif" 
+                  alt="Generating client insights..." 
+                  className="w-20 h-20 mx-auto" // Use w-20 h-20 for larger visual impact
+                />
               </div>
-              <p className="text-gray-600 font-medium">Loading client insights...</p>
-              <p className="text-gray-500 text-sm">AI is analyzing client data</p>
+              <h4 className="text-lg font-semibold text-gray-900 mb-2">Cargando análisis de cliente</h4> {/* Added a title */}
+              <p className="text-gray-600 mb-1">
+                La IA está procesando los datos del cliente
+              </p>
+              <p className="text-gray-400 text-sm">
+                Esto puede tomar unos segundos...
+              </p>
             </div>
           )}
           
@@ -352,21 +359,20 @@ export default function SmartRecommendationsPage() {
               </div>
               
               {/* Actions */}
-              <div className="flex gap-3">
-                <button 
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-[#B351FF] to-[#9d44e8] text-white rounded-xl hover:from-[#9d44e8] hover:to-[#8b3dd9] transition-all duration-200 font-medium hover:shadow-lg hover:scale-105"
-                  onClick={() => setShowPopup(false)}
-                >
-                  Got it!
-                </button>
-                <button 
-                  className="p-3 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
-                  onClick={() => setShowPopup(false)}
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
+              <button 
+                className="w-full px-6 py-3 bg-gradient-to-r from-[#B351FF] to-[#9d44e8] text-white rounded-xl hover:from-[#9d44e8] hover:to-[#8b3dd9] transition-all duration-200 font-medium hover:shadow-lg hover:scale-105"
+                onClick={() => setShowPopup(false)}
+              >
+                Got it!
+              </button>
             </div>
+            {/* Close button for popup */}
+            <button 
+              className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
+              onClick={() => setShowPopup(false)}
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
         </>
       )}
