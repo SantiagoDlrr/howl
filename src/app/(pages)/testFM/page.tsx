@@ -63,7 +63,7 @@ const MarkdownText = ({ text }: { text: string }) => {
 export default function SmartFeedbackPage() {
   const [interval, setInterval] = useState<"dia" | "semana" | "mes">("dia");
   const [aiSummary, setAiSummary] = useState<string | null>(null);
-  const [leftPanelWidth, setLeftPanelWidth] = useState(50); // percentage
+  const [leftPanelWidth, setLeftPanelWidth] = useState(60); // percentage
   const [isDragging, setIsDragging] = useState(false);
   const consultantId = 77;
 
@@ -128,7 +128,7 @@ export default function SmartFeedbackPage() {
   console.log("🔍 Top Clients:", metrics?.topClients);
 
   return (
-    <div className="flex w-full pt-16 h-[calc(100vh-4rem)] bg-gradient-to-br from-gray-50 via-white to-purple-50/30">
+    <div className="flex px-[5%] pt-4 pb-4 w-full h-[calc(100vh-4rem)] bg-gradient-to-br from-gray-50 via-white to-purple-50/30">
       {/* LEFT PANEL - Resizable */}
       <div 
         className="p-6 bg-white/60 backdrop-blur-sm overflow-y-auto border-r border-gray-200/50"
@@ -266,7 +266,7 @@ export default function SmartFeedbackPage() {
               Período de Análisis
             </h3>
             
-            <div className="space-y-3">
+            <div className="grid grid-cols-3 gap-4">
               {intervalOptions.map((option) => {
                 const IconComponent = option.icon;
                 const isSelected = interval === option.key;
@@ -275,7 +275,7 @@ export default function SmartFeedbackPage() {
                   <button
                     key={option.key}
                     onClick={() => setInterval(option.key as "dia" | "semana" | "mes")}
-                    className={`w-full p-4 rounded-xl border-2 transition-all duration-200 text-left hover:scale-[1.02] ${
+                    className={`p-4 rounded-xl border-2 transition-all duration-200 text-left hover:scale-[1.02] ${
                       isSelected
                         ? 'border-[#B351FF] bg-gradient-to-r from-[#B351FF]/10 to-purple-100/50 shadow-lg'
                         : 'border-gray-200 bg-white/60 hover:border-[#B351FF]/50 hover:bg-[#B351FF]/5'
