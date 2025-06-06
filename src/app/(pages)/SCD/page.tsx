@@ -43,7 +43,7 @@ const SCD = () => {
               <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                 <div className="mb-2">
                   <span className="inline-block px-3 py-1 bg-purple-500/80 rounded-full text-sm font-medium">
-                    Agent Companion
+                    Smart Recommendations
                   </span>
                 </div>
                 <h3 className="text-xl font-bold mb-2">Client Insight</h3>
@@ -79,7 +79,7 @@ const SCD = () => {
               <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                 <div className="mb-2">
                   <span className="inline-block px-3 py-1 bg-orange-500/80 rounded-full text-sm font-medium">
-                    Agent Companion
+                    Smart Recommendations
                   </span>
                 </div>
                 <h3 className="text-xl font-bold mb-2">Feedback Manager</h3>
