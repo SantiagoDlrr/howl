@@ -112,11 +112,11 @@ const RagResponsePanel = ({ responseData, isLoading, error }: RagResponsePanelPr
       </div>
       <h3 className="text-xl font-semibold text-gray-900 mb-3">Ready for Analysis</h3>
       <p className="text-gray-500 max-w-sm leading-relaxed">
-        Submit a question with call IDs to get AI-powered insights from your call transcripts.
+        Submit a question and select any calls to get cited answers from your call recordings.
       </p>
       <div className="mt-6 flex items-center gap-2 text-sm text-[#B351FF]">
         <Sparkles className="w-4 h-4" />
-        <span>Powered by Advanced AI</span>
+        <span>AI Powered by Retrival Augmented Generation</span>
       </div>
     </div>
   );
@@ -169,7 +169,7 @@ const RagResponsePanel = ({ responseData, isLoading, error }: RagResponsePanelPr
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-xl font-semibold text-[#B351FF] flex items-center gap-2">
               <Sparkles className="w-5 h-5" />
-              AI Analysis Result
+              RAG Result
             </h3>
             <button
               onClick={() => copyToClipboard(responseData.answer, 'answer')}
@@ -279,8 +279,8 @@ const RagResponsePanel = ({ responseData, isLoading, error }: RagResponsePanelPr
           <div className="flex items-center gap-3">
             <Brain className="w-6 h-6" />
             <div>
-              <h2 className="text-xl font-semibold">Analysis Results</h2>
-              <p className="text-purple-100 text-sm">AI-powered insights from your calls</p>
+              <h2 className="text-xl font-semibold">Cited Results</h2>
+              <p className="text-purple-100 text-sm">RAG-powered AI Analysis</p>
             </div>
           </div>
           {responseData && (

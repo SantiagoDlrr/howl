@@ -45,14 +45,14 @@ export function StatCard({ label, value, delta, icon, prev }: Props) {
 
       {/* Main value */}
       <div className="mb-2">
-        <div className="text-3xl font-bold leading-tight" style={{ color: '#B351FF' }}>
+        <div className="text-3xl font-bold leading-tight" >
           {value}
         </div>
       </div>
 
       {/* Previous period comparison */}
       <div className="text-sm text-gray-400">
-        +{prev} vs período anterior
+        {prev} vs período anterior
       </div>
     </div>
   );
