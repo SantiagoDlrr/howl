@@ -2,7 +2,7 @@ import { callSchema } from "@/app/utils/schemas/callSchema";
 import { createTRPCRouter, protectedProcedure } from "howl/server/api/trpc";
 
 export const callRouter = createTRPCRouter({
-  
+
   getAll: protectedProcedure
   .query(async ({ ctx }) => {
     const calls = await ctx.db.calls.findMany({
@@ -38,7 +38,7 @@ export const callRouter = createTRPCRouter({
     if (!id) {
       return [];
     }
-    
+
     const calls = await ctx.db.calls.findMany({
       where: {
         consultant_id: id,
@@ -59,7 +59,13 @@ export const callRouter = createTRPCRouter({
   createCall: protectedProcedure
   .input(callSchema)
   .mutation(async ({ ctx, input }) => {
+
+
     const { client_id, consultant_id, ...restData } = input;
+
+
+
+
     // Check if there is already a call with same date and client_id and consultant_id
     const existingCall = await ctx.db.calls.findFirst({
       where: {
@@ -69,9 +75,12 @@ export const callRouter = createTRPCRouter({
       }
     });
 
+    let result;
+    let message;
+
     // Update the existing call if it exists
     if (existingCall) {
-      const result = ctx.db.calls.update({
+      result = await ctx.db.calls.update({ // Added await here
         where: {
           id: existingCall.id,
         },
@@ -88,28 +97,32 @@ export const callRouter = createTRPCRouter({
             }
           }
         }
-      })
-
-      return { message: "actualizada", result: result }
-    }
-
-    // If no existing call, create a new one  
-    const result = ctx.db.calls.create({
-      data: {
-        ...restData,
-        client: {
-          connect: {
-            id: client_id,
-          }
-        },
-        consultant: {
-          connect: {
-            id: consultant_id,
+      });
+      message = "actualizada";
+    } else {
+      // If no existing call, create a new one
+      result = await ctx.db.calls.create({ // Added await here
+        data: {
+          ...restData,
+          client: {
+            connect: {
+              id: client_id,
+            }
+          },
+          consultant: {
+            connect: {
+              id: consultant_id,
+            }
           }
         }
-      }
-    })
+      });
+      message = "creada";
+    }
 
-    return { message: "creada", result: result }
+    // --- DEBUGGING LOGS START ---
+    console.log("Backend - Prisma operation result:", result);
+    // --- DEBUGGING LOGS END ---
+
+    return { message: message, result: result }
   }),
-})
+});
