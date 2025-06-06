@@ -79,7 +79,7 @@ const SCD = () => {
 
   /* --------------------------------------------------------------------- */
   return (
-    <div className="flex flex-col w-full pt-16 h-[calc(100vh-4rem)] bg-gray-50 relative">
+    <div className="flex flex-col w-full  h-[calc(100vh-4rem)] bg-gray-50 relative">
       {/* ───────── Floating *expand* icon (visible only when menuCollapsed) ───────── */}
       {menuCollapsed && (
         <button
@@ -151,7 +151,7 @@ const SCD = () => {
       )}
 
       {/* ───────── Empty‑state when no panel selected ───────── */}
-      {!activePanel && (
+      {/* {!activePanel && (
         <section className="flex-1 flex items-center justify-center">
           <div className="text-center p-12 bg-white/80 backdrop-blur rounded-2xl border border-gray-200 max-w-xl mx-auto">
             <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
@@ -163,7 +163,7 @@ const SCD = () => {
             </p>
           </div>
         </section>
-      )}
+      )} */}
 
       {/* Global smooth‑scroll behaviour */}
       <style jsx global>{`
