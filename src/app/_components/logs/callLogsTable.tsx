@@ -8,8 +8,7 @@ import { generateFilterOptions, filterAndSortLogs } from '@/app/utils/filterUtil
 import LogsTable from './logsTable';
 import FilterBar from './filterBar';
 import Pagination from './pagination';
-import Spinner from '../spinner';
-
+import { Sparkles } from 'lucide-react'; // Import Sparkles
 
 const LOGS_PER_PAGE = 10;
 
@@ -34,15 +33,13 @@ const CallLogsTable: React.FC = () => {
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
-        setLoading(true);
+        setLoading(true); // Start loading when fetching user role
         console.log("Obteniendo rol de usuario...");
         
-        // Usar el servicio en lugar de fetch directamente
         const data = await getUserRole();
         console.log("Rol obtenido:", data);
         setUserRole(data);
         
-        // Si el usuario es un supervisor, obtener consultores supervisados
         if (data.role === 'supervisor') {
           const consultants = await getSupervisedConsultants(Number(data.consultantId));
           setSupervisedConsultants(consultants);
@@ -50,6 +47,7 @@ const CallLogsTable: React.FC = () => {
       } catch (err) {
         console.error('Error obteniendo rol de usuario:', err);
         setError(err instanceof Error ? err.message : 'Error obteniendo rol de usuario');
+        setLoading(false); // Stop loading on error
       }
     };
 
@@ -60,24 +58,28 @@ const CallLogsTable: React.FC = () => {
   useEffect(() => {
     const fetchCallLogs = async () => {
       try {
-        // Solo obtener datos cuando tengamos información del rol del usuario
+        // Only fetch data when we have user role information
         if (!userRole) return;
         
+        // If we are already loading for userRole, this will continue the loading state
+        // If userRole was loaded in a previous render, this will start loading for logs
+        setLoading(true); 
+
         const data = await getCallLogs();
         setCallLogs(data);
       } catch (err) {
         console.error('Error obteniendo logs de llamadas:', err);
         setError(err instanceof Error ? err.message : 'Error obteniendo logs de llamadas');
       } finally {
-        setLoading(false);
+        setLoading(false); // Stop loading after logs are fetched or on error
       }
     };
 
-    // Solo obtener logs de llamadas si tenemos la información del rol
+    // Only get call logs if user role info is available
     if (userRole) {
       void fetchCallLogs();
     }
-  }, [userRole]);
+  }, [userRole]); // Re-fetch logs if userRole changes (e.g., if it was null and now has a value)
 
   // Generar opciones de filtro únicas
   const filterOptions = useMemo(() => 
@@ -119,12 +121,47 @@ const CallLogsTable: React.FC = () => {
     setTimeSort('none');
   };
 
+  // --- LOADING STATES WITH GIF ---
+  // If loading and userRole is NOT yet set (first fetch)
   if (loading && !userRole) {
-    return <Spinner />;
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[500px] p-12">
+        <div className="mb-6">
+          <img 
+            src="/images/loading.gif" 
+            alt="Cargando rol de usuario..." 
+            className="w-20 h-20 mx-auto"
+          />
+        </div>
+        <h3 className="text-xl font-semibold text-gray-900 mb-3">Cargando perfil de usuario...</h3>
+        <p className="text-gray-500 mb-4">Obteniendo tu nivel de acceso y permisos.</p>
+        <div className="flex items-center justify-center gap-2 text-sm text-[#B351FF]">
+          <Sparkles className="w-4 h-4 animate-pulse" />
+          <span>Un momento por favor</span>
+        </div>
+      </div>
+    );
   }
 
-  if (loading) {
-    return <Spinner />;
+  // If loading and userRole IS set (fetching call logs now)
+  if (loading) { 
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[500px] p-12">
+        <div className="mb-6">
+          <img 
+            src="/images/loading.gif" 
+            alt="Cargando registros de llamadas..." 
+            className="w-20 h-20 mx-auto"
+          />
+        </div>
+        <h3 className="text-xl font-semibold text-gray-900 mb-3">Cargando registros de llamadas...</h3>
+        <p className="text-gray-500 mb-4">Obteniendo datos de todas las interacciones.</p>
+        <div className="flex items-center justify-center gap-2 text-sm text-[#B351FF]">
+          <Sparkles className="w-4 h-4 animate-pulse" />
+          <span>Preparando el dashboard</span>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
