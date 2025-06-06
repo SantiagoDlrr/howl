@@ -1,3 +1,4 @@
+// reportDisplay.tsx
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -29,6 +30,42 @@ interface Props {
   type: string;
 }
 
+// --- NEW HELPER FUNCTION START ---
+const parseDurationToSeconds = (durationStr: string | number | undefined): number => {
+  if (typeof durationStr === 'number') {
+    return durationStr; // Already a number (assume it's already in seconds)
+  }
+  if (typeof durationStr !== 'string') {
+    return 0; // Not a string or number, default to 0
+  }
+
+  // Split by colon and parse parts
+  const parts = durationStr.split(':');
+  let totalSeconds = 0;
+
+  if (parts.length === 3) { // HH:MM:SS
+    const hours = parseInt(parts[0], 10);
+    const minutes = parseInt(parts[1], 10);
+    const seconds = parseInt(parts[2], 10);
+
+    if (!isNaN(hours) && !isNaN(minutes) && !isNaN(seconds)) {
+      totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
+    }
+  } else if (parts.length === 2) { // MM:SS
+    const minutes = parseInt(parts[0], 10);
+    const seconds = parseInt(parts[1], 10);
+
+    if (!isNaN(minutes) && !isNaN(seconds)) {
+      totalSeconds = (minutes * 60) + seconds;
+    }
+  }
+  // If format is not HH:MM:SS or MM:SS, totalSeconds remains 0
+
+  return totalSeconds;
+};
+// --- NEW HELPER FUNCTION END ---
+
+
 export const ReportDisplay: React.FC<Props> = ({ report, file, transcript, title, onTitleChange, type }) => {
   const [activeTab, setActiveTab] = useState<'report' | 'transcript'>('report');
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -38,12 +75,12 @@ export const ReportDisplay: React.FC<Props> = ({ report, file, transcript, title
 
   const [selectedClient, setSelectedClient] = useState<string>('');
   const [selectedCompany, setSelectedCompany] = useState<string>('');
-  
+
   // Use the actual API response types instead of custom interfaces
   const { data: clients } = api.companyClient.getAll.useQuery();
   const { data: companies } = api.company.getAll.useQuery();
   const { data: consultant_id } = api.user.getConsultantId.useQuery();
-  
+
   // Use the actual client type from the API
   const [filteredClients, setFilteredClients] = useState<typeof clients>(undefined);
 
@@ -120,12 +157,14 @@ export const ReportDisplay: React.FC<Props> = ({ report, file, transcript, title
     const clientId = getClientId();
     const parsedDate = new Date(file.date);
     const date = !isNaN(parsedDate.getTime()) ? parsedDate : new Date();
-    
+
     const satisfaction = 10;
     const parsedInput = {
       name: reportTitle,
       satisfaction: satisfaction,
-      duration: parseInt(String(file.duration), 10) || 0,
+      // --- UPDATED DURATION LINE START ---
+      duration: parseDurationToSeconds(file.duration),
+      // --- UPDATED DURATION LINE END ---
       summary: report.summary,
       date: date,
       main_ideas: report.keyTopics,
@@ -136,8 +175,14 @@ export const ReportDisplay: React.FC<Props> = ({ report, file, transcript, title
       sentiment_analysis: report.sentiment,
       risk_words: report.riskWords,
       output: report.output,
-      diarized_transcript: file.transcript,
+      diarized_transcript: file.transcript, // Assuming file.transcript matches diarized_transcript type
     };
+
+    // --- DEBUGGING LOGS START ---
+    console.log("Frontend - parsedInput.duration (after parsing):", parsedInput.duration);
+    console.log("Frontend - original file.duration:", file.duration);
+    console.log("Frontend - type of parsedInput.duration:", typeof parsedInput.duration);
+    // --- DEBUGGING LOGS END ---
 
     createCall.mutate(parsedInput);
   }
@@ -146,20 +191,20 @@ export const ReportDisplay: React.FC<Props> = ({ report, file, transcript, title
     if (!contentRef.current) return;
 
     setIsDownloading(true);
-    
+
     try {
       // Dynamically import html2pdf to avoid SSR issues
       const html2pdf = (await import('html2pdf.js')).default;
-      
+
       const element = contentRef.current;
-      
+
       // Clone and prepare content
       const clonedContent = element.cloneNode(true) as HTMLElement;
-      
+
       // Remove interactive elements from the cloned content
       const buttonsToRemove = clonedContent.querySelectorAll('button, select, input');
       buttonsToRemove.forEach(el => el.remove());
-      
+
       // Add title header to the PDF
       const header = document.createElement('div');
       header.innerHTML = `
@@ -176,20 +221,20 @@ export const ReportDisplay: React.FC<Props> = ({ report, file, transcript, title
         <hr style="margin-bottom: 24px; border: 0; border-top: 1px solid #e5e7eb;">
       `;
       clonedContent.insertBefore(header, clonedContent.firstChild);
-      
+
       const opt = {
         margin: 0.75,
         filename: `${reportTitle.replace(/[^a-z0-9]/gi, '_')}_${activeTab}_${new Date().toISOString().split('T')[0]}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { 
-          scale: 2, 
-          useCORS: true, 
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
           letterRendering: true,
           scrollY: -window.scrollY
         },
-        jsPDF: { 
-          unit: 'in', 
-          format: 'letter', 
+        jsPDF: {
+          unit: 'in',
+          format: 'letter',
           orientation: 'portrait',
           compress: true
         },
@@ -311,8 +356,8 @@ export const ReportDisplay: React.FC<Props> = ({ report, file, transcript, title
 
             {/* Updated button container with flex layout */}
             <div className="flex items-center gap-3 mb-10">
-              <button 
-                onClick={handleSave} 
+              <button
+                onClick={handleSave}
                 className="py-2 px-4 bg-primary text-white rounded-md hover:bg-purple-600 text-sm"
               >
                 Guardar Llamada
@@ -324,8 +369,8 @@ export const ReportDisplay: React.FC<Props> = ({ report, file, transcript, title
                 className={`
                   flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium
                   bg-purple-600 text-white rounded-lg transition-all
-                  ${isDownloading 
-                    ? 'opacity-50 cursor-not-allowed' 
+                  ${isDownloading
+                    ? 'opacity-50 cursor-not-allowed'
                     : 'hover:bg-purple-700 hover:shadow-md active:scale-95'
                   }
                 `}
