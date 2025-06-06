@@ -4,18 +4,8 @@ import { useEffect, useState } from 'react';
 import SlidingChatPanel from './slidingChatPannel';
 import RagResponsePanel from './ragResponsePannel';
 import { MessageSquare, Sparkles } from 'lucide-react';
+import type { FileData, Report, TranscriptEntry } from '@/app/utils/types/main';
 
-// Define the structure of FileData as it's saved in sessionStorage by MainPage
-// You might already have this type in `app/utils/types/main` - if so, import it!
-interface FileData {
-  id: number; // Assuming the ID is a number
-  name: string;
-  // Add other properties if relevant, but id and name are sufficient for this task
-  report?: any;
-  transcript?: any;
-  type?: string;
-  messages?: { role: "user" | "assistant"; text: string }[];
-}
 
 interface Source {
   call_id: string;
