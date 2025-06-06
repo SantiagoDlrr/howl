@@ -5,6 +5,18 @@ import SlidingChatPanel from './slidingChatPannel';
 import RagResponsePanel from './ragResponsePannel';
 import { MessageSquare, Sparkles } from 'lucide-react';
 
+// Define the structure of FileData as it's saved in sessionStorage by MainPage
+// You might already have this type in `app/utils/types/main` - if so, import it!
+interface FileData {
+  id: number; // Assuming the ID is a number
+  name: string;
+  // Add other properties if relevant, but id and name are sufficient for this task
+  report?: any;
+  transcript?: any;
+  type?: string;
+  messages?: { role: "user" | "assistant"; text: string }[];
+}
+
 interface Source {
   call_id: string;
   text: string;
@@ -23,26 +35,50 @@ const DAContainer = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Load saved data from localStorage on component mount
+  // NEW STATE: To hold the list of available calls from sessionStorage
+  const [availableCallsFromContext, setAvailableCallsFromContext] = useState<{ id: string; name: string }[]>([]);
+
+  // Load saved data from localStorage and sessionStorage on component mount
   useEffect(() => {
+    // Load DAContainer's specific data from localStorage
     const savedCallIds = localStorage.getItem('ragChatCallIds');
     const savedResponse = localStorage.getItem('ragChatResponse');
     const savedQuestion = localStorage.getItem('ragChatQuestion');
-    
+
     if (savedCallIds) {
       setCallIds(JSON.parse(savedCallIds));
     }
-   
+
     if (savedResponse) {
       setResponseData(JSON.parse(savedResponse));
     }
-   
+
     if (savedQuestion) {
       setQuestion(savedQuestion);
     }
-  }, []);
 
-  // Update localStorage when data changes
+    // NEW: Load files (calls) from MainPage's sessionStorage
+    if (typeof window !== 'undefined') { // Ensure running in a browser environment
+      const savedFiles = sessionStorage.getItem('howlx-files');
+      if (savedFiles) {
+        try {
+          const filesData: FileData[] = JSON.parse(savedFiles);
+          // Map FileData to the format expected by SlidingChatPanel: { id: string, name: string }
+          const mappedCalls = filesData.map(file => ({
+            id: file.id.toString(), // Convert number ID to string
+            name: file.name
+          }));
+          setAvailableCallsFromContext(mappedCalls);
+        } catch (e) {
+          console.error("Failed to parse 'howlx-files' from sessionStorage:", e);
+          // Optionally clear corrupted data or handle gracefully
+          // sessionStorage.removeItem('howlx-files');
+        }
+      }
+    }
+  }, []); // Empty dependency array means this runs once on mount
+
+  // Update localStorage when DAContainer's data changes
   useEffect(() => {
     localStorage.setItem('ragChatCallIds', JSON.stringify(callIds));
   }, [callIds]);
@@ -58,6 +94,8 @@ const DAContainer = () => {
   }, [question]);
 
   const handleAddCallId = (callId: string) => {
+    // Optional: You might want to validate if the callId exists in `availableCallsFromContext`
+    // to prevent adding arbitrary IDs if that's a requirement.
     if (callId && !callIds.includes(callId)) {
       setCallIds([...callIds, callId]);
     }
@@ -72,7 +110,7 @@ const DAContainer = () => {
       setError("Please enter a question.");
       return;
     }
-   
+
     if (callIds.length === 0) {
       setError("Please add at least one call ID.");
       return;
@@ -80,12 +118,14 @@ const DAContainer = () => {
 
     setIsLoading(true);
     setError(null);
-   
+
     const requestData = {
       question: question,
-      call_ids: callIds
+      // call_ids: callIds // This array contains the string IDs for your API
+      call_ids: ['198']// This array contains the string IDs for your API
+
     };
-   
+
     try {
       const response = await fetch('https://howlx.adriangaona.dev/rag_chat', {
         method: 'POST',
@@ -94,11 +134,11 @@ const DAContainer = () => {
         },
         body: JSON.stringify(requestData)
       });
-     
+
       if (!response.ok) {
         throw new Error(`Server responded with status: ${response.status}`);
       }
-     
+
       const data = await response.json();
       setResponseData(data);
     } catch (error) {
@@ -122,10 +162,10 @@ const DAContainer = () => {
             </h1>
           </div>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Ask intelligent questions about your call recordings and get instant insights with a RAG powered AI
+            Ask intelligent questions about your call recordings and get instant cited insights with a RAG powered AI
           </p>
         </div>
-       
+
         {/* Main Content */}
         <div className="flex flex-col lg:flex-row gap-6 h-[calc(100vh-200px)] min-h-[700px]">
           <SlidingChatPanel
@@ -135,8 +175,9 @@ const DAContainer = () => {
             onAddCallId={handleAddCallId}
             onRemoveCallId={handleRemoveCallId}
             onSubmitQuestion={handleSubmitQuestion}
+            availableCalls={availableCallsFromContext} // Pass the data from sessionStorage
           />
-         
+
           <RagResponsePanel
             responseData={responseData}
             isLoading={isLoading}
@@ -149,5 +190,3 @@ const DAContainer = () => {
 };
 
 export default DAContainer;
-
-
