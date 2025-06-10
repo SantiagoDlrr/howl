@@ -1,13 +1,19 @@
 // slidingChatPannel.tsx
 'use client';
 
-import { useState } from 'react';
-import { Plus, Zap, MessageCircle, Hash, Send } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Plus, Zap, MessageCircle, Hash, Send, Search, Calendar, Building, User, Star } from 'lucide-react';
+import type { CallLogEntry } from '@/app/utils/types/callLogTypes';
 
 // Define a type for the call options received from the parent
 interface CallOption {
   id: string;
   name: string;
+  callDate: string;
+  client: string;
+  clientCompany: string;
+  category: string;
+  rating: string;
 }
 
 interface SlidingChatPanelProps {
@@ -17,7 +23,9 @@ interface SlidingChatPanelProps {
   onAddCallId: (callId: string) => void;
   onRemoveCallId: (callId: string) => void;
   onSubmitQuestion: () => void; // This will trigger the API call in the parent
-  availableCalls: CallOption[]; // New prop: list of all recent calls from context
+  availableCalls: CallOption[]; // Latest 5 calls by default
+  onSearchCalls: (searchTerm: string) => CallOption[]; // New prop for search functionality
+  allCallLogs: CallLogEntry[]; // All call logs for advanced search
 }
 
 const SlidingChatPanel = ({
@@ -27,38 +35,60 @@ const SlidingChatPanel = ({
   onAddCallId,
   onRemoveCallId,
   onSubmitQuestion,
-  availableCalls = [] // Initialize with empty array
+  availableCalls = [],
+  onSearchCalls,
+  allCallLogs = []
 }: SlidingChatPanelProps) => {
-  const [manualCallIdInput, setManualCallIdInput] = useState(''); // Renamed for clarity
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState<CallOption[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
 
-  const handleAddManualCallId = () => {
-    if (manualCallIdInput.trim()) {
-      onAddCallId(manualCallIdInput.trim());
-      setManualCallIdInput('');
-    }
-  };
+  // Debounced search
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (searchTerm.trim()) {
+        setIsSearching(true);
+        const results = onSearchCalls(searchTerm);
+        setSearchResults(results);
+        setIsSearching(false);
+      } else {
+        setSearchResults([]);
+        setIsSearching(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm, onSearchCalls]);
 
   const handleQuestionSelect = (sampleQuestion: string) => {
     onQuestionChange(sampleQuestion);
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm('');
+    setSearchResults([]);
   };
 
   const predefinedQuestions = [
     {
       text: "What was the issue in this call?",
       label: "Issue Identification",
-      icon: ""
+      icon: "🔍"
     },
     {
       text: "Was the issue resolved?",
       label: "Resolution Status", 
-      icon: ""
+      icon: "✅"
     },
     {
       text: "What was the takeaway from this call?",
       label: "Key Insights",
-      icon: ""
+      icon: "💡"
     }
   ];
+
+  // Get the calls to display (search results or default latest 5)
+  const callsToDisplay = searchTerm.trim() ? searchResults : availableCalls;
 
   return (
     <div className="flex-1 lg:max-w-md bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 overflow-hidden flex flex-col">
@@ -68,7 +98,7 @@ const SlidingChatPanel = ({
           <MessageCircle className="w-6 h-6" />
           <div>
             <h2 className="text-xl font-semibold">Q&A Chat</h2>
-            <p className="text-purple-100 text-sm">Ask questions about your recordings and recive precise cited answers</p>
+            <p className="text-purple-100 text-sm">Ask questions about your recordings and receive precise cited answers</p>
           </div>
         </div>
       </div>
@@ -121,92 +151,169 @@ const SlidingChatPanel = ({
           </div>
         </div>
 
-        {/* Call IDs Section */}
+        {/* Call Search Section */}
         <div className="space-y-4">
           <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
             <Hash className="w-4 h-4 text-[#B351FF]" />
-            Search for Calls
+            Search & Select Calls
           </h3>
           
-          {/* Manual Add Call ID Input */}
-          <div className="flex gap-3">
+          {/* Search Input */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
-              value={manualCallIdInput}
-              onChange={(e) => setManualCallIdInput(e.target.value)}
-              placeholder="Search for calls..."
-              className="flex-1 p-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#B351FF]/20 focus:border-[#B351FF] transition-all bg-gray-50/50"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search by client, company, title, category..."
+              className="w-full pl-10 pr-10 p-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#B351FF]/20 focus:border-[#B351FF] transition-all bg-gray-50/50"
             />
-            <button
-              onClick={handleAddManualCallId}
-              className="bg-[#B351FF] hover:bg-[#9d44e8] text-white font-medium px-4 py-3 rounded-xl transition-all duration-200 flex items-center gap-2 hover:shadow-lg hover:scale-105"
-            >
-              <Plus className="w-4 h-4" />
-              Add Call
-            </button>
+            {searchTerm && (
+              <button
+                onClick={handleClearSearch}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            )}
           </div>
 
-          {/* New: Display Available Calls from Context */}
-          {availableCalls.length > 0 && (
+          {/* Search Status */}
+          {searchTerm && (
+            <div className="text-sm text-gray-600">
+              {isSearching ? (
+                <span className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-[#B351FF] border-t-transparent rounded-full animate-spin"></div>
+                  Searching...
+                </span>
+              ) : (
+                <span>
+                  {searchResults.length === 0 
+                    ? "No calls found matching your search" 
+                    : `Found ${searchResults.length} call${searchResults.length !== 1 ? 's' : ''}`
+                  }
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* Available Calls Display */}
+          {callsToDisplay.length > 0 && (
             <div className="space-y-2">
-              <h4 className="text-sm font-semibold text-gray-700">Available Recent Calls:</h4>
-              <div className="max-h-40 overflow-y-auto border border-gray-200 rounded-xl p-3 bg-gray-50">
-                {availableCalls
+              <h4 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                {searchTerm ? (
+                  <>
+                    <Search className="w-4 h-4" />
+                    Search Results:
+                  </>
+                ) : (
+                  <>
+                    <Calendar className="w-4 h-4" />
+                    Latest Calls:
+                  </>
+                )}
+              </h4>
+              <div className="max-h-60 overflow-y-auto border border-gray-200 rounded-xl p-3 bg-gray-50 space-y-2">
+                {callsToDisplay
                   .filter(call => !callIds.includes(call.id)) // Only show calls not yet added
                   .map((call) => (
                     <div
                       key={call.id}
-                      className="flex justify-between items-center p-2 bg-white rounded-lg border border-gray-100 mb-2 last:mb-0"
+                      className="bg-white rounded-lg border border-gray-100 p-3 hover:shadow-md transition-all duration-200 group"
                     >
-                      <span className="font-medium text-gray-800 text-sm truncate">
-                        {call.name || `Call ${call.id}`}
-                      </span>
-                      <button
-                        onClick={() => onAddCallId(call.id)}
-                        className="ml-2 bg-[#B351FF]/10 hover:bg-[#B351FF]/20 text-[#B351FF] text-xs px-3 py-1 rounded-md transition-all duration-200"
-                      >
-                        Add
-                      </button>
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-gray-800 text-sm truncate mb-1">
+                            {call.name}
+                          </div>
+                          <div className="flex items-center gap-3 text-xs text-gray-500 mb-2">
+                            <span className="flex items-center gap-1">
+                              <User className="w-3 h-3" />
+                              {call.client}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Building className="w-3 h-3" />
+                              {call.clientCompany}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs">
+                            <span className="text-gray-400">
+                              {new Date(call.callDate).toLocaleDateString()}
+                            </span>
+                            <span className="text-gray-400">•</span>
+                            <span className="text-gray-600">{call.category}</span>
+                            <span className="text-gray-400">•</span>
+                            <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                              call.rating === 'Positive' ? 'bg-green-100 text-green-800' :
+                              call.rating === 'Mid' ? 'bg-blue-100 text-blue-800' :
+                              call.rating === 'Mid2' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-red-100 text-red-800'
+                            }`}>
+                              {call.rating}
+                            </span>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => onAddCallId(call.id)}
+                          className="ml-3 bg-[#B351FF]/10 hover:bg-[#B351FF]/20 text-[#B351FF] text-xs px-3 py-2 rounded-lg transition-all duration-200 font-medium group-hover:bg-[#B351FF] group-hover:text-white"
+                        >
+                          <Plus className="w-3 h-3 inline mr-1" />
+                          Add
+                        </button>
+                      </div>
                     </div>
                   ))}
-                {availableCalls.filter(call => !callIds.includes(call.id)).length === 0 && (
-                  <p className="text-center text-gray-500 text-sm py-4">All available calls have been added.</p>
+                {callsToDisplay.filter(call => !callIds.includes(call.id)).length === 0 && (
+                  <p className="text-center text-gray-500 text-sm py-4">
+                    {searchTerm ? "All search results have been added." : "All available calls have been added."}
+                  </p>
                 )}
               </div>
             </div>
           )}
 
-
-          {/* Call IDs List (already selected) */}
+          {/* Selected Call IDs List */}
           {callIds && callIds.length > 0 && (
-            <div className="space-y-2 max-h-40 overflow-y-auto">
+            <div className="space-y-2">
               <h4 className="text-sm font-semibold text-gray-700">Selected Calls:</h4>
-              {callIds.map((callId) => {
-                // Find the name for the selected ID, if available
-                const selectedCall = availableCalls.find(call => call.id === callId);
-                const displayName = selectedCall ? selectedCall.name : `Call ${callId}`;
+              <div className="space-y-2 max-h-40 overflow-y-auto">
+                {callIds.map((callId) => {
+                  // Find the call details from either search results or available calls
+                  const selectedCall = [...availableCalls, ...searchResults].find(call => call.id === callId);
+                  const displayName = selectedCall ? selectedCall.name : `Call ${callId}`;
 
-                return (
-                  <div
-                    key={callId}
-                    className="flex justify-between items-center p-3 bg-gradient-to-r from-purple-50 to-purple-100/50 rounded-xl border border-purple-200/50 group"
-                  >
-                    <span className="font-medium text-gray-900 flex items-center gap-2">
-                      <div className="w-2 h-2 bg-[#B351FF] rounded-full"></div>
-                      {displayName}
-                    </span>
-                    <button
-                      onClick={() => onRemoveCallId(callId)}
-                      className="text-gray-400 hover:text-red-500 p-1 rounded-lg hover:bg-red-50 transition-all duration-200"
+                  return (
+                    <div
+                      key={callId}
+                      className="flex justify-between items-center p-3 bg-gradient-to-r from-purple-50 to-purple-100/50 rounded-xl border border-purple-200/50 group"
                     >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                      </svg>
-                    </button>
-                  </div>
-                );
-              })}
+                      <div className="flex-1 min-w-0">
+                        <span className="font-medium text-gray-900 flex items-center gap-2">
+                          <div className="w-2 h-2 bg-[#B351FF] rounded-full flex-shrink-0"></div>
+                          <span className="truncate">{displayName}</span>
+                        </span>
+                        {selectedCall && (
+                          <div className="text-xs text-gray-500 mt-1 ml-4">
+                            {selectedCall.client} • {selectedCall.clientCompany}
+                          </div>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => onRemoveCallId(callId)}
+                        className="ml-2 text-gray-400 hover:text-red-500 p-1 rounded-lg hover:bg-red-50 transition-all duration-200 flex-shrink-0"
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>
