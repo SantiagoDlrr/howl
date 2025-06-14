@@ -48,3 +48,10 @@ Desarrollar una plataforma que permita:
   
 
 
+[Link de vercel Deployment](https://howl-eight.vercel.app/)
+
+[Link de Sanbox Deployment](https://howlx.adriangaona.dev/)
+
+[Link de howl repositorio](https://github.com/SantiagoDlrr/howl)
+
+[Link de AI backend repositorio](https://github.com/SantiagoDlrr/python-howl)
