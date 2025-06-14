@@ -4,7 +4,7 @@
 
 This repository contains the development of the project related to the "Platform for Improving Customer Service" within the Digital Consulting area of NEORIS. The focus of the project is to design a **Web App** that allows visualizing and analyzing customer conversations, transcribing in real-time, analyzing emotions, detecting key topics, and generating reports with relevant metrics.
 
-## Objectives
+### Objectives
 
 Develop a platform that allows:
 - Analyzing customer service calls.
@@ -13,25 +13,21 @@ Develop a platform that allows:
 - Providing reports with key metrics.
 - Implementing filters to facilitate information search and analysis.
 
-## Funcionalidades Principales
-- **Captura y análisis de conversaciones**:
-  - Transcripción en tiempo real.
-  - Análisis de emociones y detección de temas clave.
-  - Diferenciación de voces en las llamadas.
-- **Generación de reportes**:
-  - Reporte por llamada.
-  - Transcripción de llamada.
-  - Métricas y análisis.
-  - Reporte global con filtros por fecha, sector, consultor, cliente.
-- **Integraciones**:
-  - **Microsoft Graph API** para integración con Teams y extracción automática de grabaciones.
-  - **Webhooks** para automatización de procesos.
-  - **Conexión con bases de datos** como MongoDB o SQL para almacenamiento de datos y embeddings.
-  
-## Key Features
+### Key Features
+
 - **Call Recording**:
   - Real-time transcription of calls.
-
+  - Emotion analysis and key topic detection.
+  - Voice differentiation in calls.
+- **Report Generation**:
+  - Call-specific reports.
+  - Transcription of calls.
+  - Metrics and analysis.
+  - Global report with filters by date, sector, consultant, client.
+- **Integrations**:
+  - **Microsoft Graph API** for Teams integration and automatic recording extraction.
+  - **Webhooks** for process automation.
+  - **Database connections** PostgreSQL for data storage and Pinecone for embeddings.
 
 
 
@@ -60,27 +56,20 @@ Develop a platform that allows:
 - **PyAnnotate**: Voice differentiation in audio.
 - **Pinecone**: Semantic search based on embeddings.
 
+## Architecture 
+![Architecture Diagram](/docs/architecture/Diagram.png)
+[Full view](https://github.com/SantiagoDlrr/howl/tree/main/docs/architecture/Diagram.png)
 
-
-
-
-## Prueba tecnica:
-- https://github.com/jadrianlg16/SER_web_prototype
+# Deployments and links
   
+- [Webapp Deployment](https://howl-eight.vercel.app/)
+- [Sanbox Deployment (AI backend)](https://howlx.adriangaona.dev/)
+- [AI backend repo](https://github.com/SantiagoDlrr/python-howl)
+- [Demo video](https://www.youtube.com/watch?v=prt349ptWsQ)
+- [Technical test](https://github.com/jadrianlg16/SER_web_prototype)
 
 
-[Link de vercel Deployment](https://howl-eight.vercel.app/)
-
-[Link de Sanbox Deployment](https://howlx.adriangaona.dev/)
-
-[Link de howl repositorio](https://github.com/SantiagoDlrr/howl)
-
-[Link de AI backend repositorio](https://github.com/SantiagoDlrr/python-howl)
-
-[Video demo](https://www.youtube.com/watch?v=prt349ptWsQ)
-
-## 
-## Equipo de Trabajo
+# Development Team
 - **Alejandra Coeto Sánchez**
 - **Diego de Jesús Esparza Ruiz**
 - **Jesús Adrián López Gaona**
